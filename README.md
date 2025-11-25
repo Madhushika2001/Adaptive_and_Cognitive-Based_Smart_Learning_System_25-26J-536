@@ -27,8 +27,8 @@
  ## Supervisors
 |  | Title | Name |
 |---| -- | --- |
-| Supervisor | Dr |  |
-| Co-Supervisor | Dr |  |
+| Supervisor | Prof | Pradeep Abeygunawardhana |
+| Co-Supervisor | Ms | Suranjini Silva |
 
 ## Group Members
 | Student ID | Student Name | Student Email |
