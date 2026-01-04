@@ -1,18 +1,10 @@
 from fastapi import FastAPI
+from backend.routes.data import router as data_router
+from backend.routes.generate import router as generate_router
 from fastapi.middleware.cors import CORSMiddleware
-from config import get_settings
 
-from routes.questions import router as questions_router
+app = FastAPI()
 
-settings = get_settings()
-
-app = FastAPI(
-    title=settings.app_name,
-    description="API for generating questions and model papers from lecture notes using Gemini AI",
-    version="1.0.0"
-)
-
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,17 +13,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(questions_router)
-
-@app.get("/")
-async def root():
-    return {
-        "message": "Model Paper Generator API",
-        "version": "1.0.0",
-        "docs": "/docs"
-    }
-
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+app.include_router(data_router)
+app.include_router(generate_router)
