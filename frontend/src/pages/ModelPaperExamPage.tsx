@@ -179,7 +179,7 @@ export default function ModelPaperExamPage() {
   // Render
   // ---------------------------
   return (
-    <div className="min-h-screen bg-[#FAFAFA] px-40 py-8">
+    <div className="min-h-screen bg-[#FAFAFA] px-8 sm:px-16 md:px-20 lg:px-40 py-8">
       {/* Back */}
       <button
         onClick={() => navigate(-1)}

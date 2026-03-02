@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { QuestionType, Difficulty, Subject, QuestionResponse, ModelPaper } from '../types';
+import type { QuestionType, Difficulty, Subject, QuestionResponse, ModelPaper, AnswerEvaluation, StructuredAnswerEvaluation } from '../types';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -120,11 +120,7 @@ export const questionApi = {
       questionType: string;
       count: number;
     }
-  ): Promise<{
-    title: string;
-    meta: { topic: string; difficulty: string; type: string; count: number };
-    questions: { q: string; parts?: string[] }[];
-  }> => {
+  ): Promise<ModelPaper> => {
     const response = await api.get(`/questions/generate/custom/${subject}`, {
       params: {
         topic: config.topic,
@@ -135,6 +131,46 @@ export const questionApi = {
     });
     return response.data;
   },
-};
 
-export default api;
+  // Evaluate a user's answer against the model answer
+  evaluateAnswer: async (
+    question: string,
+    userAnswer: string,
+    modelAnswer: string,
+    questionType: string = 'short_answer',
+    topic: string = 'General'
+  ): Promise<AnswerEvaluation> => {
+    const response = await api.post('/questions/evaluate/answer', {
+      question,
+      user_answer: userAnswer,
+      model_answer: modelAnswer,
+      question_type: questionType,
+      topic,
+    });
+    return response.data;
+  },
+
+  // Evaluate a structured answer with parts (a), (b), (c)
+  evaluateStructuredAnswer: async (
+    question: string,
+    partAUser: string,
+    partAModel: string,
+    partBUser: string,
+    partBModel: string,
+    partCUser: string,
+    partCModel: string,
+    topic: string = 'General'
+  ): Promise<StructuredAnswerEvaluation> => {
+    const response = await api.post('/questions/evaluate/structured-answer', {
+      question,
+      part_a_user: partAUser,
+      part_a_model: partAModel,
+      part_b_user: partBUser,
+      part_b_model: partBModel,
+      part_c_user: partCUser,
+      part_c_model: partCModel,
+      topic,
+    });
+    return response.data;
+  },
+};

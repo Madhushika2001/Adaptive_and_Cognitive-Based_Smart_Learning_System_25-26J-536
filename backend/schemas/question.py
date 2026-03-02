@@ -46,3 +46,20 @@ class ModelPaperConfig(BaseModel):
 class ModelPaperRequest(BaseModel):
     content: Optional[str] = None
     config: ModelPaperConfig = ModelPaperConfig()
+
+class EvaluateAnswerRequest(BaseModel):
+    question: str
+    user_answer: str
+    model_answer: str
+    question_type: str = "short_answer"
+    topic: str = "General"
+
+class EvaluateStructuredAnswerRequest(BaseModel):
+    question: str
+    part_a_user: str
+    part_a_model: str
+    part_b_user: str
+    part_b_model: str
+    part_c_user: str
+    part_c_model: str
+    topic: str = "General"

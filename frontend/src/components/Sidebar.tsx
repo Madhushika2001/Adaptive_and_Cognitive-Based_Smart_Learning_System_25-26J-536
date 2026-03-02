@@ -1,4 +1,5 @@
-import { BookOpen, FileText, Settings, Home, Sparkles, Brain, HelpCircle } from 'lucide-react';
+import { BookOpen, FileText, Settings, Home, Sparkles, GraduationCap, Brain, HelpCircle, X, CalendarDays} from 'lucide-react';
+import { BarChart3 } from "lucide-react";
 import logo from '../assets/image_13.png';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -7,16 +8,23 @@ const navigation = [
   { name: 'Revision', href: '/revision', icon: BookOpen },
   { name: 'Quizzers', href: '/quizzers', icon: Brain },
   { name: 'Model Paper', href: '/model-paper', icon: FileText },
+  { name: 'Progress', href: '/progress', icon: BarChart3 },
+  { name: "Calendar", href: "/calendar", icon: CalendarDays },
   { name: 'Generate Questions', href: '/generate', icon: Sparkles },
   { name: 'Upload PDF', href: '/upload', icon: BookOpen },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const location = useLocation();
 
-  return (
-    <div className="flex flex-col w-72 bg-[#F2F8F5]">
+  const SidebarContent = (
+    <div className="flex flex-col w-72 h-full bg-[#F2F8F5]">
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-6">
         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -26,6 +34,15 @@ export default function Sidebar() {
           <span className="text-lg font-bold text-black">CongiLearn</span>
           <p className="text-xs text-black/60">AI Exam Generator</p>
         </div>
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className="ml-auto md:hidden h-9 w-9 rounded-xl bg-white/40 flex items-center justify-center"
+          aria-label="Close sidebar"
+          type="button"
+        >
+          <X className="h-5 w-5 text-[#087990]" />
+        </button>
       </div>
 
       {/* Divider */}
@@ -42,6 +59,7 @@ export default function Sidebar() {
             <Link
               key={item.name}
               to={item.href}
+              onClick={onClose} // close drawer after navigation on mobile
               className={`flex items-center px-4 py-3 rounded-xl transition-all ${
                 isActive
                   ? 'text-white shadow-lg'
@@ -85,5 +103,33 @@ export default function Sidebar() {
         </p>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:flex-col md:w-72 md:shrink-0">
+        {SidebarContent}
+      </aside>
+
+      {/* Mobile drawer */}
+      <div className="md:hidden">
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0 z-40 bg-black/40 transition-opacity ${
+            isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
+          onClick={onClose}
+        />
+        {/* Panel */}
+        <aside
+          className={`fixed z-50 inset-y-0 left-0 w-72 transform transition-transform duration-200 ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {SidebarContent}
+        </aside>
+      </div>
+    </>
   );
 }

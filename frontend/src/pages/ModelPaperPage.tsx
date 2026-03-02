@@ -365,8 +365,8 @@ export default function ModelPaperPage() {
                 </div>
               )}
 
-              {/* Sections */}
-              {paper.sections && paper.sections.map((section, sectionIndex) => (
+              {/* Sections (for traditional model paper format) */}
+              {paper.sections && paper.sections.length > 0 && paper.sections.map((section, sectionIndex) => (
                 <div key={sectionIndex} className="mb-8">
                   <div 
                     className="text-white p-4 rounded-xl mb-4"
@@ -402,6 +402,88 @@ export default function ModelPaperPage() {
                   </div>
                 </div>
               ))}
+
+              {/* Custom Paper Format (flat questions with answers) */}
+              {paper.questions && paper.questions.length > 0 && (!paper.sections || paper.sections.length === 0) && (
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    {paper.questions.map((question, qIndex) => (
+                      <div key={qIndex} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                        {/* Question */}
+                        <p className="font-semibold text-gray-900 mb-3">
+                          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#44A673]/10 text-[#44A673] text-sm font-bold mr-2">
+                            {qIndex + 1}
+                          </span>
+                          {question.q}
+                        </p>
+
+                        {/* Options (for MCQ) */}
+                        {question.options && (
+                          <div className="ml-8 space-y-2 mb-4">
+                            {question.options.map((option, oIndex) => (
+                              <p key={oIndex} className="text-gray-700 flex items-start gap-2">
+                                <span className="font-medium text-gray-500">{String.fromCharCode(65 + oIndex)}.</span>
+                                {option.replace(/^[A-D][\.\)]\s*/, '')}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Answer Key */}
+                        {question.answer && (
+                          <div className="ml-4 p-3 bg-[#F2F8F5] rounded-lg border border-[#44A673]/20 mb-3">
+                            <p className="text-sm font-semibold text-[#055160] mb-1">Answer:</p>
+                            <p className="text-sm text-gray-700 whitespace-pre-wrap">{question.answer}</p>
+                          </div>
+                        )}
+
+                        {/* Explanation */}
+                        {question.explanation && (
+                          <div className="ml-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-sm font-semibold text-blue-900 mb-1">Explanation:</p>
+                            <p className="text-sm text-blue-800">{question.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recommended Resources */}
+              {(paper as any).recommended_resources && (paper as any).recommended_resources.resources && (paper as any).recommended_resources.resources.length > 0 && (
+                <div className="mt-12 pt-8 border-t-2 border-gray-200">
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Recommended Learning Resources</h2>
+                    <p className="text-gray-600">
+                      Enhance your understanding of <span className="font-semibold">{(paper as any).recommended_resources.topic}</span> with these curated materials:
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(paper as any).recommended_resources.resources.map((resource: any, idx: number) => (
+                      <a
+                        key={idx}
+                        href={resource.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-4 border border-gray-200 rounded-lg hover:shadow-md hover:border-[#44A673] transition-all group"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <span className="inline-block px-2.5 py-1 bg-[#44A673]/10 text-[#44A673] text-xs font-medium rounded">
+                            {resource.type}
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#44A673] transition-colors" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-[#44A673] transition-colors">
+                          {resource.title}
+                        </h3>
+                        <p className="text-sm text-gray-600">{resource.description}</p>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -66,8 +66,9 @@ INSTRUCTIONS:
 2. Cover different topics from the content
 3. For MCQ questions, provide 4 options (A, B, C, D) and indicate the correct answer
 4. For True/False, provide the statement and the correct answer
-5. Provide the correct answer for each question
-6. Include a brief explanation for each answer
+5. For Short Answer and Long Answer questions, provide a comprehensive correct answer/model answer
+6. For ALL question types, provide a brief explanation of the answer (why this is correct)
+7. Include difficulty level for each question (easy, medium, hard)
 
 IMPORTANT STYLE RULES:
 - Write questions directly without meta-references like "in the context of...", "according to the lecture...", "as discussed in..."
@@ -82,9 +83,9 @@ OUTPUT FORMAT (JSON):
             "id": 1,
             "type": "mcq|short_answer|long_answer|true_false",
             "question": "The question text",
-            "options": ["A. Option 1", "B. Option 2", "C. Option 3", "D. Option 4"],  // Only for MCQ
-            "correct_answer": "The correct answer",
-            "explanation": "Brief explanation",
+            "options": ["A. Option 1", "B. Option 2", "C. Option 3", "D. Option 4"],  // Only for MCQ and True/False
+            "correct_answer": "The correct answer (or key points for short/long answers)",
+            "explanation": "Brief explanation of why this is the correct answer",
             "difficulty": "easy|medium|hard",
             "topic": "Topic from the content"
         }}
@@ -178,3 +179,204 @@ Generate the examination paper:"""
             return self._parse_response(response.text)
         except Exception as e:
             raise Exception(f"Gemini API error: {str(e)}")
+    
+    def evaluate_answer(
+        self,
+        question: str,
+        user_answer: str,
+        model_answer: str,
+        question_type: str = "short_answer",
+        topic: str = "General"
+    ) -> Dict:
+        """Evaluate a user's answer against the model answer using LLM"""
+        
+        prompt = f"""You are an expert educator and evaluator. Your task is to evaluate a student's answer to a {question_type} question.
+
+QUESTION: {question}
+
+TOPIC: {topic}
+
+STUDENT'S ANSWER:
+{user_answer}
+
+MODEL/CORRECT ANSWER:
+{model_answer}
+
+Your task:
+1. Compare the student's answer with the model answer
+2. Identify key concepts that were covered or missed
+3. Assess the accuracy and completeness
+4. Provide constructive feedback
+5. Suggest improvements
+
+Evaluation Criteria:
+- For short answer questions: Check if the core concept is correctly explained
+- For essay questions: Check for structure, depth, evidence, and argumentation
+- For structured questions: Evaluate the overall quality while acknowledging multiple parts exist
+
+Provide your evaluation in the following JSON format:
+
+{{
+    "score": <integer between 0-100>,
+    "feedback": "<detailed feedback on the answer>",
+    "strengths": [
+        "<what the student did well>"
+    ],
+    "areas_for_improvement": [
+        "<specific areas to improve>"
+    ],
+    "key_points_missed": [
+        "<important concepts not mentioned>"
+    ],
+    "suggested_improvements": "<actionable suggestions for better answer>",
+    "comparison_with_model_answer": "<how the student answer compares to the model answer>",
+    "overall_assessment": "<summary of the evaluation>"
+}}
+
+Note:
+- Be encouraging and constructive
+- Focus on learning outcomes
+- Highlight what they got right
+- Provide specific guidance for improvement
+- Score should reflect understanding level (90-100: Excellent, 70-89: Good, 50-69: Satisfactory, 30-49: Needs Improvement, 0-29: Insufficient)
+
+Provide the evaluation in JSON format:"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt
+            )
+            return self._parse_response_evaluation(response.text)
+        except Exception as e:
+            raise Exception(f"Gemini API error: {str(e)}")
+    
+    def evaluate_structured_answer(
+        self,
+        question: str,
+        part_a_user: str,
+        part_a_model: str,
+        part_b_user: str,
+        part_b_model: str,
+        part_c_user: str,
+        part_c_model: str,
+        topic: str = "General"
+    ) -> Dict:
+        """Evaluate a structured answer with parts (a), (b), (c) separately"""
+        
+        prompt = f"""You are an expert educator evaluating a structured question with three parts.
+
+QUESTION: {question}
+
+TOPIC: {topic}
+
+===== PART (A) =====
+STUDENT'S ANSWER:
+{part_a_user}
+
+MODEL ANSWER:
+{part_a_model}
+
+===== PART (B) =====
+STUDENT'S ANSWER:
+{part_b_user}
+
+MODEL ANSWER:
+{part_b_model}
+
+===== PART (C) =====
+STUDENT'S ANSWER:
+{part_c_user}
+
+MODEL ANSWER:
+{part_c_model}
+
+Evaluate each part separately and provide overall feedback. Provide response in the following JSON format:
+
+{{
+    "part_a": {{
+        "score": <0-100>,
+        "feedback": "<specific feedback for part a>",
+        "status": "excellent|good|satisfactory|needs_improvement|insufficient"
+    }},
+    "part_b": {{
+        "score": <0-100>,
+        "feedback": "<specific feedback for part b>",
+        "status": "excellent|good|satisfactory|needs_improvement|insufficient"
+    }},
+    "part_c": {{
+        "score": <0-100>,
+        "feedback": "<specific feedback for part c>",
+        "status": "excellent|good|satisfactory|needs_improvement|insufficient"
+    }},
+    "overall_score": <average of three parts 0-100>,
+    "overall_feedback": "<comprehensive feedback on all three parts>",
+    "strengths": ["<what the student did well>"],
+    "areas_for_improvement": ["<areas needing work>"],
+    "key_points_missed": ["<important concepts not covered>"]
+}}
+
+Provide the evaluation in JSON format:"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt
+            )
+            return self._parse_structured_evaluation(response.text)
+        except Exception as e:
+            raise Exception(f"Gemini API error: {str(e)}")
+    
+    def _parse_response_evaluation(self, response_text: str) -> Dict:
+        """Parse the evaluation response from Gemini"""
+        import json
+        import re
+        
+        try:
+            # Find JSON in the response
+            json_match = re.search(r'\{[\s\S]*\}', response_text)
+            if json_match:
+                result = json.loads(json_match.group())
+                # Ensure score is an integer
+                if "score" in result and isinstance(result["score"], str):
+                    result["score"] = int(result["score"])
+                return result
+        except (json.JSONDecodeError, ValueError):
+            pass
+        
+        # If parsing fails, return structured error response
+        return {
+            "score": 0,
+            "feedback": response_text,
+            "raw_response": response_text,
+            "error": "Could not parse structured evaluation response"
+        }
+    
+    def _parse_structured_evaluation(self, response_text: str) -> Dict:
+        """Parse the structured question evaluation response from Gemini"""
+        import json
+        import re
+        
+        try:
+            # Find JSON in the response
+            json_match = re.search(r'\{[\s\S]*\}', response_text, re.DOTALL)
+            if json_match:
+                result = json.loads(json_match.group())
+                # Ensure scores are integers
+                for part in ["part_a", "part_b", "part_c"]:
+                    if part in result and "score" in result[part]:
+                        if isinstance(result[part]["score"], str):
+                            result[part]["score"] = int(result[part]["score"])
+                if "overall_score" in result and isinstance(result["overall_score"], str):
+                    result["overall_score"] = int(result["overall_score"])
+                return result
+        except (json.JSONDecodeError, ValueError):
+            pass
+        
+        # If parsing fails, return structured error response
+        return {
+            "overall_score": 0,
+            "overall_feedback": response_text,
+            "raw_response": response_text,
+            "error": "Could not parse structured evaluation response"
+        }
