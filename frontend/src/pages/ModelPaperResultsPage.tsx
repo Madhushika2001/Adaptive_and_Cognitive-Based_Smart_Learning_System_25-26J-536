@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiClock } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
@@ -55,6 +55,7 @@ function progressLabel(score: number) {
   if (score >= 60) return "Normal";
   return "Low";
 }
+type StatusType = true | false | "pending";
 
 export default function ModelPaperResultsPage() {
   const navigate = useNavigate();
@@ -154,12 +155,12 @@ export default function ModelPaperResultsPage() {
           }
           
           // Get user answer based on type
-          if (questionType === "short_answers" || questionType === "short answer" || questionType === "essay") {
+          if (questionType === "short_answers" || questionType === "short answers" || questionType === "short answer" || questionType === "essay") {
             userAnswer = data.textAnswers?.[i] || "";
             hasUserAnswer = userAnswer.trim().length > 0;
           } else if (questionType === "structured") {
             const parts = data.structuredAnswers?.[i];
-            if (parts && Object.values(parts).some(p => (p as string).trim())) {
+            if (parts && Object.values(parts).some((p) => String(p).trim())) {
               hasUserAnswer = true;
             }
           }
@@ -172,10 +173,10 @@ export default function ModelPaperResultsPage() {
             continue;
           }
           
-          setEvaluatingQuestions(prev => new Set([...prev, i]));
+          setEvaluatingQuestions((prev) => new Set([...prev, i]));
           
           try {
-            let evaluation;
+            let evaluation: any;
             
             if (questionType === "structured") {
               // Evaluate structured answer with parts
@@ -183,20 +184,21 @@ export default function ModelPaperResultsPage() {
               
               // Try to extract parts from model answer (assumes format with numbered parts or bullet points)
               const extractPartFromAnswer = (answer: string, partLabel: string): string => {
-                const regex = new RegExp(`\\*?\\*?${partLabel}[:.]*\\*?\\*?.*?(?=\\n\\*|$)`, 'is');
+                const regex = new RegExp(`\\*?\\*?${partLabel}[:.]*\\*?\\*?.*?(?=\\n\\*|$)`, "is");
                 const match = answer.match(regex);
                 return match ? match[0] : answer;
               };
               
-              const partAModel = extractPartFromAnswer(question?.answer || "", "(a|Part A)");
-              const partBModel = extractPartFromAnswer(question?.answer || "", "(b|Part B)");
-              const partCModel = extractPartFromAnswer(question?.answer || "", "(c|Part C)");
+              const fullModel = question?.answer || question?.correct_answer || "";
+              const partAModel = extractPartFromAnswer(fullModel, "(a|Part A)");
+              const partBModel = extractPartFromAnswer(fullModel, "(b|Part B)");
+              const partCModel = extractPartFromAnswer(fullModel, "(c|Part C)");
               
               console.log(`📤 Sending structured evaluation for Q${i + 1}:`, {
-                question: question?.q?.substring(0, 50) + "...",
-                partAUser: (parts["0"] || parts["a"] || "").substring(0, 30) + "...",
-                partBUser: (parts["1"] || parts["b"] || "").substring(0, 30) + "...",
-                partCUser: (parts["2"] || parts["c"] || "").substring(0, 30) + "..."
+                question: (question?.q || "").substring(0, 50) + "...",
+                partAUser: String(parts["0"] || parts["a"] || "").substring(0, 30) + "...",
+                partBUser: String(parts["1"] || parts["b"] || "").substring(0, 30) + "...",
+                partCUser: String(parts["2"] || parts["c"] || "").substring(0, 30) + "...",
               });
               
               evaluation = await questionApi.evaluateStructuredAnswer(
@@ -213,7 +215,7 @@ export default function ModelPaperResultsPage() {
               // Evaluate regular short answer or essay
               const modelAns = question?.answer || question?.correct_answer || "";
               console.log(`📤 Sending ${questionType} evaluation for Q${i + 1}:`, {
-                question: question?.q?.substring(0, 50) + "...",
+                question: (question?.q || "").substring(0, 50) + "...",
                 userAnswerLength: userAnswer.length,
                 modelAnswerLength: modelAns.length,
                 modelAnswerPreview: modelAns.substring(0, 50) + "..."
@@ -223,14 +225,18 @@ export default function ModelPaperResultsPage() {
                 question?.q || "",
                 userAnswer,
                 modelAns,
-                questionType === "short_answers" || questionType === "short answer" ? "short_answer" : questionType,
+                questionType === "short_answers" ||
+                  questionType === "short answers" ||
+                  questionType === "short answer"
+                  ? "short_answer"
+                  : questionType,
                 data.recommendedResources?.topic || "General"
               );
             }
             
             console.log(`✅ Q${i + 1} evaluation received:`, evaluation);
             
-            setEvaluations(prev => ({
+            setEvaluations((prev) => ({
               ...prev,
               [i]: evaluation
             }));
@@ -250,7 +256,7 @@ export default function ModelPaperResultsPage() {
                 comparison_with_model_answer: "",
                 overall_assessment: "Could not evaluate at this time",
                 error: "Evaluation failed"
-              }
+              } as any,
             }));
           } finally {
             setEvaluatingQuestions(prev => {
@@ -292,13 +298,15 @@ export default function ModelPaperResultsPage() {
     );
   }
 
-  const { totalQuestions, answeredCount, elapsedSeconds, paperTitle, questions, mcqAnswers, type } = data;
+  const { totalQuestions, answeredCount, elapsedSeconds, paperTitle, questions, mcqAnswers, type, recommendedResources } = data;
 
-  // Grade MCQ answers by comparing user selection with correct answer
-  const isQuestionCorrect = (questionIndex: number): boolean => {
+  const threshold = 50; //  change if you want (ex: 60)
+
+  //  Decide Correct/Incorrect/Pending properly for non-MCQ
+  const getQuestionStatus = (questionIndex: number): StatusType => {
     const questionType = type?.toLowerCase();
     
-    // For MCQ, compare user's selected option with correct answer
+    // MCQ: compare selected option with correct answer
     if (questionType === "mcq" && questions && questions[questionIndex]) {
       const question = questions[questionIndex];
       const userAnswerIndex = mcqAnswers[questionIndex];
@@ -310,17 +318,38 @@ export default function ModelPaperResultsPage() {
       const userAnswer = question.options[userAnswerIndex];
       // Compare by checking if user's selected option matches correct answer
       // Handle cases like "B. SE4050" matching "B. SE4050"
-      return userAnswer === question.correct_answer || 
-             userAnswer?.startsWith(question.correct_answer?.charAt(0) + ".") && 
-             question.correct_answer?.startsWith(userAnswer?.charAt(0) + ".");
+      return ( userAnswer === question.correct_answer ||
+           (userAnswer?.startsWith(question.correct_answer?.charAt(0) + ".") &&
+          question.correct_answer?.startsWith(userAnswer?.charAt(0) + "."))
+      );
     }
-    
-    // For other types, consider answered as "pending review" (show as correct for now)
-    return true;
+
+    // Structured: use overall_score if available
+    if (questionType === "structured") {
+      const ev = evaluations[questionIndex] as any;
+      if (!ev) return "pending";
+      if (ev?.error) return false;
+      return (ev.overall_score ?? 0) >= threshold;
+    }
+
+    // Short / Essay: use score if available
+    if (
+      questionType === "short answers" ||
+      questionType === "short_answers" ||
+      questionType === "short answer" ||
+      questionType === "essay"
+    ) {
+      const ev = evaluations[questionIndex] as any;
+      if (!ev) return "pending";
+      if (ev?.error) return false;
+      return (ev.score ?? 0) >= threshold;
+    }
+
+    return "pending";
   };
 
-  const correctCount = Array.from({ length: totalQuestions }).filter((_, i) =>
-    isQuestionCorrect(i)
+  // Score counts: count only TRUE as correct; pending treated as incorrect for score display
+  const correctCount = Array.from({ length: totalQuestions }).filter((_, i) => getQuestionStatus(i) === true
   ).length;
 
   const score = Math.round((correctCount / totalQuestions) * 100);
@@ -387,7 +416,7 @@ export default function ModelPaperResultsPage() {
         {/* Rows */}
         <div className="results-scroll max-h-[600px] overflow-y-auto mt-4">
           {Array.from({ length: totalQuestions }).map((_, i) => {
-            const correct = isQuestionCorrect(i);
+            const status = getQuestionStatus(i);
             const explanation = getExplanation(i);
             const answer = getAnswer(i);
             const question = questions?.[i];
@@ -404,7 +433,7 @@ export default function ModelPaperResultsPage() {
                     Question {String(i + 1).padStart(2, "0")}
                   </div>
                   <div className="text-xs text-gray-500 mt-1 line-clamp-2">{question?.q}</div>
-                  {!correct && userAnswer && (
+                  {type?.toLowerCase() === "mcq" && status === false && userAnswer && (
                     <div className="text-xs text-red-600 mt-1">
                       Your: {userAnswer}
                     </div>
@@ -412,7 +441,11 @@ export default function ModelPaperResultsPage() {
                 </div>
 
                 <div className="col-span-2">
-                  {correct ? (
+                  {status === "pending" ? (
+                    <span className="inline-flex px-3 py-1 items-center justify-center whitespace-nowrap rounded-lg text-[13px] font-medium bg-gray-200 text-gray-700">
+                      ⏳ Pending
+                    </span>
+                  ) : status ? (
                     <span className="inline-flex px-3 py-1 items-center justify-center whitespace-nowrap rounded-lg text-[13px] font-medium bg-[#00C0134D] text-[#24922F]">
                       ✓ Correct
                     </span>
@@ -451,44 +484,32 @@ export default function ModelPaperResultsPage() {
 
                           {/* Part (a) Evaluation */}
                           <div className="p-2 bg-blue-50 rounded border border-blue-200">
-                            <p className="text-[12px] font-bold text-blue-900">Part (a) - Score: {(evaluations[i] as any).part_a.score}/100</p>
-                            <p className="text-[12px] text-blue-800 mt-1">{(evaluations[i] as any).part_a.feedback}</p>
-                            <span className={`text-[10px] px-2 py-0.5 rounded mt-1 inline-block ${
-                              (evaluations[i] as any).part_a.status === 'excellent' ? 'bg-green-200 text-green-800' :
-                              (evaluations[i] as any).part_a.status === 'good' ? 'bg-blue-200 text-blue-800' :
-                              (evaluations[i] as any).part_a.status === 'satisfactory' ? 'bg-amber-200 text-amber-800' :
-                              'bg-red-200 text-red-800'
-                            }`}>
-                              {(evaluations[i] as any).part_a.status.replace('_', ' ').toUpperCase()}
-                            </span>
+                            <p className="text-[12px] font-bold text-blue-900">
+                              Part (a) - Score: {(evaluations[i] as any).part_a.score}/100
+                            </p>
+                            <p className="text-[12px] text-blue-800 mt-1">
+                              {(evaluations[i] as any).part_a.feedback}
+                            </p>
                           </div>
 
                           {/* Part (b) Evaluation */}
                           <div className="p-2 bg-green-50 rounded border border-green-200">
-                            <p className="text-[12px] font-bold text-green-900">Part (b) - Score: {(evaluations[i] as any).part_b.score}/100</p>
-                            <p className="text-[12px] text-green-800 mt-1">{(evaluations[i] as any).part_b.feedback}</p>
-                            <span className={`text-[10px] px-2 py-0.5 rounded mt-1 inline-block ${
-                              (evaluations[i] as any).part_b.status === 'excellent' ? 'bg-green-200 text-green-800' :
-                              (evaluations[i] as any).part_b.status === 'good' ? 'bg-blue-200 text-blue-800' :
-                              (evaluations[i] as any).part_b.status === 'satisfactory' ? 'bg-amber-200 text-amber-800' :
-                              'bg-red-200 text-red-800'
-                            }`}>
-                              {(evaluations[i] as any).part_b.status.replace('_', ' ').toUpperCase()}
-                            </span>
+                            <p className="text-[12px] font-bold text-green-900">
+                              Part (b) - Score: {(evaluations[i] as any).part_b.score}/100
+                            </p>
+                            <p className="text-[12px] text-green-800 mt-1">
+                              {(evaluations[i] as any).part_b.feedback}
+                            </p>
                           </div>
 
                           {/* Part (c) Evaluation */}
                           <div className="p-2 bg-amber-50 rounded border border-amber-200">
-                            <p className="text-[12px] font-bold text-amber-900">Part (c) - Score: {(evaluations[i] as any).part_c.score}/100</p>
-                            <p className="text-[12px] text-amber-800 mt-1">{(evaluations[i] as any).part_c.feedback}</p>
-                            <span className={`text-[10px] px-2 py-0.5 rounded mt-1 inline-block ${
-                              (evaluations[i] as any).part_c.status === 'excellent' ? 'bg-green-200 text-green-800' :
-                              (evaluations[i] as any).part_c.status === 'good' ? 'bg-blue-200 text-blue-800' :
-                              (evaluations[i] as any).part_c.status === 'satisfactory' ? 'bg-amber-200 text-amber-800' :
-                              'bg-red-200 text-red-800'
-                            }`}>
-                              {(evaluations[i] as any).part_c.status.replace('_', ' ').toUpperCase()}
-                            </span>
+                            <p className="text-[12px] font-bold text-amber-900">
+                              Part (c) - Score: {(evaluations[i] as any).part_c.score}/100
+                            </p>
+                            <p className="text-[12px] text-amber-800 mt-1">
+                              {(evaluations[i] as any).part_c.feedback}
+                            </p>
                           </div>
 
                           {/* Overall Feedback */}
@@ -496,40 +517,10 @@ export default function ModelPaperResultsPage() {
                             <p className="text-[12px] font-semibold text-purple-900 mb-1">Overall Feedback:</p>
                             <p className="text-[12px] text-purple-800">{(evaluations[i] as any).overall_feedback}</p>
                           </div>
-
-                          {/* Strengths */}
-                          {(evaluations[i] as any).strengths && (evaluations[i] as any).strengths.length > 0 && (
-                            <div className="p-2 bg-green-50 rounded border border-green-200">
-                              <p className="text-[12px] font-semibold text-green-900 mb-1">Strengths:</p>
-                              <ul className="text-[12px] text-green-800 space-y-1">
-                                {(evaluations[i] as any).strengths.map((strength: string, idx: number) => (
-                                  <li key={idx} className="flex gap-1">
-                                    <span>✓</span>
-                                    <span>{strength}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {/* Areas for Improvement */}
-                          {(evaluations[i] as any).areas_for_improvement && (evaluations[i] as any).areas_for_improvement.length > 0 && (
-                            <div className="p-2 bg-amber-50 rounded border border-amber-200">
-                              <p className="text-[12px] font-semibold text-amber-900 mb-1">Areas to Improve:</p>
-                              <ul className="text-[12px] text-amber-800 space-y-1">
-                                {(evaluations[i] as any).areas_for_improvement.map((improvement: string, idx: number) => (
-                                  <li key={idx} className="flex gap-1">
-                                    <span>•</span>
-                                    <span>{improvement}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
                         </>
                       )}
 
-                      {/* Non-Structured Answer Evaluation */}
+                      {/* Short/Eassy Evaluation */}
                       {type?.toLowerCase() !== "structured" && (evaluations[i] as any).score !== undefined && !(evaluations[i] as any).error && (
                         <>
                           {/* Score Badge */}
@@ -541,9 +532,6 @@ export default function ModelPaperResultsPage() {
                               }}>
                               Score: {(evaluations[i] as any).score}/100
                             </span>
-                            {(evaluations[i] as any).score >= 70 && <span className="text-lg">✓ Good</span>}
-                            {(evaluations[i] as any).score >= 50 && (evaluations[i] as any).score < 70 && <span className="text-lg">◐ Fair</span>}
-                            {(evaluations[i] as any).score < 50 && <span className="text-lg">✗ Needs Work</span>}
                           </div>
 
                           {/* Feedback */}
@@ -579,29 +567,6 @@ export default function ModelPaperResultsPage() {
                                   </li>
                                 ))}
                               </ul>
-                            </div>
-                          )}
-
-                          {/* Key Points Missed */}
-                          {(evaluations[i] as any).key_points_missed && (evaluations[i] as any).key_points_missed.length > 0 && (
-                            <div className="p-2 bg-red-50 rounded border border-red-200">
-                              <p className="text-[12px] font-semibold text-red-900 mb-1">Key Points Missed:</p>
-                              <ul className="text-[12px] text-red-800 space-y-1">
-                                {(evaluations[i] as any).key_points_missed.map((point: string, idx: number) => (
-                                  <li key={idx} className="flex gap-1">
-                                    <span>→</span>
-                                    <span>{point}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {/* Suggestions */}
-                          {(evaluations[i] as any).suggested_improvements && (
-                            <div className="p-2 bg-purple-50 rounded border border-purple-200">
-                              <p className="text-[12px] font-semibold text-purple-900 mb-1">Suggestions:</p>
-                              <p className="text-[12px] text-purple-800">{(evaluations[i] as any).suggested_improvements}</p>
                             </div>
                           )}
                         </>
@@ -651,22 +616,23 @@ export default function ModelPaperResultsPage() {
         </div>
 
         <div className="px-5 py-3 text-xs text-gray-500 border-t border-gray-100">
-          Total: {totalQuestions} | Answered: {answeredCount} | Correct: {correctCount}
+          Total: {totalQuestions} | Answered: {answeredCount} | Correct: {correctCount} | Pending:{" "}
+          {Array.from({ length: totalQuestions }).filter((_, i) => getQuestionStatus(i) === "pending").length}
         </div>
       </div>
 
       {/* Recommended Resources */}
-      {data?.recommendedResources && data.recommendedResources.resources && data.recommendedResources.resources.length > 0 && (
+      {recommendedResources?.resources && recommendedResources.resources.length > 0 && (
         <div className="mt-12">
           <div className="mb-6">
             <h2 className="text-[32px] font-bold text-[#055160] mb-2">Recommended Learning Resources</h2>
             <p className="text-[#4B5563] text-[16px]">
-              Enhance your understanding of <span className="font-semibold">{data.recommendedResources.topic}</span> with these curated materials:
+              Enhance your understanding of <span className="font-semibold">{recommendedResources.topic}</span> with these curated materials:
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {data.recommendedResources.resources.map((resource, idx) => (
+            {recommendedResources.resources.map((resource, idx) => (
               <a
                 key={idx}
                 href={resource.url}
