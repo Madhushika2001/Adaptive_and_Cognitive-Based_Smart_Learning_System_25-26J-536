@@ -129,8 +129,8 @@ export default function ModelPaperSetupPage() {
         </p>
       </div>
 
-      <div className="mx-18">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm pl-8.5 pr-14 pb-11 pt-8.5">
+      <div className="mx-6 md:mx-12 lg:mx-18">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm lg:pl-8.5 px-6 lg:pr-14 pb-11 pt-8.5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Left: Controls */}
             <div>

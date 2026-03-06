@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import InfoPill from "../components/InfoPill";
+import { questionApi } from "../api";
 
 type Subject = { id: string; name: string; code: string };
 
@@ -100,6 +101,11 @@ export default function ModelPaperExamPage() {
     Record<number, Record<number, string>>
   >({});
 
+  // Validation state
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationResult, setValidationResult] = useState<any>(null);
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
+
   // ---------------------------
   // Timer
   // ---------------------------
@@ -150,28 +156,115 @@ export default function ModelPaperExamPage() {
     if (page > 1) setPage((p) => p - 1);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const elapsedSeconds = durationMinutes * 60 - remainingSeconds;
+
+    console.log("📤 Preparing to submit paper...");
+    console.log("   Paper title:", paper.title);
+    console.log("   Total questions:", totalQuestions);
+    console.log("   Paper questions array:", paper.questions?.length);
+    
+    // Prepare questions with user answers for validation
+    const questionsWithAnswers = paper.questions.map((q, idx) => {
+      let userAnswer = "";
+      const qType = paper.meta.type.toLowerCase();
+      
+      if (qType === "mcq") {
+        // For MCQ, store the selected option index
+        if (mcqAnswers[idx] !== undefined) {
+          userAnswer = q.options ? q.options[mcqAnswers[idx]] : "";
+        }
+      } else if (qType === "short answers" || qType === "short_answers" || qType === "essay") {
+        userAnswer = textAnswers[idx] || "";
+      } else if (qType === "structured") {
+        // For structured, combine parts
+        const parts = structuredAnswers[idx] || {};
+        userAnswer = Object.values(parts).join(" | ");
+      }
+      
+      return {
+        ...q,
+        user_answer: userAnswer,
+        type: qType
+      };
+    });
+    
+    // Validate submission
+    setIsValidating(true);
+    try {
+      console.log("🔍 Validating submission...");
+      const validation = await questionApi.validateSubmission(
+        questionsWithAnswers,
+        paper.meta.type,
+        questionsWithAnswers[0]?.topic || "General"
+      );
+      
+      console.log("✅ Validation result:", validation);
+      setValidationResult(validation);
+      setShowValidationDialog(true);
+      
+      // If there are only warnings (not errors), allow auto-proceed after 3 seconds
+      // Otherwise, user must click "Proceed Anyway"
+      if (validation.can_proceed && validation.errors.length === 0) {
+        setTimeout(() => {
+          proceedToResults(elapsedSeconds);
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("❌ Validation error:", error);
+      // If validation fails, still allow submission
+      proceedToResults(elapsedSeconds);
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const proceedToResults = (elapsedSeconds: number) => {
+    console.log("📤 Submitting paper...");
+    console.log("   Paper title:", paper.title);
+    console.log("   Total questions:", totalQuestions);
+    
+    // Validate that questions have answers
+    if (paper.questions) {
+      const missingAnswers = paper.questions.filter((q, idx) => !q.answer && !q.correct_answer);
+      if (missingAnswers.length > 0) {
+        console.warn(`⚠️ Warning: ${missingAnswers.length} questions missing answer field!`);
+      } else {
+        console.log("✅ All questions have answers or correct_answer field");
+      }
+    }
 
     const payload = {
       slug,
       type: paper.meta.type,
-        totalQuestions,
-        answeredCount,
-        elapsedSeconds,
+      totalQuestions,
+      answeredCount,
+      elapsedSeconds,
       mcqAnswers,
       textAnswers,
       structuredAnswers,
-        // keep paper info for results page
-        paperTitle: subject?.name ? `${subject.name} - ${subject.code}` : paper.title,
-        // pass questions with correct answers for grading
-        questions: paper.questions,
+      // keep paper info for results page
+      paperTitle: subject?.name ? `${subject.name} - ${subject.code}` : paper.title,
+      // pass questions with correct answers for grading
+      questions: paper.questions,
     };
 
+    console.log("📊 Payload being saved:", {
+      type: payload.type,
+      totalQuestions: payload.totalQuestions,
+      questionsCount: payload.questions?.length,
+      hasAnswers: payload.questions?.map(q => !!q.answer || !!q.correct_answer),
+    });
+
     // store results for refresh-safe
-    localStorage.setItem("MODEL_PAPER_RESULTS", JSON.stringify(payload));
+    const jsonString = JSON.stringify(payload);
+    console.log(`📝 Serialized payload size: ${jsonString.length} bytes`);
+    localStorage.setItem("MODEL_PAPER_RESULTS", jsonString);
+    console.log("✅ Data saved to localStorage");
 
     // navigate to results (NO layout route)
+    console.log("🔄 Navigating to results page...");
+    setShowValidationDialog(false);
     navigate(`/model-paper/${slug}/results`, { state: payload });
   };
 
@@ -179,7 +272,7 @@ export default function ModelPaperExamPage() {
   // Render
   // ---------------------------
   return (
-    <div className="min-h-screen bg-[#FAFAFA] px-40 py-8">
+    <div className="min-h-screen bg-[#FAFAFA] px-8 sm:px-16 md:px-20 lg:px-40 py-8">
       {/* Back */}
       <button
         onClick={() => navigate(-1)}
@@ -369,14 +462,105 @@ export default function ModelPaperExamPage() {
             </button>
           ) : (
             <button
-              className="px-6 py-2 rounded-xl bg-[#0B7285] text-white hover:opacity-95"
+              className="px-6 py-2 rounded-xl bg-[#0B7285] text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               onClick={onSubmit}
+              disabled={isValidating}
             >
-              Submit
+              {isValidating ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Validating...
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           )}
         </div>
       </div>
+
+      {/* Validation Dialog */}
+      {showValidationDialog && validationResult && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-[#0B7285] to-[#055160] text-white p-6 sticky top-0">
+              <h2 className="text-[24px] font-bold">
+                {validationResult.is_valid ? "✅ All Good!" : "⚠️ Validation Results"}
+              </h2>
+              <p className="text-[14px] mt-2 opacity-90">{validationResult.summary}</p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              {/* Errors */}
+              {validationResult.errors && validationResult.errors.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-[16px] font-semibold text-red-700">❌ Errors ({validationResult.errors.length})</h3>
+                  {validationResult.errors.map((error: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-red-50 rounded border border-red-300">
+                      <p className="text-[12px] font-bold text-red-900">Q{error.question_index + 1}: {error.error_type}</p>
+                      <p className="text-[13px] text-red-800 mt-1">{error.message}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Warnings */}
+              {validationResult.warnings && validationResult.warnings.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-[16px] font-semibold text-amber-700">⚠️ Warnings ({validationResult.warnings.length})</h3>
+                  {validationResult.warnings.map((warning: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-amber-50 rounded border border-amber-300">
+                      <p className="text-[12px] font-bold text-amber-900">Q{warning.question_index + 1}: {warning.error_type}</p>
+                      <p className="text-[13px] text-amber-800 mt-1">{warning.message}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Success Message */}
+              {validationResult.is_valid && (
+                <div className="p-4 bg-green-50 rounded border border-green-300">
+                  <p className="text-[14px] text-green-800">
+                    All your answers have been validated successfully. You can now proceed to view your results.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 p-6 flex gap-3 justify-end sticky bottom-0 bg-gray-50">
+              <button
+                onClick={() => setShowValidationDialog(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+              >
+                Go Back
+              </button>
+              {/* Show "Proceed Anyway" only if there are warnings but no errors */}
+              {!validationResult.is_valid && validationResult.errors.length === 0 && (
+                <button
+                  onClick={() => proceedToResults(durationMinutes * 60 - remainingSeconds)}
+                  className="px-4 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700"
+                >
+                  Proceed Anyway
+                </button>
+              )}
+              {validationResult.can_proceed && (
+                <button
+                  onClick={() => proceedToResults(durationMinutes * 60 - remainingSeconds)}
+                  className="px-4 py-2 rounded-lg bg-[#0B7285] text-white hover:bg-[#055160]"
+                >
+                  Continue to Results
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,487 @@
+[
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 1",
+    "output": "Cloud Computing\nModule Overview\n\nModule Overview\n\nModule Objectives\n1 2 3 4\nProvide an in depth Provide hands-on- Provide a strong Provide an exposure\nunderstanding of experience on basis for professional to how Cloud\nCloud Computing practical applications Cloud Computing Computing is used in\ntheory. of Cloud Computing. exams and enterprises.\ncertifications.\n\nModule Outline\n1.\nIntroduction to Cloud Computing\n2.\nCore Cloud Services and Global Architecture\n3.\nCloud Compute & Storage\n4.\nCloud Networking\n5.\nCloud High Availability & Disaster Recovery\n6.\nCloud Security & Monitoring\n7.\nCloud Database & Analytics Services\n8.\nCloud Migration\n\nModule Outline\n9.\nCloud Native Applications\n10.\nInfrastructure as Code\n11.\nContainerization\n12.\nContainer Orchestration\n13.\nMicroservice and Serverless Architectures\n14.\nCloud in Enterprises\n15.\nCloud Architecture Design Considerations"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 2",
+    "output": "Basic understanding on\n• Linux / Windows operating systems\n• Networking concepts\nPrerequisites\n• Using a command line interface\n• Structured Programming\nAWS & Azure Free Tier Accounts\n\nCloud Certifications - AWS\nSource: https://reviewnprep.com/amazon-web-services-certification\n\nCloud Certifications - Azure\nSource: https://viniciusdeschamps.com.br/azure-certification-journey/\n\nIntroduction to Cloud\nComputing\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nEvolution of IT Infrastructure\n•\nCloud Computing Characteristics\n•\nCloud Computing Service Models\n•\nCloud Computing Deployment Models\n•\nCloud Service Providers\n•\nCloud Computing Benefits\n\nEvolution of IT Infrastructure\nIntroduction to Cloud Computing\n\nIT Infrastructure Evolution Stages\n•\nMainframe / Mini Computers\n•\nPersonal Computer\n•\nClient / Server Computing\n•\nWeb Based Enterprise Applications\n•\nCloud Computing / Mobile Computing"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 3",
+    "output": "IT Infrastructure Evolution Stages\n•\nMainframe / Mini Computers\n•\nPersonal Computer\n•\nClient / Server Computing\n•\nWeb Based Enterprise Applications\n•\nCloud Computing / Mobile Computing\n\nHistory of Electricity\n•\nIn mid 1800s, factories generated their own electricity using dynamos and generators.\n•\nIssues with self generating electricity\n•\nSpend a lot of money to buy, install and maintain.\n•\nNeed to maintain a specially skilled engineers.\n•\nNeed spare parts for the equipment.\n•\nHigher operating costs, which is an overhead to the business.\n•\nEssentially, lot of money, time and effort spent to generate electricity, which is\nneither the core business nor the core skill."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 4",
+    "output": "History of Electricity\n•\nIn late 1800s, electricity providers emerged. They had larger number\nof electricity generators installed and distributed electricity to\ncustomers over wires.\n•\nThose who needs electricity paid a monthly cost and used it.\n•\nAdvantages\n•\nNo need to buy and maintain expensive machines.\n•\nNo need to maintain specially skilled engineers to maintain\nthese machines.\n•\nJust connect to the grid and consume power.\n•\nNo need to pay money upfront, pay for what you consume.\n•\nAnyone can consume the service, and it is easy to get\nconnected.\n\nTraditional IT\nDecision to Go Ahead PO Issued HW Implementation SW Implementation\n• Select Vendors • HW Shipment • DC Preparation • Implementing SW\n• POC & Evaluate • Licenses for HW/SW • Cabling & Rack Mounting • Testing Go Live\n• Architectures • Contracts / SLAs • HW Installations • Deploying\n• Negotiations • UAT\n1 – 2 Months 2 – 3 Months 1 – 2 Months 2 – 4 Months\n6 – 12 Months"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 5",
+    "output": "Inefficiencies in Traditional IT\nAllocated Load Forecast\nIT-capacities\n“Under-supply“\nof capacities\nY “Waste“ of Fixed cost of\nT capacities IT-capacities\nI\nC\nA\nP\nA\nC\nT\nI\nBarrier for\ninnovations Actual Load\nTIME\n\nCloud: A Better Alternative\n1 2 3 4\nProvision Pay as you Go (PAYG) Add / Remove Destroy and stop\nEnvironments pricing (pay for what capacity as and when paying if you don’t\n(Servers, Networks, you provision as you required. need it.\nStorage, Databases, use)\nApps) in minutes.\n\nCloud Computing and the IT Industry\n•\nIT Industry uses Cloud Computing the same way we use electricity.\n•\nBefore Cloud\n•\nEvery company had their own data center, expensive to implement and\nmaintain.\n•\nHad to maintain specialized engineers to maintain the data center.\n•\nDeviated from their core business\n•\nWith Cloud\n•\nNo need to maintain a data center\n•\nConsume resources as you wish and pay for what you consume\n•\nCan focus more on the core business"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 6",
+    "output": "The Cloud Way\nLoad\nForecast\nAllocated IT\ncapacities\nNo “under-supply“\nY\nT\nI\nC\nA\nP\nA\nReduction of\nPossible\nC\nT\n“over-supply“\nreduction of IT-\nI\ncapacities in\ncase of reduced\nReduction\nload\nof initial\ninvestments\nActual Load\nTIME\n\nWhy do we need Cloud?\nBusiness Agility Customer Experience Cost\nFaster time-to-market Always available services Pay-as-you-Go\nFoster innovation Multiple venues / regions Transform Capital Expenditure\n(CAPEX) to Operational\nFlexibility and Scalability\nExpenditures (OPEX)\nFocus on core business\nCost savings\n\nNIST Definition of Cloud\nCloud computing is a model for enabling ubiquitous, convenient,\non-demand network access to a shared pool of configurable\ncomputing resources (e.g., networks, servers, storage, applications,\nand services) that can be rapidly provisioned and released with\nminimal management effort or service provider interaction.\nSource: National Institute of Standards and Technology"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 7",
+    "output": "On-demand self-service\n• Consumers can provision computing resources\n• Virtual serves, Network, storage\n• Can be provisioned on-demand (whenever you need\nEssential\nit)\nCharacteristics • No interaction with the service provider is needed\nResource Pooling\nof Cloud\n• Providers computing resources are pooled\n• Dynamically assigned and reassigned to demand\n• Customer has no knowledge over exact location\n• May specify location at a higher level (Region,\nCountry)\n\nRapid Elasticity\n• Ability to elastically provision and release\n• May happen automatically in line with the demand\nBroad network access\nEssential\n• Capabilities are available over the network\nCharacteristics\n• Access is through standard mechanism for heterogenous\nclients\nof Cloud\nMeasured Service\n• Automatically control and optimized resources using\nmetering capability\n• Pay-per-use basis\n• Resources usage can be monitored, controlled and reported"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 8",
+    "output": "Is Cloud a Technology or a Model?\n•\nCloud is not a technology\n•\nCloud can be thought of as an either\n•\nA Business Model\n•\nA Delivery Model\n•\nUnderlying technology behind cloud is\nVirtualization\n\nCloud Service Models\nSource: https://askmedawaa.wordpress.com/2018/01/25/what-is-oracle-cloud/\n\nProvider manage underlying physical cloud infrastructure and the\nvirtualization layer\nInfrastructure\nConsumers provision servers, databases and networks and other resources\nas a Service\n(IaaS)\nConsumer create their own platforms and deploy applications on top of\nprovisioned resources\nExample Services\nContent Delivery Service Backup and\nCompute Storage\nNetworks Management Recovery"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 9",
+    "output": "Provider manage the infrastructure and the platform to host applications\nPlatform as a\nConsumers deploy onto cloud the applications created or acquired by the\nconsumer and can change hosting configurations\nService\n(PaaS)\nApplications need to support the languages, libraries, services and tools\nsupported by the provider\nExample Services\nBusiness Development Application\nDatabase Integration\nIntelligence and Testing Deployment\n\nUse the providers application running on cloud\nSoftware as a\nConsumer does not manage infrastructure or application\nService\n(SaaS)\nConsumer might be able to do limited user specific application configuration\nchanges\nExample Services\nEmail and Office Customer Relationship Content / Document Enterprise Resource\nCollaboration\nProductivity Management (CRM) Management Planning (ERP)\n\nNIST Cloud Computing Reference Architecture"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 10",
+    "output": "NIST Cloud Computing Reference Architecture\n\nActor Definition\nCloud Consumer A person or organization that maintains a business\nrelationship with, and uses service from, Cloud Providers.\nActors in\nCloud Provider A person, organization, or entity responsible for making a\nservice available to interested parties.\nCloud\nCloud Auditor A party that can conduct independent assessment of cloud\nservices, information system operations, performance and\nComputing security of the cloud implementation.\nCloud Broker An entity that manages the use, performance and delivery\nof cloud services, and negotiates relationships between\nCloud Providers and Cloud Consumers.\nCloud Carrier An intermediary that provides connectivity and transport\nof cloud services from Cloud Providers to Cloud\nConsumers.\n\nPublic Cloud\nCloud Private Cloud\nDeployment\nModels\nHybrid Cloud\nCommunity Cloud"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 11",
+    "output": "Public Cloud\nCloud Private Cloud\nDeployment\nModels\nHybrid Cloud\nCommunity Cloud\n\nProvisioned for open use by the general public\nOperated by a service provider organization\nLocated on premise of the cloud provider\nCharacteristics\nPublic Cloud\n• Cost-effective\n• On-demand virtually unlimited scalability\n• Zero maintenance\n• Continuous uptime\n• Low level of data security\n• Access over internet\n• Multi-tenant\n• Regulatory compliance\n\nProvisioned for exclusive use by a single organization\nMultiple business units may consume it\nCan be owned and managed by the organization , a third party or a\ncombination\nPrivate Cloud\nMay be located on or off premises\nCharacteristics\n• High data security\n• Less risky\n• Single tenant & compliance\n• Reliable\n• Expensive\n• Management overhead"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 12",
+    "output": "Combination of private, public or community clouds\nMay enable portability of data and applications within\nthe clouds by standards or proprietary technologies\nHybrid Cloud\nCharacteristics\n• Secure and safe\n• Cost-effective\n• Flexibility and scalability\n• Portability between private & public\n• Data transfer\n\nProvisioned for exclusive use by a specific community of\nconsumers with shared concerns\nConcerns may be security, regulatory requirements,\nCommunity\ncompliance etc.\nCloud\nCan be owned, managed and operated by an organization in\nthe community, a third party or a combination\nEx:- Government Clouds\n\n•\nThere are close to 300 cloud service providers in the\nworld.\n•\nTop 6 CSPs\n•\nAmazon Web Services (AWS)\nCloud Service\n•\nMicrosoft Azure\n• Providers\nGoogle Cloud Platform (GCP)\n•\nIBM Cloud\n(CSP)\n•\nAlibaba Cloud\n•\nOracle Cloud Infrastructure (OCI)\n•\n120 Billion Dollars global revenue was projected for\n2020 before the pandemic"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 13",
+    "output": "60% of the cloud market share is divided among the top three, that\nis Amazon AWS, Microsoft Azure and the Google Cloud Platform\nCloud Service\nAWS – 33% and holding since 2017\nProviders\nAzure – 20% and increasing from merely a 11% in 2017 to 20% in\n2020\n(CSP)\nGCP – 7% and holding around the same value since 2017\nOthers cater to less than 40% of the market\n\nGartner Magic\nQuadrant\n\nReferences\n•\nhttps://www.nist.gov/publications/nist-definition-cloud-computing\n•\nhttps://www.nist.gov/publications/nist-cloud-computing-reference-\narchitecture\n•\nhttps://www.linkedin.com/pulse/evolution-infrastructure-paul-m-veillard/\n•\nhttps://emuseum.ucsc.cmb.ac.lk/\n\nCore Cloud Services and\nGlobal Architecture\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nCore Cloud Services\n•\nAdditional Services\n•\nGlobal Infrastructure\n•\nGlobal Network\n•\nShared Responsibility Model\n•\nBilling & Cost Management\n•\nAccessing Resources\n•\nResource Scopes / Limits / Quotas"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 14",
+    "output": "History of Cloud Computing\nAmazon created Amazon AWS released S3, followed AWS released RDS and VPC GA of Azure Web Sites, VMs\nWeb Services by EC2 services for Linux/Windows\nJuly 2002 2006 2009 2012\n2004 2008 2010\nAWS released their first Microsoft announced the GA of SQL Azure and\nservice, SQS release of Azure (released Windows Azure\nin 2010)\n\nCore Cloud Services\nCOMPUTE STORAGE NETWORK\n\nAWS Services\n\nAzure Services\n\nDatacentre\nAvailability Zone\nRegion\nGeography\nGlobal Network\nGlobal Infrastructure\n\nAWS Shared Responsibility Model\n\nAzure Shared Responsibility Model\n\nConnectivity\nWeb REST\nCLI SDK\nConsole API\n\nSelecting a Region\nData Governance & Legal Requirements\nProximity to users\nService availability\nCosts (can vary by region)\n\nAccount vs. Subscription\n• Account – container for AWS resources\n• Management Account – organizes multiple AWS accounts\nAWS\n• Subscription – container for Azure resources\n• Account – organizes multiple Azure subscriptions\nAzure"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 15",
+    "output": "Pricing\nCharged for\nDiscounts on Volume based\nwhat you\nreservations (RI) discounts\nconsume (PAYG)\nPer second / Pricing\nminute billing calculator\n\nService Limits / Quotas\nLimits Why service\nlimits?\n• Soft limits – can be\nQuota is region increased upon\n• Limit potential\nDefault quotas\nrequests\nspecific excessive charges\n• Hard limits – cannot\n• Limit overuse of\nbe increased\nresources by a single\nentity\n\nService and Resource Scopes\nGlobal Regional Zonal\n\nCloud Compute & Storage\nPart I\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nVirtualization / Containerization Recap\n•\nSoftware Defined Compute\n•\nCloud Compute Services\n•\nTypes of Compute Instances\n•\nTenancy & Purchasing Options\n•\nCompute Instance Lifecycle\n•\nPlacement Groups"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 16",
+    "output": "Virtualization / Containerization Recap\nVirtualization Containerization\nVirtual machine Container\nApplication XYZ\nApplication\nApp dependencies\nDependencies\nGuest OS\nC C C C C\nVM VM VM\nDependency 1 Dependency 2\nVM VM VM\nHypervisor 2 Docker Engine\nHypervisor 1 Host OS Host OS\nHardware Hardware Hardware\nType 1 Type 2\n\nSoftware-defined compute is when a compute\nfunction is virtualized and abstracted from the\nhardware it resides on.\nSoftware\nIn software-defined compute, the computational\nDefined functions of a data center can be pooled across any\nnumber of processing units and the workload can be\nCompute\ndispersed among them.\nHardware components in a software-defined\ncompute environment tend to be generic and\nindustry-standard, so they can be easily added to\nsatisfy resource demand\nSource: https://www.sdxcentral.com/networking/sdn/definitions/what-is-software-defined-compute"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 17",
+    "output": "Cloud Compute\nAmazon EC2 Azure VM\n• AWS’s offering of virtual machines • Microsoft’s offering of virtual\nin cloud machines in cloud\n• Provided as an IaaS • Provided as an IaaS\n• Pre-configured templates (AMI) • Pre-configured templates\n(marketplace)\n• Per second billing\n• Per minute billing\n\nInstance Types\nGeneral Compute Memory\nPurpose Optimized Optimized\nStorage Accelerated Burstable\nOptimized Computing Instances\n\nTenancy\nDefault / Shared\nDedicated Instances\nDedicated Hosts\n\nPurchasing Options\n1 2 3 4\nOn-demand Reserved Spot Savings Plan\nInstances Instances Instances\n\nInstance Lifecycle\nAzure VM AWS EC2\n\nPlacement Groups\nAWS Azure\n• Cluster Placement Groups • Proximity Placement\nGroups\n• Partition Placement\nGroups\n• Spread Placement Groups\n\nCloud Compute & Storage\nPart II\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nSoftware Defined Storage\n•\nCAP Theorem\n•\nBlock Storage\n•\nFile Storage\n•\nObject Storage\n•\nOther Important Aspects"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 18",
+    "output": "Cloud Compute & Storage\nPart II\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nSoftware Defined Storage\n•\nCAP Theorem\n•\nBlock Storage\n•\nFile Storage\n•\nObject Storage\n•\nOther Important Aspects\n\nSoftware\nDefined\nStorage\nSoftware Defined Storage\n(SDS) is a storage\narchitecture that abstracts\ndata storage resources\nfrom its underlying\nhardware.\n\nCAP Theorem\nIt is impossible for a distributed data store to\nsimultaneously provide more than two out of\nfollowing three guarantees\n•Consistency – every read receives the most recent\nwrite or an error\n•Availability – Every request receives a (non-error)\nresponse (without the guarantee that it contains\nthe most recent write)\n•Partition Tolerance –The system continues to\noperate despite an arbitrary number of messages\nbeing dropped / delayed by the network between\nnodes"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 19",
+    "output": "CAP Theorem\nIn the presence of a network partition, we must choose between consistency\nand availability.\nWhen a network partition failure happens, we can\nCancel the operation, which will decrease the Proceed with the operation, which will provide\navailability, but ensure consistency availability but risk inconsistency\n\nTypes of Storage\nBlock File Object\nStorage Storage Storage\n\nManages data as blocks within sectors and tracks\nEach block has a block ID\nSet of blocks can be organized as a file system\nBlock Storage Suitable for transactional / structured data (file systems, databases, logs)\nOptimized for block level performances\nPerformance measured in IOPS\nExamples\n• AWS –Elastic Block Storage\n• Azure –Azure Disks (Page Blob Storage)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 20",
+    "output": "Manages data as a file hierarchy\nUsed over a shared network\nStorage managed the underlying data on disk\nStorage server uses block storage with a local file system\nFile Storage\nProtocols supported\n• Network File System (NFS)\n• Server Messaging Protocol (SMB)\nExamples\n• AWS – Elastic File System (EFS)\n• Azure –Azure Files (File Storage)\n\nManages data as objects\nEach object consists of\n• Data\n• Metadata\nObject Storage\n• Globally unique identifier\nClients can access through HTTPS or APIs or SDKs\nExamples\n• AWS – Simple Storage Service (S3)\n• Azure –Azure Blobs\n\nObject Storage Features\nEncryption Immutability\n•Client Side •Time-based retention\n•Server Side •Legal hold\nVersioning •Service Managed Keys Web Hosting\n•Customer Managed Keys\n•Customer Provided Keys\n\nObject Storage Tiers\nCSPs offer different access tiers designed for different use cases.\nAWS Azure\nIntelligent Infrequent\nStandard Glacier Hot Cold Archive\nTiering Access"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 21",
+    "output": "Object Storage Tiers\nCSPs offer different access tiers designed for different use cases.\nAWS Azure\nIntelligent Infrequent\nStandard Glacier Hot Cold Archive\nTiering Access\n\nOther Important Aspects of Cloud Storage\nArchiving Hybrid Bulk Data\nand Backup Storage Transfer\n\nCloud Networking\nIT4090 – Cloud Computing\n\nLecture Outline\n•\nNetworking Recap\n•\nSoftware Defined Networking\n•\nNetwork Function Virtualization\n•\nVirtual Networks and Subnets\n•\nAccess Controlling\n•\nNetwork Gateway Services\n•\nNetwork Peering\n•\nHybrid Connectivity\n•\nPrivate Access to Cloud Services\n•\nFlow Logs\n\nNetworking\nRecap\n•\nIP addresses\n•\nSubnets / VLSM\n•\nBasic Routing\n•\nDefault Gateways"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 22",
+    "output": "Networking\nRecap\n•\nIP addresses\n•\nSubnets / VLSM\n•\nBasic Routing\n•\nDefault Gateways\n\nSoftware Defined Networking (SDN)\n•\nSDN is a network management architecture that\nenables, dynamic, programmable network\nconfiguration in order to improve network\nperformance and monitoring.\n•\nThis architecture decouples the network control\nand forwarding functions enabling the network\ncontrol to become directly programmable and the\nunderlying infrastructure to be abstracted for\napplications and network services\n\nNetwork Function Virtualization (NFV)\nNFV is a network architecture\nwhich decouples Physical These Virtual Network Cloud-native Network\nNetwork Functions (PNF) from Functions (VNFs) include Functions (CNF) is the successor\nproprietary hardware network functions such as of VNFs, which is a software\nappliances and run them as firewalls, traffic control, virtual implementation of a PNF which\nsoftware in virtual machines routing etc. runs inside a Linux container.\n(virtual network functions)."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 23",
+    "output": "Network Function Virtualization (NFV)\n\nAdvantages of CNF\nAuto scaling\n• Speed\nMonitoring • Flexibility\n• Efficiency\nDeployment\n• DevOps\nSecurity\n• CI/CD\n\nSDN vs. NFV\nSimilarities Differences\n• Both use network abstraction • SDN separates Network Control\nFunctions from Forwarding\n• Both depend heavily on\nFunctions, while NFV abstracts\nvirtualization\nall Network Functions from\nunderlying hardware.\n• SDN defines the big picture\naspect of the infrastructure,\nwhile NFV deliver a wide range\nof specific functionalities.\n\nVirtual Networks\nCloud networking\nservice which provides Logically isolated from Has one or more IP\nnetworking functions other virtual networks. ranges.\nto cloud resources.\nImplementations\nCan peer with other\nHas one or more • AWS VPC (Virtual Private\nvirtual networks if IP\nCloud)\nsubnets.\nranges do not overlap.\n• Azure Virtual Network"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 24",
+    "output": "Subnets\nSegments virtual network IP range even further\nSubnet CIDR blocks cannot overlap within a virtual network\nTraffic can be restricted using Access Control Lists\nAWS offers private and public subnets\n• Instances in public subnets can send outbound traffic directly to internet.\n• Instances in private subnets cannot send outbound traffic directly to internet.\nAzure does not have the public/private subnet concept.\n• All subnets can be considered as public subnets\n• Can implement private subnet functionality through route tables"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 25",
+    "output": "Virtual Networks & Subnet Sizing\nAllowed IP ranges – RFC 1918 Private IP Ranges\n• 10.0.0.0/8 – (10.0.0.0 – 10.255.255.255)\n• 172.16.0.0/12 – (172.16.0.0 – 172.31.255.255)\n• 192.168.0.0/16 – (192.168.0.0 – 192.168.255.255)\nIPv4 Allowed Block Sizes\n• Azure – between /2 netmask to /29 netmask\n• AWS – between /16 netmask to /28 netmask\nFive IPs from each subnet IP block is reserved\n• 1st IP – Network Address\n• 2nd IP – Reserved for the Router\n• 3rd IP – Reserved for DNS\n• 4th IP – Reserved for DNS/future use\n• Last IP – Network Broadcast Address\n\nSubnet IP Reservation\n10.0.0.0/24 1st IP 10.0.0.0 – Network Address\n2nd IP 10.0.0.1 – Reserved\n3rd IP 10.0.0.2 – Reserved\n4th IP 10.0.0.3 – Reserved\nLast IP 10.0.0.255 – Broadcast Address\nFirst usable IP 10.0.0.4\nLast usable IP 10.0.0.254\nNumber of usable IPs 28 – 5 = 251"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 26",
+    "output": "Subnet IP Reservation\n172.16.10.128/25 1st IP 172.16.10.128 – Network Address\n2nd IP 172.16.10.129 – Reserved\n3rd IP 172.16.10.130 – Reserved\n4th IP 172.16.10.131 – Reserved\nLast IP 172.16.10.255 – Broadcast Address\nFirst usable IP 172.16.10.132\nLast usable IP 172.16.10.254\nNumber of usable Ips 27 – 5 = 123\n\nSubnet IP Reservation\n192.168.0.64/27 1st IP 192.168.0.64 – Network Address\n2nd IP 192.168.0.65 – Reserved\n3rd IP 192.168.0.66 – Reserved\n4th IP 192.168.0.67 – Reserved\nLast IP 192.168.0.95 – Broadcast Address\nFirst usable IP 192.168.0.68\nLast usable IP 192.168.0.94\nNumber of usable Ips 25 – 5 = 27"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 27",
+    "output": "Virtual Network Interfaces\nEnables a compute\nA logical networking\ninstance to\ncomponent which Attaches to a compute\ncommunicate with other\nrepresents the network instance.\ncompute instances\ninterface card (NIC).\nand/or internet.\nImplementations\nCan attach more than\nCan have one public IP\n• AWS – Elastic Network\none virtual network\nand one or more private Interface (ENI)\ninterfaces to the same\n• Azure – Network Interface\nIps\ncompute instance. Card (NIC)\n\nAccess Controlling\nImplements a simple firewall functionality to control inbound and outbound traffic\nto a subnet / virtual network interface.\nNeed to add ACL rules which contains\n• Rule number\n• Protocol\n• Source / Destination Port Ranges\n• Source / Destination IP Ranges\n• Allow / Deny Action\nUsage varies in CSPs\n• AWS Security Groups –Assigned to an EC2 instance\n• AWS Network Access Control List (NACL) –Assigned to a subnet\n• Azure Network Security Groups (NSG) –Can be assigned to both subnets and NICs"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 28",
+    "output": "Stateful / Stateless Rules\nStateful Rules\n• Only need to specify the security rule for the request, no need to\nspecify a security rule for the response.\nStateless Rules\n• Need to specify security rules for the request as well as the response.\nImplementations\n• AWS SG – Stateful\n• AWS NACL – Stateless\n• Azure NSG - Stateful\n\nNetwork Gateway Services\nVirtual Network Functions associated with providing\nconnectivity between cloud resources and outside\nnetworks / internet.\nInternet Gateway\nNAT Gateway\nVPN Gateway\nNetwork Transit Gateway\n\nInternet Gateway\nProvides connectivity\nbetween internet and Scales horizontally No bandwidth constraints\nvirtual network\nImplementations Azure does not have the\ninternet gateway concept\n• AWS Internet Gateway\n• Internet connectivity is provided\nby default through the default\ngateway"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 29",
+    "output": "NAT Gateway\nProvides Network\nPrevents connections\nAddress Translation\nto subnets getting\n(NAT) to compute\ninitiated from the\ninstances in private\ninternet.\nsubnets\nImplementations\nNAT Gateway should\n• AWS NAT Instance\nbe deployed in a public\n• AWS NAT Gateway\nsubnet.\n• Azure Virtual Network NAT\n\nAWS Internet Gateway & NAT Gateway\n\nVPN Gateway\nVPN Gateways are used to Implementations\ncreate encrypted tunnels\n• Azure VPN Gateway\nover the public internet to\n• AWS Virtual Private Gateway\nsend encrypted traffic\nbetween virtual networks\nand on-premises networks."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 30",
+    "output": "VPN Services\nTwo types of VPN services are provided by CSPs\n• Site-to-site VPN –VPN connectivity between virtual network and on-premises network, or\nbetween two virtual networks\n• Point-to-site VPN –VPN connectivity between virtual network and a client PC with a special\nclient VPN software\nAzure VPN Gateway provides both site-to-site and point-to-site VPN\nconnectivity\nAWS Virtual Private Gateway provides only site-to-site connectivity.\nAWS provides point-to-site connectivity through a separate service called\nAWS Client VPN\n\nAzure VPN Services\n\nAWS VPN Services\n\nNetwork Transit Gateway\nA service which\nThis architecture used\nconnects multiple\nto be implemented\nvirtual networks and\nthrough the hub-spoke\non-premises networks\nmodel.\nthrough a central hub.\nImplementations\n• AWS Transit Gateway\n• Azure Virtual WAN\n\nHub and Spoke Architecture\n\nAWS Transit Gateway\n\nAWS Transit Gateway\n\nAzure Virtual WAN"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 31",
+    "output": "Hub and Spoke Architecture\n\nAWS Transit Gateway\n\nAWS Transit Gateway\n\nAzure Virtual WAN\n\nNetwork Peering\nAllows to connect and communicate between two virtual networks.\nUsed to be implemented through VPN Gateways.\nEach virtual network can be peered to more than one virtual networks.\nCan peer virtual networks across accounts / subscriptions.\nDoes not support transitive peering.\n• If VNet A is peered with VNet B and VNet B is peered with VNet C, VNet A cannot\ncommunicate with VNet C and vice-versa\nBoth AWS and Azure have implemented this feature\n\nAWS VPC Peering\n\nAzure VNet Peering\n\nBastion Hosts\nAlso called as a Jump Host\nA special compute instance deployed to provide secure management\naccess to other compute instances in private subnets.\nCan connect to private instances without exposing them to internet.\nThe bastion host must be placed in a public subnet and provided with\na public IP.\n\nAzure Bastion Host"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 32",
+    "output": "Azure Bastion Host\n\nHybrid Connectivity\nConnect Remote Connect Remote\nUsers Networks\nThere are few\nways we can use • Direct internet • Site-to-Site VPN\nconnectivity\nto get connected • Direct Connectivity\n• Through VPN\n• Azure Express\nto a virtual\n• Azure Point-to- Route\nnetwork in CSP\nSite VPN\n• AWS Direct\n• AWS Client VPN Connect\n\nAWS Direct Connect\n\nAzure Express Route\n\nPrivate Access to Cloud Services\nPrivate Links\n• Provide access to PaaS services of the CSP from the virtual network without\ngoing through the public internet.\nPrivate Endpoints\n• Can be connected to a virtual network with an IP\n• Provides access between other resources in the virtual network and PaaS services\nthrough Private Links.\nAzure Service Endpoints\n• Provide secure and direct connectivity to Azure PaaS services over an optimized\nroute over the Azure backbone network.\n• Traffic from the virtual network will still hit the public endpoint of the PaaS\nservice.\n\nAzure Private Link\n\nAzure Private Link"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 33",
+    "output": "Azure Private Link\n\nAzure Private Link\n\nAWS Private Link\n\nAzure Service Endpoint\n\nNetwork Flow Logs\nCapture information about IP\ntraffic going in and out of your Log data is collected outside Does not affect network\nnetwork interfaces in the of the network traffic path throughput or latency\nvirtual network.\nUse cases\nAzure Flow Logs are captured •Troubleshooting connectivity issues\nFlow log data can be stored in\nfrom NSGs, AWS Flow Logs •Intrusion/anomaly detection\na separate object storage\n•Archival for\ncan be created for VPCs,\n(AWS S3 / Azure Blobs) compliance/regulatory/legal purposes\nsubnets and/or ENIs.\n\nCloud High Availability &\nDisaster Recovery\nIT4090 – Cloud Computing\n\nDowntime\nRefers to a period when a\nsystem is unavailable\n(offline)\n• Planned / scheduled downtime\n• Result of a scheduled\nmaintenance / patch\ninstallation / reboot.\n• Unplanned / unscheduled\ndowntime\n• Result of a HW/SW/NW failure\n/ security breach / physical"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 34",
+    "output": "Availability% Downtime per year Downtime per month Downtime per day\n90% (\"one nine\") 36.53 days 73.05 hours 2.40 hours\n95% (\"one and a half nines\") 18.26 days 36.53 hours 1.20 hours\n99% (\"two nines\") 3.65 days 7.31 hours 14.40 minutes\n99.5% (\"two and a half nines\") 1.83 days 3.65 hours 7.20 minutes\n99.9% (\"three nines\") 8.77 hours 43.83 minutes 1.44 minutes\n99.95% (\"three and a half nines\") 4.38 hours 21.92 minutes 43.20 seconds\n99.99% (\"four nines\") 52.60 minutes 4.38 minutes 8.64 seconds Availability\n99.995% (\"four and a half nines\") 26.30 minutes 2.19 minutes 4.32 seconds\n99.999% (\"five nines\") 5.26 minutes 26.30 seconds 864.00milliseconds\n99.9999% (\"six nines\") 31.56 seconds 2.63 seconds 86.40 milliseconds\n99.99999% (\"seven nines\") 3.16 seconds 262.98 milliseconds 8.64 milliseconds\n99.999999% (\"eight nines\") 315.58 milliseconds 26.30 milliseconds 864.00microseconds\n99.9999999% (\"nine nines\") 31.56 milliseconds 2.63 milliseconds 86.40 microseconds"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 35",
+    "output": "High Availability\nHigh availability (HA) is a characteristic of a system\nwhich aims to ensure an agreed level of operational\nperformance, usually uptime, for a higher-than-\nnormal period.\nElimination of Reliable\nSingle Point of Crossover\nDetection of\nFailure\n• Ability to switch failures as they\nsystems without\n• A part of a system, occur\nloosing data\nif fails, will crash the\nentire system\n\nRedundancy\nRedundancy is the duplication of critical\ncomponents or functions of a system with the\nintention of increasing reliability of the system\nPassive Redundancy\n• Achieve high availability by including enough excess\ncapacity in the design to accommodate a performance\ndecline.\nActive Redundancy\n• Achieve high availability using complex systems to detect\nfailure and automatically reconfigure the system to bypass\nfailed items using a voting scheme"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 36",
+    "output": "Failover / Failback\nFailover Failback\n• Switching to a • Process of\nredundant / restoring a failed\nstandby / passive system back to\ninstance upon its original\nsystem failure working state.\n• Uses a heartbeat\nsignal to detect\nfailures\n\nReplication\nSharing information so as to ensure consistency between\nredundant resources, such as software or hardware components,\nto improve reliability, fault-tolerance, or accessibility.\nActive Replication\n• Processing the same request at every replica\nPassive Replication\n• Processing all requests in one replica and\ntransferring the result to others\n\nHigh Availability Clusters\nA group of computers that support applications that can provide\ncontinued service when system components fail.\nNode configurations\nActive/Active Active/Passive\nNode reliability\nStorage (disk mirroring,\nNetwork Electricity\nredundant SANs)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 37",
+    "output": "Load Balancing\nProcess of efficiently distributing network traffic across a group\nof backend servers.\nAlgorithms\nRound Robin Least connections Least time IP Hash\nSession Persistence\nAll requests from a client are sent to the same backend server for the duration of the\nsession.\n\nBusiness Continuity\nBusiness Continuity\n• The capability of an organization to continue the delivery of\nproducts or services at pre-defined acceptable levels following a\ndisruptive incident\nBusiness Continuity Planning (BCP)\n• The process of creating systems of prevention and recovery to\ndeal with potential threats to a company\nBCP Analysis\n• Business Impact Analysis\n• Business Threat Analysis\n• Business Impact Scenarios"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 38",
+    "output": "Disaster Recovery\nPart of the BCP which involves a set of policies, tools\nand procedures to enable the recovery or continuation\nof vital technology infrastructure and systems\nfollowing a natural or human-induced disaster.\nElements of a DR Plan\nBusiness\nRisk Backup Testing and\nDR Team Critical Asset\nEvaluation Strategy Optimization\nIdentification\n\nBackup Strategy\nA backup, or data backup is a copy of computer data taken and stored\nelsewhere so that it may be used to restore the original after a data\nloss event.\nBack up is the process of taking a backup.\nBackup Methods\n• Full backup\n• Incremental\n• Differential\n• Near Continuous Data Protection\n\nDR Tiers\nTier 0\nNo off-site data\nTier 1\nData backup, no hot site\nTier 2\nData backup with hot site\nTier 3\nElectronic Vaulting\nTier 4\nPoint in time copies\nTier 5\nTransaction integrity\nTier 6\nZero or little data loss\nTier 7\nHighly automated, business-integrated solution"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 39",
+    "output": "Recovery Objectives\nRecovery Time Objective (RTO)\n• Targeted period in which a business process must be restored\nafter a disaster.\nRecovery Point Objective (RPO)\n• Targeted period in which a data loss is acceptable due to a\ndisaster.\nRecovery Consistency Objective (RCO)\n• The amount of data inconsistency that an organization is willing\nto tolerate in a recovered data set.\n\nAvailability\nScalability Reliability\nCloud\nComputing\n\nCloud Security &\nMonitoring\nIT4090 – Cloud Computing\n\nSoftware Defined Security\nIt is a software-managed, policy-\nSoftware-defined security (SDS) is\ndriven and governed security\na type of security model in which\nwhere most of the security\nthe information security in a\ncontrols such as intrusion\ncomputing environment is\ndetection, network segmentation\nimplemented, controlled and\nand access controls are automated\nmanaged by security software.\nand monitored through software."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 40",
+    "output": "PLOP is an information security\nThe Principal\nconcept\nof Least\nPrivilege\nA user or a process should only be\n(PLOP)\ngranted privileges that are essential\nto perform its intended function.\n\nIAM solves the Principal of Least Privileges\nIdentity and\nAccess\nIAM is a framework of policies and\ntechnologies to ensure users/process have the\nManagement\nappropriate access to technology resources.\n(IAM)\nIAM is used to identify, authenticate and\nauthorize users/processes who/which will be\nutilizing these technology resources.\n\nIAM Components\nLogical Organization Users Groups\n• The logical boundaries and • Users/applications/services • Collection of users\noperating domains for a given within the logical organization • Does not have security\nuser/process. which needs to access credentials\nresources.\n• Has its own security credentials\n• Can be part of one or more\ngroups\n• By default no permission to do\nanything"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 41",
+    "output": "IAM Components\nPolicies Roles\n• Collection of permissions. • Main component of Role Based Access\nControl\n• Permissions determine whether a\nrequest is allowed or denied • Collection of policies\n• Roles can be assumed by users/services\n• When assumed, it gives you with\ntemporary security credentials for your\nrole session\n\nFactors\nAn electronic\n•Something the user has\nauthentication method in\nMulti Factor\n•Security token, smart card\nwhich a user is granted\n•Something the user knows\naccess to a system only\nAuthentication\n•Password, PIN\nafter successfully\n•Something the user is\npresenting two or more\n(MFA) •Biometrics (fingerprint, face,\npieces of evidence (or voice, iris)\nfactors) to an •Somewhere the user is\nauthentication mechanism. •GPS location"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 42",
+    "output": "A Federated Identity is an electronic identity linked and stored across\nmultiple identity management systems\nFederated\nIf we use multiple identities across multiple systems, it will be tedious to\nIdentity & maintain different user IDs and passwords.\nSingle Sign\nSSO is a way of providing users to move between multiple systems without\nOn\nlogging in to each one, through one verified identity\nTwo types of identity federations\nEnterprise Identity Federation Web Identity Federation\n\nTypes of Encryption\nSymmetric Key Asymmetric Key Hashing\nEncryption -\nStages of Data Encryption\nRecap\nData in Use Data in Transit Data at Rest\nClient Side vs Server Side Encryption\n\nCloud Security Risks & Threats\nPoor Access Data Breach /\nMisconfiguration Insecure APIs\nManagement Leak / Loss\nAccount DoS / DDoS\nLack of Visibility\nHijacking Attacks"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 43",
+    "output": "Cloud Security Risks & Threats\nPoor Access Data Breach /\nMisconfiguration Insecure APIs\nManagement Leak / Loss\nAccount DoS / DDoS\nLack of Visibility\nHijacking Attacks\n\nExample Services\nManual or\nCloud monitoring is • Datadog\nautomated\na method of • AppDynamics\nmanagement\nMonitoring in\nreviewing, • Azure Monitor\ntechniques confirm\n• Amazon CloudWatch\nobserving, and\nthe availability and\nmanaging the\nCloud\nperformance of\noperational\nwebsites, servers,\nworkflow in a\napplications, and\ncloud-based IT\nother cloud\ninfrastructure.\ninfrastructure.\n\nMetrics, Events & Logs\nMetrics Events Logs\n• Raw data about resource • Events are generated by • Provide information about\nusage or behaviour systems when something what systems have been\nhappens doing\n• Collected via a monitoring\nagent • Captures what happened, • Extremely valuable in\nwhere it happened, when troubleshooting\n• Ex:- Details on CPU,\nit happened etc.\nmemory, disk space usage\n• Ex:- events from\nautomation tools"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 44",
+    "output": "Alerts\nReactive element of the monitoring system\nTriggers actions based on changes in metrics / events / logs\nTypes of alerts\n•Threshold based alerts\n•Anomaly detection based alerts\n•Heartbeat alerts\nAlert output types\n•Notifications\n•Automated Actions\n\nCloud Database &\nAnalytics Services\nIT4090 – Cloud Computing\n\nDatabase Models\nRelational/SQL Non-relational/No-SQL\n• Highly structured table organization • Document oriented\n• Rigidly-defined formats • Large and complex queries\n• Dependencies among tables • Supports rapidly changing designs\n• Enforce ACID (Atomicity, Consistency, Isolation, • Examples – MongoDB, Cassandra, CosmosDB,\nDurability) Redis, CouchDB, Aurora\n• Reduces anomalies, enforces integrity\n• Use SQL to access data\n• Examples – MS SQL, MySQL, Oracle,\nPostgreSQL, Amazon RDS"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 45",
+    "output": "Database Workloads\nOnline Transaction Processing Online Analytical Processing\n(OLTP) (OLAP)\nFocus is on operational data Focus is on historical data\nData analysis and reporting\nTransaction processing\nLarge, complex queries\nSmall, simple ad-hoc queries\nData warehouses\nResponse in milliseconds\nResponses times from seconds to hours\nHighly normalized Typically denormalized\n\nRelational / OLTP Relational /\nOLAP\n•Relational\nDatabases\n•Relational Analytics\n•Oracle, PostgreSQL,\n•Oracle, PostgreSQL,\nMS SQL, MySQL\nDatabase MS SQL, MySQL\nModels &\nWorkloads\nNon-relational / Non-relational /\nOLAP OLTP\n•Big-data Analytics •Key-value,\n•Hadoop, HDInsight Columnar,\nDocuments\n•MongoDB.\nCassandra. Riak"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 46",
+    "output": "Non-relational / No-SQL Databases\nKey-Value Document Store Columnar Graph\n• Indexed keys and • Store data in • Optimized to • Presents\nvalues documents (XML, retrieve columns of interconnected data\nJSON etc.) data as logical graphs\n• Use case – session\ndata, shopping cart • Schema less • Use case –CMS, • Focus on\nBlogging platforms relationships\n• Documents contain\nkey-value pairs\n• Use case – E-\ncommerce, analytics\n\nNon-relational / No-SQL Databases\nComparison\nTYPES FLEXIBILITY COMPLEXITY PERFORMANCE SCALABILITY\nKEY-VALUE STORE High None High High\nCOLUMN SOTRE Moderate Low High High\nDOCUMENT High Low High Variable (High)\nGRAPH DB High High Variable Variable\n\nCAP\nTheorem\n\nDatabase Caching\nCaching is a buffering technique that\nstores frequently requested data in\ntemporary memory. Facilitates data\naccess and reduces database workloads.\n• Redis\nTwo popular caching systems\n• Memcached"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 47",
+    "output": "Redis vs Memcached\nRedis Memcached\n• Open source, in-memory, key-value data • Open source, in-memory, object store\nstore\n• Sub-millisecond response times\n• Sub-millisecond response times\n• Supports strings and objects\n• Supports various data structures (strings,\n• Not persistent – cache does not survive\nlists, sets etc.)\nreboots\n• Persistent – cache survives reboots\n• Supports scaling out, multithreading\n• Supports read replicas, atomic operations,\nbackup/restore, HA"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 48",
+    "output": "Data Warehouse\nTwo approaches\nA data warehouse is Data in a data\nData warehouses are\na type of data warehouse is • ETL –Extract,\nintended for A repository for\nTransform, Load (Source\nmanagement system typically derived\nquerying and analysis structured, filtered -> Staging ->\ndesigned to enable from a wide variety\nDestination)\nonly and often data that has already\nand support business of sources such as\n• ELT –Extract, Load,\ncontain large been processed for a\nintelligence (BI) application log files Transform (Source ->\namounts of historical specific purpose\nactivities, especially and transaction Destination)\ndata.\nanalytics. applications.\n\nData Lake\nA data lake is a storage While a hierarchical data\nrepository that holds a warehouse stores data in\nlarge amount of raw data files or folders, a data lake\nin its native format until it uses a flat architecture to\nis needed. store the data."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 49",
+    "output": "Data Warehouse vs Data Lake\nData Warehouse Data Lake\n• Processed data • Raw data\n• Data currently in use • Purpose of data not\ndetermined yet\n• Used by business\nprofessionals • Used by data scientists\n\nReal Time Data Processing\nReal-time data processing The processing is done as\nis the quickest data the data is inputted, so it\nprocessing technique that needs a continuous stream Also known as stream\nexecutes data in a short of input data in order to processing.\nperiod of time and provides provide a continuous\nthe most accurate output. output.\n\nCloud Migrations\nIT4090 – Cloud Computing\n\nCloud\nMigration\nThe movement\nof a meaningful\nportion of your\norganization’s\nexisting IT assets\nto the cloud.\n\nMigration Process"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 50",
+    "output": "Cloud Migrations\nIT4090 – Cloud Computing\n\nCloud\nMigration\nThe movement\nof a meaningful\nportion of your\norganization’s\nexisting IT assets\nto the cloud.\n\nMigration Process\n\nOpportunity Evaluation\nWhat is the business case or the compelling event that will drive your\nmigration to the cloud?\nHardware\nDrive for\nrecycle/renewal Data center Gain more Global Mergers &\nstandardized\ntime lease expires productivity expansion Acquisitions\narchitectures\napproaches\n\nPortfolio Discovery & Planning\nTools\n• AWS Discovery Service\n• Azure Migrate Service\nWhat is in your What are the What will you How will you • 3rdParty Cloud Migration\nTools and Services\nenvironment? interdependencies? migrate first? migrate it?"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 51",
+    "output": "Designing, Migrating & Validating\nMigrating individual applications\nDesign, migrate and validate each application according to a migration strategy\nStart with a least complex applications and move towards more complex ones\nTesting and decommissioning old applications / hardware\nFull cutover to cloud, when everything is working as\nRunning parallel environments temporarily if needed Switching traffic, users and content partially\nexpected\n\nOperating\nOperating in cloud requires\nCan be considered as an Use the first set of\na modern operating model\nevergreen set of people, application migrations to\n• DevOps process and technology build the foundation of the\n• NoOps that constantly improves as modern operating model,\n• FinOps you migrate more and improve it\n• SecOps\napplications. continuously."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 52",
+    "output": "Cloud Migration Strategies\nGartner’s 5 R’s strategy Azure’s 4 R’s strategy AWS’s 6 R’s strategy\n• Rehost • Rehost • Rehost\n• Refactor • Refactor • Re-platform\n• Revise • Re-architect • Repurchase\n• Rebuild • Rebuild • Refactor / Re-architect\n• Replace • Retire\n• Retain\n\nAWS’s 6 R’s cloud migration strategy\n\nRehost\nKnown as lift-and-shift\nDoes not require application / code changes\nMigrate applications as-is to cloud\nOptimize, re-architect applications once they are in cloud\n\nRe-platform\nKnown as lift-tinker-and-shift\nMigrating to a different platform without changing the core architecture of the\napplication\n• Migrating web sites from VMs to PaaS (i.e. Azure App Service, Amazon Elastic Beanstalk etc.)\n• Migrating databases from VMs to PaaS (i.e. Amazon RDS, Azure SQL etc.)\n• Changing the platform of databases (i.e. from Oracle to PostgreSQL etc.)\n• Changing the platform of application logic (i.e. from Oracle WebLogic to Apache Tomcat etc.)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 53",
+    "output": "Repurchase\nMoving to a different platform, mainly to a SaaS platform\nMoving a CRM to Salesforce.com\nMoving an HRIS to Workday\nMoving a CMS to SharePoint\n\nRefactor / Re-architect / Rebuild\nGet the optimal usage of cloud\nnative features to improve\nTypically includes migrating\nRe-imagining how the application •Application performance\nmonolithic applications to a\ncan be architected and developed •Scalability\nservice-oriented or server-less\nusing cloud native features. •Addition of new features\narchitecture\n•Agility\n•Business continuity\nTends to be the most expensive\nmigration strategy\n\nRetire\nGet rid of applications that are no longer useful and can be turned off.\nMore attention to important applications\nReduce the security risks\nCost savings\n\nRetain\nRevisit migrating these applications later, or do nothing for now.\nRecently purchased / upgraded applications that cannot be migrated at this point\nSunsetting applications\nLow priority applications"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 54",
+    "output": "Cloud Migration Challenges\nCost of Migration Resistance to Adapt Shortage of Skills\n• Focus on planning • Get the leadership • Invest in expert\nbuy-in training and resources\n• Follow a incremental\nadaptation process • Choose intuitive tech • Build a culture of\nsolutions continuous learning\n• Use a hybrid cloud\napproach • Get help from vendors\nto skill up inhouse\nresources\n\nCloud Native Applications\nIT4090 – Cloud Computing\n\nMonolithic Architecture\nTraditional way of building applications\nBuilt as a single and indivisible unit\nUsually contains\n• A client-side UI\n• A server-side application\n• A database\n• A middleware\n\nMonolithic Architecture\nStrengths Weaknesses\n• Less cross-cutting concerns • Too complex to understand\n(i.e. handling functions like\n• Challenging to make\nlogging, caching,\nchanges\nmonitoring etc.)\n• Cannot scale components\n• Easier debugging and\nindependently\ntesting\n• Difficult to apply new\n• Simple to deploy\ntechnologies / features\n• Simple to develop"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 55",
+    "output": "Microservices Architecture\nBreaks down an application into a collection of smaller independent units (microservices)\nThese units carry out every application process as a separate service\nMicroservices are built as independently deployable modules\nMicroservices communicate with each other through pre-defined methods / APIs\nEach service can be updated and scaled independently\n\nMicroservices Architecture\nStrengths Weaknesses\n• Independent components • Extra complexity of a\ndistributed system\n• Easier understanding\n• Cross-cutting concerns\n• Better scalability\n• Harder to debug and test\n• Flexibility in choosing the\ntechnology\n• Higher level of agility"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 56",
+    "output": "Monolithic application approach Microservices application approach\n• A monolithic app contains domain App 1 App 1 App 2\n• A microservice application\nspecific functionality and is\nseparates functionality into\nnormally divided by functional\nseparate smaller services.\nlayers such as web, business and\ndata\n• Scales out by deploying each service\n• Scales by cloning the app on multiple\nindependently creating instances of these services\nservers/VMs/Containers\nacross servers/VMs/containers\n\n\n\nstateless\npresentation\nservices\nstateless\nservices\nstateful\nservices\nstateless services with\nseparate stores\n\nA Node Cluster\nApp1\nApp2\n\nHandling node failures\nApp1\nApp2\n\nStateful microservices\nApplication\nPackage\nreplication replication"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 57",
+    "output": "A Node Cluster\nApp1\nApp2\n\nHandling node failures\nApp1\nApp2\n\nStateful microservices\nApplication\nPackage\nreplication replication\n\nCluster Resource Manager\n12 Node Cluster\n6 in America, 6 in Europe; 2 FE & 4 BE in each Datacenter\n4\n1 2 3\n• 4 Instances,\n#1 #2 #7 #8\nFE=true Continent: America Continent: America Continent: Europe Continent: Europe\nFrontEnd: true FrontEnd: true FrontEnd: true FrontEnd: true\n• 3 Instances, Disk: 100GB Disk: 100GB Disk: 100GB Disk: 100GB\nC=America,\nFE=false\n1 2 1\nD=50GB\n#3 #4 #9 #10\nContinent: America Continent: America Continent: Europe Continent: Europe\n• 3 Instances, FrontEnd: false FrontEnd: false FrontEnd: false FrontEnd: false\nC=America, Disk: 100GB Disk: 100GB Disk: 100GB Disk: 100GB\nFE=false,\nD=50GB 3 2 3\n#5 #6 #11 #12\nContinent: America Continent: America Continent: Europe Continent: Europe\n3• D=100GB\nFrontEnd: false FrontEnd: false FrontEnd: false FrontEnd: false\nDisk: 100GB Disk: 100GB Disk: 100GB Disk: 100GB"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 58",
+    "output": "Cloud Native Computing\nCNCF defines cloud native\ncomputing more narrowly\nModern approach of Pioneered by a group of Cloud Native Computing focusing on containerization\nbuilding applications that companies commonly Foundation (CNCF) focuses\n• Cloud-native technologies\nexploits the flexibility, referred as “born in the on making cloud native\nempower organizations to build\nscalability and resilience of cloud” (ex:- Netflix, Spotify, computing available and run scalable applications in\nmodern, dynamic environments\ncloud computing. Uber, Airbnb etc.) everywhere\nsuch as public, private, and\nhybrid clouds.\n\n12 Factor App\n12-factor app is a\nmethodology or a set of\nThis methodology was\nprinciples for building Aligns with principles of\nintroduced by developers at\nscalable, performant, microservice architecture\nHeroku\nindependent, resilient\nenterprise applications."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 59",
+    "output": "12 Factor App\n•There should be exactly •All dependencies should •Configuration that varies •All backing services are •The delivery pipeline •Applications should be\none codebase for a be declared, with no between deployments treated as attached should strictly consist of deployed as one or more\ndeployed service with implicit reliance on should be stored in the resources and attached build, release, run. stateless processes with\nthe codebase being used system tools or libraries. environment. and detached by the persisted data stored on\nfor many deployments. execution environment. a backing service.\nCodebase Dependencies Backing services Build, release, Processes\nConfig\nrun\n•Self-contained services •Concurrency is •Fast startup and •All environments should •Applications should •Any needed admin tasks\nshould make themselves advocated by scaling shutdown are advocated be as similar as possible. produce logs as event should be kept in source"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 60",
+    "output": "should make themselves advocated by scaling shutdown are advocated be as similar as possible. produce logs as event should be kept in source\navailable to other individual processes. for a more robust and streams and leave the control and packaged\nservices by specified resilient system. execution environment with the application.\nports. to aggregate.\nPort binding Concurrency Disposability Dev/Prod parity Admin Processes\nLogs"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 61",
+    "output": "Cloud Native Tools\nCloud Delivery Model • The way of provisioning, consuming and managing resources\n• Public or private cloud solution\nContainers • Makes applications more manageable\n• Can provide innovative solutions around design, scaling, security, resiliency etc.\nMicroservices\n• Collection of services, each performing a specific business function.\nService Mesh • Manages complex service-to-service communication\n• Scalable, secure, fast and reliable\nOrchestration\n• Manages provisioning, deploying, operating and scaling of containerized microservices.\n\nCloud Native Practices\nDevelopment and Operations - DevOps\nSite Reliability Engineering - SRE\nNo IT Operations - NoOps\nContinuous Integration - CI\nContinuous Delivery and Deployment - CD\n\nDevOps\n\nSRE\nGoogle has defined a model\ncalled Site Reliability\nEngineering (SRE) as a\ncollection of best practices\nfor any digital business that\ntakes contemporary\ncircumstances on the highly\ncompetitive market as\nseriously as they should."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 62",
+    "output": "NoOps\nDevOps practitioners are no longer required to take care of\noperations and may concentrate on software development.\nCan be achieved as everything that could be automated is\nalready automated.\n\nCD\nThe practice of automating the integration\nof code changes from multiple\ncontributors into a single software project.\nAllows developers to frequently merge\nCI code changes into a central repository\nwhere builds and tests then run.\nAutomated tools are used to\nassert the new code’s\ncorrectness before integration."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 63",
+    "output": "CD\nA software release process that uses automated testing to validate if changes to a codebase are\ncorrect and stable for immediate autonomous deployment to a production environment.\nAllows engineering organizations to focus on core business needs instead of\ninfrastructure overhead.\nCD\nContinuous Delivery\n•Developers will review and merge code changes that are then packaged into an artifact.\n•This package is then moved to a production environment where it awaits approval to be opened for\ndeployment.\nContinuous Deployment\n•The package is opened and reviewed with a system of automated checks.\n•If the checks fail the package is rejected.\n•When the checks pass, the package is automatically deployed to production.\n\nCICD Tools & Services\nJenkins GitLab GitHub Bitbucket\nCircleCI TeamCity Bamboo Travis CI"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 64",
+    "output": "CICD Tools & Services\nJenkins GitLab GitHub Bitbucket\nCircleCI TeamCity Bamboo Travis CI\n\nCICD Tools & Services - Cloud\nAzure DevOps Services AWS DevOps Services Google DevOps Services\n• Azure Boards • AWS CodePipeline • Cloud Build\n• Azure Pipelines • AWS CodeBuild • Artifact Registry\n• Azure Repos • AWS CodeDeploy • Binary Authorization\n• Azure Test Plans • AWS CodeStar • Tekton\n• Azure Artifacts • Spinnaker\n• Operations Suite\n\nApplication Modernization\nThe refactoring, re-purposing or consolidation of legacy software\nprogramming to align it more closely with current business needs.\nThe goal is to create new business value from existing applications.\n\nApplication Modernization Journey\nRearchitect/Rebuild\nRehost\n1 2 3 4 5\nTraditional Existing app hosted Existing application + Parts of existing Transformed\napp as container or new microservices application microservices\nexecutable rearchitected application"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 65",
+    "output": "“Infrastructure as code is a methodology where infrastructure\nis provisioned and managed using code and software\ndevelopment techniques such as version control, continuous\nintegration and delivery.”\n\n\n\nWhy Infrastructure as Code (IaC)?\n● With the use of public cloud, we create, destroy and modify infrastructure as never\nbefore compared to the days of managing and owning a physical data center\ninfrastructure. This makes it difficult to keep track of the changes.\n● With Agile software development methodologies, application development and\ndelivery happens fast, so should the infrastructure as things evolve and business\ngoals change.\n● Default infrastructure provided by cloud providers are normally not sufficient for\nrunning applications, more configurations are needed. Sometimes same\nconfiguration in 1000+ servers which is unmanageable manually.\n● Infrastructure management has become a large and tedious task."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 66",
+    "output": "Infrastructure as Code Categories\nApplication Configurations\nOperating System and Host\nConfigurations\nCloud Provider Configurations\n\nWhat type of Infrastructure?\nCloud Provider Configurations OS/ Host based Configurations Application Configurations\nAWS EC2, GCP Compute OS based Firewalls, Application\nEngine, Azure Virtual OpenSSH, LDAP, dependencies,\nMachines, Digitalocean Container Demons, Management/\nDroplet, AWS S3, Load System Metrics, System Automation Scripts, DB\nBalancers (ELB/ ALB) Logging, Deployment credentials, Container\netc… agents etc… tasks/services etc…\n(Different services\nprovided by Cloud\nProviders)\n\ninfrastructureConfigs == $code\n\nCloud Provider Configuration Category - Tool\nStack\nAWS CloudFormation (AWS Only),\nCloud Provider Configurations\nHarshicorp Terraform (All Cloud\nProviders)\n\n\n\nOperating System and Host Configuration\nCategory - Tool Stack\nAnsible, Chef, Puppet, Salt, Harshicorp\nOperating System and Host Configurations Packer etc.."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 67",
+    "output": "Operating System and Host Configuration\nCategory - Tool Stack\nAnsible, Chef, Puppet, Salt, Harshicorp\nOperating System and Host Configurations Packer etc..\n\nApplication Configurations Category - Tool\nStack\nAWS CodeDeploy (AWS Only), Azure\nApplication Configurations Container Service (Azure Only), GKE\n(Google Kubernetes Engine- GCP Only),\nSwagger, AWS Lambda etc.."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 68",
+    "output": "Benefits of IaC (Infrastructure as Code)\n● Define infrastructure and its configurations in centralized place which makes it\neasy to understand and manage.\n● Track changes happened over time and the person who made the change for a\nparticular property in infrastructure, over version control. - This makes it easy to\nisolate any configuration issue related with infrastructure.\n● Easier to manage multiple environments and have proper life cycle of\ninfrastructure changes. - Ex - Move infrastructure configurations after testing for\nDev environment to staging and then into production.\n● Automate infrastructure deployment once IaC is in repository via CD pipeline tool."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 69",
+    "output": "Benefits of IaC (Infrastructure as Code)\n● Automating the infrastructure provisioning tasks allows engineers to work on\nmore important tasks that will bring more value to the business and it will also\nincrease their productivity.\n● Minimizes the risk of missing out important infrastructure configurations and\nallows wider audience within a organization to have an idea about the\ninfrastructure and its configurations as IaC acts as a form of documentation of the\nunderlying infrastructure and many other configurations.\n● Allows to bring in DevOps practices within the organization as Developers +\nOperations teams should equally contribute and have an idea across all the IaC\ntiers."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 70",
+    "output": "How to choose correct IaC tool?\n● Do your research and which Infrastructure category you need to convert into IaC.\nIn reality most of the IaC tools can be used to achieve results across all the 3 tiers.\n● Choose a single IaC tool for managing each infrastructure category.\n● Start small, do a POC (Proof of Concept), i.e\n○ ManagingAWSAutoscaling groupswithHarshicorp Terraform.\n○ Managedevelopment team’s individual SSHkeysandaccess toserverswithAnsible\n● Most importantly find tools that aligns with your requirement and team’s\npreference. At the end of the day using IaC tools to manage your infrastructure\ntiers will be done by both of your development and operations team members.\n\n-\nManaging AWS Cloud Configurations With Hashicorp Terraform Demo\nGitHub Repo - https://github.com/rav94/aws-alb-terraform\n\nThank You!\n\nDevOps & Cloud Unpacked: Exploring\nContainers and Code-Driven\nInfrastructure\nRavindu Nirmal Fernando\nSLIIT - 21/10/2023"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 71",
+    "output": "Thank You!\n\nDevOps & Cloud Unpacked: Exploring\nContainers and Code-Driven\nInfrastructure\nRavindu Nirmal Fernando\nSLIIT - 21/10/2023\n\nAbout Me\nHead of DevSecOps @ Emojot Inc.\nMSc in Computer Science specialized in\nCloud Computing (UOM)\nAWS Certified Solutions Architect -\nProfessional\nCertified Kubernetes Administrator\n(CKA)\nAWS Community Builder | DevOps LK |\nRavindu Nirmal Fernando FOSS LK\nhttps://ravindunfernando.com\n\nSession 01 - DevOps\nUnderstanding DevOps - Why? How? What?\nDevOps Practices\nDevOps Tools and Technologies\nSession 02 - The world of Containers\nBrief history of Infrastructure Shifts over decades\nIntroduction to Containers/ Containers vs VMs\nIntroduction to Docker/ Docker Compose\nIntroduction to Container Orchestration with Docker\nAgenda\nSwarm & Kubernetes\nSession 03 - Infrastructure As Code\nIntroduction to IaC\nIntroduction to Ansible\nIntroduction to Terraform\n\nSession 01 - DevOps\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 72",
+    "output": "Session 01 - DevOps\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan\n\nDevelopers Operators\nFocused on Agility Focused on Stability\n\n\"Destructive downward spiral in IT\" - Gene Kim\nAct 02 - The product\nAct 01 - Operations teams\nmanagers\nmaintaining large fragile\nLarger, unrealistic commitments\napplications\nmade to the outside world (client/\nDoesn't have any visibility on the\ninvestors) without understanding\napplication, whether or not its\nthe complexities behind\nworking as expected\ndevelopment and operations\nAct 04 - Dev and Ops at war\nAct 03 - The Developers\n\"It worked on my machine\"\nDevelopers taking shortcuts and\nphenomenon\nputting more and more fragile\ncode on top of existing ones\n\nHow can we\novercome\nthese issues?"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 73",
+    "output": "How can we\novercome\nthese issues?\n\n“DevOps is the combination of cultural philosophies, practices, and tools\nthat increases an organization’s ability to deliver applications and services\nat high velocity”\n- What is DevOps? [AWS] -\n“A compound of development (Dev) and operations (Ops), DevOps is the\nunion of people, process, and technology to continually provide value to\ncustomers.”\n- What is DevOps? [Azure] -\nDevOps allows evolving and improving products at a faster pace than businesses\nusing traditional software development and infrastructure management processes.\nThis speed allows businesses to serve their customers better and compete effectively."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 74",
+    "output": "Key Areas in DevOps\nReduce Organizational\nSilos Accept Failure as Normal\nEveryones shares the ownership of Blameless PMs/ RCA. Risk taking\nproduction and information is mindset.\nshared among everyone\nImplement Gradual\nLeverage Tooling and\nChanges\nAutomation\nFrequent deployments, frequent\nAutomate and reduce manual\ndeterministic releases in small\nwork as much as possible\nchunks which can be rolled back\nMeasure Everything\nApplication, systems monitoring\nand metrics etc...\n\nDevOps\nPractices"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 75",
+    "output": "DevOps\nPractices\n\nContinuous Integration (CI) - Software development practice where developers\nregularly merge their code changes into a central repository, after which automated\nbuilds and tests are run.\nContinuous Delivery (CD) - Software development practice where code changes are\nautomatically built, tested, and prepared for a release to production (automated\ncode change deployment to staging/ pre-production system).\nContinuous Deployment (CD) - Every change that passes all stages of the pipeline will\nbe deployed into production (released to customers). This practice fully automates\nthe whole release flow without human intervention and only a failed test will prevent a\nnew change being deployed.\nMicroservices - The microservices architecture is a design approach to build a single\napplication as a set of small services with each focusing on SRP. Each service can be\ncreated, deployed and run independently."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 76",
+    "output": "Infrastructure as Code - A practice in which infrastructure is provisioned and\nmanaged using code and software development techniques, such as version control\nand continuous integration.\nConfiguration Management\nPolicy as Code\nCloud Infrastructure - Cloud provides more flexibility, scalability and toolsets for\norganizations to implement DevOps culture and practices. Serverless architecture in\ncloud brings down the efforts of DevOps teams as it eliminates server management\noperations.\nContinuous Monitoring, Logging and Alerting - Organizations monitor metrics and logs\nto see how application and infrastructure performance impacts the experience of\ntheir product’s end user. Combined with real time alerts organizations can do a real\ntime analysis on the application status.\n\nDevOps Tools\nand\nTechnologies\n\n\n\n\n\nSession 02 - The World of Containers\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan\n\nSession 03 - Infrastructure as Code\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 77",
+    "output": "Session 02 - The World of Containers\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan\n\nSession 03 - Infrastructure as Code\n500K+\n350K+\n150K+\nActive Users\nFree Plan\nPro Plan\n\nLinkedIn\nhttps://www.linkedin.com/in/ravindufernando/\nX (Twitter)\n@ravindunf\nThank You!\n\nAGENDA\n•\nBrief History – Infrastructure shifts over the decades\n•\nVMs vs Containers\n•\nWhat are containers and what problem does it solve?\n•\nWhat is Docker?\n•\nDeep dive into Docker Internals\n•\nDemo\n\nBRIEF HISTORY – INFRASTRUCTURE SHIFTS OVER\nTHE DECADES\nMainframe to PC\n90’s\nBaremetal to Virtual\nLet’s Recap 00’s\nMAJOR INFRASTRUCTURE SHIFTS\nDatacenter to Cloud\n10’s\nHost to Container (Serverless)\nNow\n\nVM CONTAINERS\nS VS\nAPP 1 APP 2 APP 3\nBins/ Libs Bins/ Libs Bins/ Libs\nAPP 1 APP 2 APP 3\nGuest OS Guest OS Guest OS\nBins/ Libs Bins/ Libs Bins/ Libs\nHypervisor (Type 2) Container Engine\nHost Operating System Host Operating System\nInfrastrucutre Infrastrucutre\n-Virtual Machines- -Containers-"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 78",
+    "output": "WHAT ARE CONTAINERS AND WHAT PROBLEMS\nDOES IT SOLVE?\n\nMATRIX FROM HELL INCREASES THE COMPLEXITY\n\nCONTAINERS REDUCES THE COMPLEXITY\n\nIN SUMMARY A CONTAINER IS,\n•\nJust an isolated process running on the host machine. And a restricted process.\n•\nWill share OS and, where appropriate, bins/ libraries and limited to what\nresources it can access.\n•\nIt exits when the process stops.\n“Containers are the next once-in-a-decade shift in IT infrastructure and process”\n\nWHAT IS DOCKER?\n\n•\nSo what’s Docker? – In 2023, Docker means lot’s of things, let’s just clear\nthings out.\n•\nDocker as a “Company”\n•\nDocker as a “Product”\n•\nDocker as a “Platform”\n•\nDocker as a “CLI tool”\n•\nDocker as a “Computer Program”"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 79",
+    "output": "WHAT IS DOCKER?\n•\nDocker provides the ability to package and run applications within a loosely\nisolated environment which is a a container. Simply it’s a container engine.\n•\nIt provides tooling and a platform to manage lifecycle of your containers,\n• Develop your apps and supporting components using containers\n• Distribute and test your apps as a container\n• Ability to deploy your app as a container or an orchestrated service, in whatever environment which supports Docker\ninstallation\n•\nIt shares the same OS kernel\n•\nIt works on all major Linux Distributions and containers native to Windows\nServer (specific versions)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 80",
+    "output": "UNDERLYING TECHNOLOGY IN DOCKER\n•\nDocker is an extension of LXC’s (Linux Containers) capabilities and packaged\nit in a way which is more developer friendly.\n•\nIt was developed in Go language and utilizes LXC, namespaces, cgroups and\nthe linux kernel itself. Docker uses namespaces to provide the isolated\nworkspace called a container. Each aspect of a container runs in a separate\nnamespace and its access is limited to this namespace.\n\n\n\nBASIC DOCKER COMMANDS\n\n•\nDocker CLI structure,\n•\nOld (Still works as expected) docker <command> options\n•\nNew – docker <command> <sub-command> (options)\n•\nPulling Docker Image\n•\ndocker pull nginx\n•\nRunning a Docker Container\n•\ndocker run –p 80:80 --name web-server nginx\n•\nStopping the Container\n•\ndocker stop web-server (or container id)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 81",
+    "output": "•\nCheck what’s happening in a containers,\n•\ndocker container top web-server – Process list in 1 container\n•\ndocker container inspect web-server – Details of one container config\n•\ndocker container stats – Performance stats for all containers\n•\nGetting a shell inside containers,\n•\ndocker container run –it – Start a new container interactively\n•\ndocker container exec –it <container_id_or_name> echo “I’m inside the container” – Run additional\ncommands in the container\n•\nListing, removing containers and images\n•\ndocker images\n•\ndocker container ls | docker ps\n•\ndocker <object> rm <id_or_name>\n\nDEEP DIVE INTO DOCKER INTERNALS\n\nDOCKER ARCHITECTURE"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 82",
+    "output": "DEEP DIVE INTO DOCKER INTERNALS\n\nDOCKER ARCHITECTURE\n\nWHAT HAPPENS WHEN YOU RUN A CONTAINER?\n•\ndocker run –p 80:80 nginx | docker container run –p 80:80 nginx\n1.\nLooks for that particular image locally in image cache, if its not found pulls it from the\nconfigured registry (image repository). Downloads the latest version by default\n(nginx:latest)\n2.\nCreates a new container based on that image and prepares to start\n3.\nDocker allocates read write filesystem to the container, as its final layer. This allows running\ncontainer to modify files and directories in its local filesystem.\n4.\nGives it a virtual IP on a private network inside docker engine\n5.\nOpens up port 80 on host and forwards to port 80 in container.\n6.\nStarts container by using the CMD in the image Dockerfile."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 83",
+    "output": "DOCKER OBJECTS\n•\nDocker Images\n•\nA read-only template with instructions/ metadata for creating a Docker container.\n•\nCan create your own image or use images created and published in a registry by others.\n•\nDockerfile can be used to define steps required to create and run the image.\n•\nEach instruction in Dockerfile creates a layer in the image, only those layers which\nchanges each time are rebuilt – What makes images so lightweight, small and fast.\n\n•\nDocker Containers\n•\nRunnable instance of an image.\n•\nCan create, start, stop, move, or delete a container using the Docker API or CLI.\n•\nCan connect it to one or more networks, attach storage to it, or even create a new image\nbased on its current status.\n•\nA container is defined by its image as well as any config options provided to it when you\ncreate or start it. Note that when the container is removed any data associated with it\nwill be deleted unless those are not stored in a persistent storage."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 84",
+    "output": "UNDERSTANDING DOCKER IMAGES/ CONTAINERS\nINTERNALS\n•\nDocker Filesystem\n•\nBoot file system (bootfs) – Contains the bootloader and the kernel. User never touches\nthis.\n•\nRoot file system (rootfs) – Includes the typical directory structure we associate with Unix-\nlike OS."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 85",
+    "output": "•\nIn traditional Linux boot, kernel first mounts the rootfs as read-only, checks its integrity,\nand then switches the rootfs volume to read-write mode.\n•\nDocker mounts the rootfs and instead of changing the file system to read-write mode,\nit then takes advantage of union mounts service to add a read-write filesystem over\nthe read-only file system.\n•\nIn Docker terminology, a read-only layer is called an image. An image never changes\nand is fixed.\n•\nEach image depend on one more image which creates the layer beneath it. The lower\nimage is the parent of the upper image. Image without a parent is a base image.\n•\nWhen you run a container, Docker fetches the image and its Parent Image, and repeats\nthe process until it reaches the Base Image. Then the Union File System adds a read-write\nlayer on top.\n•\nThat read-write layer, plus the information about its Parent Image and some additional\ninformation like its unique id, networking configuration, and resource limits is called a\ncontainer"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 86",
+    "output": "•\nA container can have two states, it may be running or exited.\n•\nWhen a container is exited the state of the file system and its exit value is saved.\n•\nYou can start, stop, and restart a container. The processes of restarting a container from\nscratch will preserve its file system is just as it was when the container was stopped. But\nthe memory state of the container is not preserved.\n•\nYou can also remove the container permanently.\n•\nA container can also be promoted directly into an image using the docker commit\ncommand. Once a container is committed as an image, you can use it to create other\nimages on top of it.\n•\ndocker commit <container-id> <image-name:tag>"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 87",
+    "output": "•\nBased from the UFS, Docker uses a strategy called\nCopy on Write to improve the efficiency by\nminimizing I/O and the size of each subsequent\nlayers,\n•\nIf a file or directory exists in a lower layer within\nthe image, and another layer (including the\nwritable layer) needs read access to it, it just uses\nthe existing file.\n•\nThe first time another layer needs to modify the\nfile (when building the image or running the\ncontainer), the file is copied into that layer and\nmodified.\n\n•\nDocker Image Creation and Storage\n•\nYou can create an image using a Dockerfile or by committing a container’s\nchanges back to an image.\n•\nOnce you create an image, it will be stored in the Docker host’s local image\ncache.\n•\nIn order to move images in/out of the local image cache,\n•\nExport/ Import it as a tarball\n•\nPush/ pull to a remote image registry (ex - DockerHub)"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 88",
+    "output": "DOCKER OBJECTS CONT…\n•\nDocker Networks\n•\nEach container is connected to a private virtual network called “bridge”.\n•\nEach virtual network routes through the NAT firewall on the host IP.\n•\nAll containers on a virtual network can talk to each other without exposing ports.\n•\nBest practice is to create a new virtual network for each app.\n\n•\nDocker enables to:\n•\nCreate new virtual networks.\n•\nAttach container to more than one virtual network (or none)\n•\nSkip virtual networks and use host IP (--net=host)\n•\nUse different Docker network drivers to gain new abilities.\n•\nDocker Engine provides support for different network drivers – bridge (default), overlay and\nmacvian etc.. . You can even write your own network driver plugin to create your own one.\n•\nDocker Networking – DNS\n•\nDocker deamon has a built in DNS, which consider container name as equivalent hostname of\nthe container."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 89",
+    "output": "PERSISTENCE DATA\n•\nIf we want to use persistence data as in like databases or unique data in\ncontainers, Docker enables that using two ways,\n•\nVolumes – Make a location outside of container UFS.\n•\nBind Mounts - Link host path to the container path.\n\nDOCKER COMPOSE\n•\nAnother Docker client, that lets you work with apps consisting of a set of\ncontainers.\n•\nThis saves docker container run settings in easy to read file, which can be committed to\nVCS.\n•\nCan use this to create one-line development environments\n•\nConsists of two components\n•\nYAML formatted file that describes – Images, Containers, Networks, Volumes etc…\n•\nA CLI tool docker-compose used to automate/manage those YAML files\n\nHOW CAN WE RUN CONTAINERS AT SCALE?"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 90",
+    "output": "HOW CAN WE RUN CONTAINERS AT SCALE?\n\nCONTAINER ORCHESTRATION\n•\nContainer orchestration automates the deployment, management, scaling, and\nnetworking of containers.\n•\nContainer orchestration can be used in any environment where you use\ncontainers. It can help you to deploy the same application across different\nenvironments without needing to redesign it.\n\nINTRODUCTION TO DOCKER SWARM"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 91",
+    "output": "INTRODUCTION TO DOCKER SWARM\n\nDOCKER SWARM KEY CONCEPTS\n•\nDocker Swarm provides the cluster management and orchestration features of Docker Engine\n1.12\n•\nNodes - A node is an instance of the Docker engine participating in the swarm. You can also\nthink of this as a Docker node.\n•\nManager Node - To deploy your application to a swarm, you submit a service definition\nto a manager node. These nodes are also responsible for perform the orchestration and\ncluster management functions required to maintain the desired state of the swarm.\n•\nWorker Nodes - Receive and execute tasks dispatched from manager nodes. An agent\nwhich is running within the worker nodes report the current status of the tasks assigned to\nit which allows manager node to keep the desired state for each worker node."
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 92",
+    "output": "•\nTask -\nIt is the atomic scheduling unit of swarm. Manager nodes assign tasks to worker\nnodes according to the number of replicas set in the service scale.\n•\nService -\nthe definition of the tasks to execute on the manager or worker nodes. Here is\nwhere you specify which container image to use and which commands to execute inside\nrunning containers.\n•\nReplicated services model - the swarm manager distributes a specific number of\nreplica tasks among the nodes based upon the scale you set in the desired state.\n•\nGlobal services model - the swarm runs one task for the service on every available\nnode in the cluster.\n\n\n\n•\ndocker swarm init --advertise-addr <MANAGER-IP>\n•\nJoin a worker node - docker swarm join --token SWMTKN-1\n49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-\n8vxv8rssmk743ojnwacrr2e7c 192.168.99.100:2377\n•\ndocker service create --replicas 1 --name helloworld alpine ping docker.com\n•\ndocker service scale <SERVICE-ID>=<NUMBER-OF-TASKS>\n\nINTRODUCTION TO KUBERNETES"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 93",
+    "output": "INTRODUCTION TO KUBERNETES\n\nWHAT IS KUBERNETES?\n•\n“Kubernetes (k8s) is an open source platform for automating deployment, scaling and\nmanagement of containers at scale”\n•\nProject that was created by Google as an open source container orchestration\nplatform. Born from the lessons learned and experiences in running projects like Borg\nand Omega @ Google\n•\nIt was donated to CNCF (Cloud Native Computing Foundation) who now manages the\nKubernetes project\n•\nCurrent Kubernetes stable version – 1.28\n\nIT’S CAPABLE OF…\n•\nHorizontal scaling\n•\nLoad distribution\n•\nService discovery\n•\nHealth monitoring\n•\nDeploying new versions, rollbacks\n•\nHandling hardware faliures\n\nHIGH LEVEL ARCHITECTURE\n•\nMaster [Control Plane]\n•\ncoordinates all activities in the cluster\n•\nNodes:\n•\nvirtual or physical machines\n•\nactual workers\n•\nruns processes:\n•\nkubelet\n•\ncontainer runtime"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 94",
+    "output": "HIGH LEVEL ARCHITECTURE\n•\nMaster [Control Plane]\n•\ncoordinates all activities in the cluster\n•\nNodes:\n•\nvirtual or physical machines\n•\nactual workers\n•\nruns processes:\n•\nkubelet\n•\ncontainer runtime\n\nBASIC BUILDING BLOCKS\n• Containers\n• Define single running process*\n• Eg docker container\n• Pods\n• the way of running containers in kubernetes\n• basic deployable and scaling unit\n• defines one or more containers\n• containers are co-located on a node\n• flat network structure\n• Nodes:\n• physical worker machines\n• can run multiple pods\n• pods running within single node don’t know about each other"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 95",
+    "output": "RUNNING THINGS LOCALLY\n•\n• Docker Desktop with built-in\nMinikube:\nkubernetes:\n•\nsingle node cluster\n• running in a VM • single node cluster\n• supports linux, windows and macOS • running in a VM\n• mature project • windows and macOS\n•\ndrag & drop installation\n•\nkind: •\nbound to specific kubernetes\n• version\nRequires you to have Docker or\nPodman installed in your local\ncomputer\nhttps://kubernetes.io/docs/tasks/tools/\n\nMANAGING CLUSTER RESOURCES\n•\nCreate resource from file - kubectl create -f resource_file.yml\n•\nChange existing (or create) resource based on file - kubectl apply -f\nresource_file.yml\n•\nDelete existing resource - kubectl delete resource_type resource_name\n•\nList resources of type - kubectl get resource_type\n•\nEdit resource on the server - kubectl edit resource_type resource_name"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 96",
+    "output": "DEBUGGING CLUSTER RESOURCES\n•\nExecute command on the container - kubectl exec [-it] pod_name process_to_run\n•\nGet container logs - kubectl logs pod_name [-c container_name]\n•\nForward port from a pod - kubectl port-forward pod_name local_port:remote_port\n•\nPrint detailed description of a resource - kubectl describe resource_type\nresource_name\n\nFEW RESOURCE OBJECTS IN K8S\n•\nReplica Sets - Ensures desired number of pods exist by: scaling up or down and\nrunning new pods when nodes fail\n•\nDeployment\n•\nA Deployment provides declarative updates for Pods and ReplicaSets. You describe a desired\nstate in a Deployment, and the Deployment Controller changes the actual state to the desired\nstate at a controlled rate.\n•\nService\n•\nA medthod for exposing a network application that is running as one or\nmore Pods in your cluster.\n•\nCluster IP/ NodePort/ Load Balancer/ Ingress\n\n\n\nDEMO\n•\nDefining a Pod\n•\nCreating a ReplicaSet\n•\nCreating a Deployment\n•\nCreating a Service and exposing it\n\nQ/A"
+  },
+  {
+    "instruction": "Explain cloud computing concepts based on the lecture material.",
+    "input": "Topic section 97",
+    "output": "DEMO\n•\nDefining a Pod\n•\nCreating a ReplicaSet\n•\nCreating a Deployment\n•\nCreating a Service and exposing it\n\nQ/A\n\nREFERENCES\n• https://docs.docker.com/get-started/overview/\n• https://www.docker.com/blog/containers-and-vms-together/\n• https://www.redhat.com/en/topics/containers/containers-vs-vms\n• Docker Storage Drivers - https://docs.docker.com/storage/storagedriver/\n• https://docs.docker.com/storage/storagedriver/select-storage-driver/\n• https://www.youtube.com/watch?v=cjXI-yxqGTI\n• Docker Buildx - https://docs.docker.com/buildx/working-with-buildx/\n• Jiang Huan BuildKit timings - https://medium.com/titansoft-engineering/docker-build-cache-sharing-on-multi-hosts-with-\nbuildkit-and-buildx-eb8f7005918e\n• What is Docker BuildKit - https://brianchristner.io/what-is-docker-buildkit/\n\nTHANK YOU!\nLinkedIn - https://lk.linkedin.com/in/ravindufernando"
+  }
+]

@@ -7,7 +7,11 @@ from schemas.question import (
     QuestionType,
     Difficulty,
     ModelPaperConfig,
-    ModelPaperRequest
+    ModelPaperRequest,
+    EvaluateAnswerRequest,
+    EvaluateStructuredAnswerRequest,
+    ValidateSubmissionRequest,
+    SubmissionValidationResponse
 )
 
 router = APIRouter(prefix="/api/questions", tags=["Questions"])
@@ -193,4 +197,68 @@ async def generate_custom_paper(
         num_questions=num_questions,
         question_type=question_type,
         difficulty=difficulty
+    )
+
+
+@router.post("/evaluate/answer")
+async def evaluate_answer(request: EvaluateAnswerRequest):
+    """
+    Evaluate a user's answer against the model answer using LLM.
+    Provides scoring, feedback, and suggestions for improvement.
+    
+    - **question**: The question text
+    - **user_answer**: The user's submitted answer
+    - **model_answer**: The correct/model answer
+    - **question_type**: Type of question (short_answer, essay, structured, long_answer)
+    - **topic**: Topic of the question for context
+    """
+    return await controller.evaluate_answer(
+        question=request.question,
+        user_answer=request.user_answer,
+        model_answer=request.model_answer,
+        question_type=request.question_type,
+        topic=request.topic
+    )
+
+
+@router.post("/evaluate/structured-answer")
+async def evaluate_structured_answer(request: EvaluateStructuredAnswerRequest):
+    """
+    Evaluate a structured answer with parts (a), (b), (c) separately.
+    
+    - **question**: The question text
+    - **part_a_user**: Student's answer for part (a)
+    - **part_a_model**: Model answer for part (a)
+    - **part_b_user**: Student's answer for part (b)
+    - **part_b_model**: Model answer for part (b)
+    - **part_c_user**: Student's answer for part (c)
+    - **part_c_model**: Model answer for part (c)
+    - **topic**: Topic of the question for context
+    """
+    return await controller.evaluate_structured_answer(
+        question=request.question,
+        part_a_user=request.part_a_user,
+        part_a_model=request.part_a_model,
+        part_b_user=request.part_b_user,
+        part_b_model=request.part_b_model,
+        part_c_user=request.part_c_user,
+        part_c_model=request.part_c_model,
+        topic=request.topic
+    )
+
+@router.post("/validate-submission", response_model=SubmissionValidationResponse)
+async def validate_submission(request: ValidateSubmissionRequest):
+    """
+    Validate exam submission - checks answers using LLM.
+    
+    - **questions**: Array of questions with user answers
+    - **paper_type**: Type of paper (mcq, short_answers, essay, structured)
+    - **topic**: Main topic of the exam for context
+    
+    Returns validation results with any errors or warnings found.
+    """
+    return await controller.validate_submission(
+        questions=[dict(q) for q in request.questions],
+        paper_type=request.paper_type,
+        topic=request.topic
     )
