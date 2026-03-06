@@ -20,6 +20,53 @@ class QuestionController:
         self.pdf_extractor = PDFExtractor()
         self.cached_content = None
     
+    def _backend_root(self) -> Path:
+        """
+        Returns backend root directory.
+
+        controllers/question_controller.py -> parents[1] -> backend/
+        """
+        return Path(__file__).resolve().parents[1]
+
+    def _load_stored_content(self, source: str) -> str:
+        """
+        Loads extracted text JSON and returns combined content.
+        Looks for: backend/data/extracted_text_{source}.json
+        """
+        data_path = self._backend_root() / "data" / f"extracted_text_{source}.json"
+
+        if not data_path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail=f"No extracted content found for source: {source}. Expected file at: {data_path}"
+            )
+
+        try:
+            with open(data_path, "r", encoding="utf-8") as f:
+                pages = json.load(f)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to read extracted content file: {data_path}. Error: {str(e)}"
+            )
+
+        # Support both {"content": "..."} and {"output": "..."} just in case
+        content_parts = []
+        for page in pages:
+            if isinstance(page, dict):
+                content_parts.append(page.get("content") or page.get("output") or "")
+            else:
+                content_parts.append(str(page))
+
+        content = "\n\n".join([c for c in content_parts if c.strip()])
+
+        if not content.strip():
+            raise HTTPException(
+                status_code=400,
+                detail=f"Extracted content file exists but is empty: {data_path}"
+            )
+
+        return content
     async def generate_questions_from_pdf(
         self,
         file: UploadFile,
@@ -84,18 +131,7 @@ class QuestionController:
         """Generate questions from pre-extracted content"""
         
         # Load pre-extracted content from project root data folder
-        data_path = Path(__file__).parent.parent.parent / "data" / f"extracted_text_{source}.json"
-        
-        if not data_path.exists():
-            raise HTTPException(
-                status_code=404,
-                detail=f"No extracted content found for source: {source}"
-            )
-        
-        with open(data_path, 'r', encoding='utf-8') as f:
-            pages = json.load(f)
-        
-        content = "\n\n".join([page['content'] for page in pages])
+        content = self._load_stored_content(source)
         
         result = self.gemini_service.generate_questions(
             content=content,
@@ -120,17 +156,7 @@ class QuestionController:
             content = self.pdf_extractor.combine_pages(pages)
         else:
             # Use stored content from project root data folder
-            data_path = Path(__file__).parent.parent.parent / "data" / f"extracted_text_{source}.json"
-            if not data_path.exists():
-                raise HTTPException(
-                    status_code=404,
-                    detail=f"No extracted content found for source: {source}"
-                )
-            
-            with open(data_path, 'r', encoding='utf-8') as f:
-                pages = json.load(f)
-            
-            content = "\n\n".join([page['content'] for page in pages])
+            content = self._load_stored_content(source)
         
         result = self.gemini_service.generate_model_paper(
             content=content,
@@ -160,18 +186,7 @@ class QuestionController:
         """Generate a custom paper with specific topic, difficulty, type, and count"""
         
         # Load pre-extracted content from project root data folder
-        data_path = Path(__file__).parent.parent.parent / "data" / f"extracted_text_{source}.json"
-        
-        if not data_path.exists():
-            raise HTTPException(
-                status_code=404,
-                detail=f"No extracted content found for source: {source}"
-            )
-        
-        with open(data_path, 'r', encoding='utf-8') as f:
-            pages = json.load(f)
-        
-        content = "\n\n".join([page['content'] for page in pages])
+        content = self._load_stored_content(source)
         
         # Map question types to backend format
         type_mapping = {
