@@ -173,4 +173,18 @@ export const questionApi = {
     });
     return response.data;
   },
+
+  // Validate exam submission
+  validateSubmission: async (
+    questions: any[],
+    paperType: string,
+    topic: string = 'General'
+  ) => {
+    const response = await api.post('/questions/validate-submission', {
+      questions,
+      paper_type: paperType,
+      topic,
+    });
+    return response.data;
+  },
 };

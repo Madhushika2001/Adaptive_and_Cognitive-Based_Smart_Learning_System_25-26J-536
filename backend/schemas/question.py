@@ -63,3 +63,35 @@ class EvaluateStructuredAnswerRequest(BaseModel):
     part_c_user: str
     part_c_model: str
     topic: str = "General"
+
+class SubmissionQuestion(BaseModel):
+    """Question with user answer for validation"""
+    q: str
+    type: str
+    answer: Optional[str] = None  # Model answer
+    correct_answer: Optional[str] = None  # For MCQ
+    user_answer: Optional[str] = None  # User's answer
+    options: Optional[List[str]] = None  # For MCQ
+    explanation: Optional[str] = None
+
+class ValidateSubmissionRequest(BaseModel):
+    """Request to validate exam submission"""
+    questions: List[SubmissionQuestion]
+    paper_type: str  # mcq, short_answers, essay, structured
+    topic: Optional[str] = "General"
+
+class ValidationError(BaseModel):
+    """Error in answer validation"""
+    question_index: int
+    question_text: str
+    error_type: str  # "missing_answer", "answer_too_short", "answer_missing_key_points"
+    severity: str  # "warning", "error"
+    message: str
+
+class SubmissionValidationResponse(BaseModel):
+    """Response from submission validation"""
+    is_valid: bool
+    errors: List[ValidationError] = []
+    warnings: List[ValidationError] = []
+    summary: str
+    can_proceed: bool  # Whether user can proceed to results

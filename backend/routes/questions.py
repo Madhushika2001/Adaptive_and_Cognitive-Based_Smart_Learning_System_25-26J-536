@@ -9,7 +9,9 @@ from schemas.question import (
     ModelPaperConfig,
     ModelPaperRequest,
     EvaluateAnswerRequest,
-    EvaluateStructuredAnswerRequest
+    EvaluateStructuredAnswerRequest,
+    ValidateSubmissionRequest,
+    SubmissionValidationResponse
 )
 
 router = APIRouter(prefix="/api/questions", tags=["Questions"])
@@ -241,5 +243,22 @@ async def evaluate_structured_answer(request: EvaluateStructuredAnswerRequest):
         part_b_model=request.part_b_model,
         part_c_user=request.part_c_user,
         part_c_model=request.part_c_model,
+        topic=request.topic
+    )
+
+@router.post("/validate-submission", response_model=SubmissionValidationResponse)
+async def validate_submission(request: ValidateSubmissionRequest):
+    """
+    Validate exam submission - checks answers using LLM.
+    
+    - **questions**: Array of questions with user answers
+    - **paper_type**: Type of paper (mcq, short_answers, essay, structured)
+    - **topic**: Main topic of the exam for context
+    
+    Returns validation results with any errors or warnings found.
+    """
+    return await controller.validate_submission(
+        questions=[dict(q) for q in request.questions],
+        paper_type=request.paper_type,
         topic=request.topic
     )

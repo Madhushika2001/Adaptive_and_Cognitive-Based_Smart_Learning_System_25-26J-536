@@ -137,6 +137,16 @@ class QuestionController:
             paper_config=config.model_dump()
         )
         
+        # Log answer field presence for debugging
+        if "questions" in result:
+            print(f"\n🔍 DEBUG: Checking answer fields in generated paper:")
+            print(f"Total questions: {len(result['questions'])}")
+            for i, q in enumerate(result['questions'][:3]):  # Check first 3
+                has_answer = "answer" in q
+                has_correct_answer = "correct_answer" in q
+                q_type = q.get("type", "unknown")
+                print(f"  Q{i+1} ({q_type}): answer={has_answer}, correct_answer={has_correct_answer}")
+        
         return result
     
     async def generate_custom_paper(
@@ -387,16 +397,29 @@ class QuestionController:
                 detail="Question, user answer, and model answer are required"
             )
         
-        # Use Gemini to evaluate the answer
-        result = self.gemini_service.evaluate_answer(
-            question=question,
-            user_answer=user_answer,
-            model_answer=model_answer,
-            question_type=question_type,
-            topic=topic
-        )
+        print(f"\n📝 Backend: Evaluating {question_type} answer for topic: {topic}")
+        print(f"Question: {question[:100]}...")
+        print(f"User answer length: {len(user_answer)} chars")
+        print(f"Model answer length: {len(model_answer)} chars")
         
-        return result
+        try:
+            # Use Gemini to evaluate the answer
+            result = self.gemini_service.evaluate_answer(
+                question=question,
+                user_answer=user_answer,
+                model_answer=model_answer,
+                question_type=question_type,
+                topic=topic
+            )
+            
+            print(f"✅ Evaluation result: {result}")
+            return result
+        except Exception as e:
+            print(f"❌ Error during evaluation: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Evaluation error: {str(e)}"
+            )
     
     async def evaluate_structured_answer(
         self,
@@ -417,15 +440,160 @@ class QuestionController:
                 detail="Question is required"
             )
         
-        # Use Gemini to evaluate the structured answer
-        result = self.gemini_service.evaluate_structured_answer(
+        print(f"\n📝 Backend: Evaluating structured answer for topic: {topic}")
+        print(f"Question: {question[:100]}...")
+        print(f"Part A - User: {len(part_a_user)} chars, Model: {len(part_a_model)} chars")
+        print(f"Part B - User: {len(part_b_user)} chars, Model: {len(part_b_model)} chars")
+        print(f"Part C - User: {len(part_c_user)} chars, Model: {len(part_c_model)} chars")
+        
+        try:
+            # Use Gemini to evaluate the structured answer
+            result = self.gemini_service.evaluate_structured_answer(
+                question=question,
+                part_a_user=part_a_user,
+                part_a_model=part_a_model,
+                part_b_user=part_b_user,
+                part_b_model=part_b_model,
+                part_c_user=part_c_user,
+                part_c_model=part_c_model,
+                topic=topic
+            )
+            
+            print(f"✅ Evaluation result: {result}")
+            return result
+        except Exception as e:
+            print(f"❌ Error during evaluation: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Evaluation error: {str(e)}"
+            )
+    
+    async def validate_submission(
+        self,
+        questions: list,
+        paper_type: str,
+        topic: str = "General"
+    ):
+        """Validate exam submission using LLM"""
+        from schemas.question import ValidationError, SubmissionValidationResponse
+        
+        print(f"\n🔍 Validating submission for {paper_type} exam")
+        print(f"Total questions: {len(questions)}")
+        print(f"Topic: {topic}")
+        
+        errors = []
+        warnings = []
+        
+        # Check each question
+        for idx, q in enumerate(questions):
+            q_text = q.get("q", "")
+            q_type = q.get("type", "").lower()
+            user_answer = q.get("user_answer", "").strip()
+            model_answer = q.get("answer") or q.get("correct_answer", "")
+            
+            print(f"\n📋 Q{idx + 1} ({q_type}):")
+            print(f"   User answer length: {len(user_answer)}")
+            print(f"   Has model answer: {bool(model_answer)}")
+            
+            # Skip MCQ - they're validated in UI
+            if q_type == "mcq":
+                print(f"   ✅ MCQ - no validation needed")
+                continue
+            
+            # Check if question was answered
+            if not user_answer:
+                error = ValidationError(
+                    question_index=idx,
+                    question_text=q_text[:100],
+                    error_type="missing_answer",
+                    severity="warning",
+                    message="Question not answered"
+                )
+                warnings.append(error)
+                print(f"   ⚠️ Not answered")
+                continue
+            
+            # Check minimum length (at least 30 chars for short answers)
+            if len(user_answer) < 30 and q_type in ["short_answer", "short_answers"]:
+                error = ValidationError(
+                    question_index=idx,
+                    question_text=q_text[:100],
+                    error_type="answer_too_short",
+                    severity="warning",
+                    message=f"Answer might be too brief ({len(user_answer)} chars, minimum recommended: 30)"
+                )
+                warnings.append(error)
+                print(f"   ⚠️ Answer too short ({len(user_answer)} chars)")
+                continue
+            
+            # For non-MCQ answers, use Gemini to check for key points
+            if q_type in ["short_answer", "short_answers", "essay"] and model_answer:
+                try:
+                    print(f"   🔄 Using Gemini to validate content...")
+                    
+                    # Quick validation using Gemini
+                    validation_result = await self._validate_answer_with_llm(
+                        question=q_text,
+                        user_answer=user_answer,
+                        model_answer=model_answer,
+                        question_type=q_type,
+                        topic=topic
+                    )
+                    
+                    if not validation_result.get("valid", True):
+                        error = ValidationError(
+                            question_index=idx,
+                            question_text=q_text[:100],
+                            error_type="answer_missing_key_points",
+                            severity="warning",
+                            message=validation_result.get("message", "Answer appears to be missing key concepts")
+                        )
+                        warnings.append(error)
+                        print(f"   ⚠️ {validation_result.get('message', 'Validation warning')}")
+                    else:
+                        print(f"   ✅ Content validated")
+                        
+                except Exception as e:
+                    print(f"   ⚠️ Could not validate with LLM: {str(e)}")
+                    # Don't add error - validation is optional
+        
+        # Determine if submission can proceed
+        can_proceed = len(errors) == 0
+        is_valid = len(errors) + len(warnings) == 0
+        
+        summary = f"Submission check: {len(errors)} errors, {len(warnings)} warnings"
+        if is_valid:
+            summary = "✅ All answers validated successfully!"
+        elif len(errors) > 0:
+            summary = f"❌ Cannot proceed: {len(errors)} validation errors found"
+        else:
+            summary = f"⚠️ {len(warnings)} warnings found - you can still proceed"
+        
+        print(f"\n📊 Validation Summary: {summary}")
+        
+        return SubmissionValidationResponse(
+            is_valid=is_valid,
+            errors=errors,
+            warnings=warnings,
+            summary=summary,
+            can_proceed=can_proceed
+        )
+    
+    async def _validate_answer_with_llm(
+        self,
+        question: str,
+        user_answer: str,
+        model_answer: str,
+        question_type: str,
+        topic: str
+    ) -> dict:
+        """Use LLM to validate if answer covers key concepts"""
+        
+        result = self.gemini_service.validate_answer_quality(
             question=question,
-            part_a_user=part_a_user,
-            part_a_model=part_a_model,
-            part_b_user=part_b_user,
-            part_b_model=part_b_model,
-            part_c_user=part_c_user,
-            part_c_model=part_c_model,
+            user_answer=user_answer,
+            model_answer=model_answer,
+            question_type=question_type,
             topic=topic
         )
         

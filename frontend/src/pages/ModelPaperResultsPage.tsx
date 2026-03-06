@@ -68,15 +68,33 @@ export default function ModelPaperResultsPage() {
   const [hasInitializedEvaluation, setHasInitializedEvaluation] = useState(false);
 
   const data: ResultsState | null = useMemo(() => {
-    if (state?.totalQuestions) return state;
+    if (state?.totalQuestions) {
+      console.log("✅ Using state from router navigation:", state);
+      console.log("   Total questions:", state.totalQuestions);
+      console.log("   Questions array:", state.questions?.length || 0);
+      if (state.questions?.[0]) {
+        console.log("   First question answer:", state.questions[0].answer?.substring(0, 100) || "MISSING");
+      }
+      return state;
+    }
 
     const raw = localStorage.getItem("MODEL_PAPER_RESULTS");
-    if (!raw) return null;
+    if (!raw) {
+      console.log("❌ No data in localStorage or router state");
+      return null;
+    }
 
     try {
       const parsed = JSON.parse(raw) as ResultsState;
+      console.log("✅ Using data from localStorage:", parsed);
+      console.log("   Total questions:", parsed.totalQuestions);
+      console.log("   Questions array:", parsed.questions?.length || 0);
+      if (parsed.questions?.[0]) {
+        console.log("   First question answer:", parsed.questions[0].answer?.substring(0, 100) || "MISSING");
+      }
       return parsed?.totalQuestions ? parsed : null;
-    } catch {
+    } catch (e) {
+      console.error("❌ Error parsing localStorage:", e);
       return null;
     }
   }, [state]);
@@ -88,8 +106,39 @@ export default function ModelPaperResultsPage() {
     const evaluateNonMCQAnswers = async () => {
       const questionType = data.type?.toLowerCase();
       
+      console.log("🔍 Starting evaluation process...");
+      console.log("   Question Type:", questionType);
+      console.log("   Has questions:", !!data.questions);
+      console.log("   Total Questions:", data.totalQuestions);
+      console.log("   textAnswers keys:", Object.keys(data.textAnswers || {}));
+      console.log("   structuredAnswers keys:", Object.keys(data.structuredAnswers || {}));
+      
+      // Data validation
+      if (data.questions) {
+        console.log("📋 Questions detail:");
+        data.questions.forEach((q, idx) => {
+          const hasAnswer = !!q.answer;
+          const hasCorrectAnswer = !!q.correct_answer;
+          const answerLength = (q.answer || q.correct_answer || "").length;
+          console.log(`   Q${idx + 1}: answer=${hasAnswer}, correct_answer=${hasCorrectAnswer}, length=${answerLength}`);
+        });
+      }
+      
+      // Check evaluation criteria
+      const isMCQ = questionType === "mcq";
+      const hasQuestions = !!data.questions;
+      const hasTextAnswers = !!data.textAnswers && Object.keys(data.textAnswers).length > 0;
+      const hasStructuredAnswers = !!data.structuredAnswers && Object.keys(data.structuredAnswers).length > 0;
+      
+      console.log("📊 Evaluation criteria check:");
+      console.log(`   NOT MCQ: ${!isMCQ}`);
+      console.log(`   Has questions: ${hasQuestions}`);
+      console.log(`   Has textAnswers: ${hasTextAnswers}`);
+      console.log(`   Has structuredAnswers: ${hasStructuredAnswers}`);
+      
       // Only evaluate if not MCQ
-      if (questionType !== "mcq" && data.questions && (data.textAnswers || data.structuredAnswers)) {
+      if (!isMCQ && data.questions && (data.textAnswers || data.structuredAnswers)) {
+        console.log("✅ Evaluation criteria met. Starting evaluations...");
         setHasInitializedEvaluation(true);
         
         for (let i = 0; i < data.totalQuestions; i++) {
@@ -97,8 +146,15 @@ export default function ModelPaperResultsPage() {
           let userAnswer = "";
           let hasUserAnswer = false;
           
+          // Check for missing model answer
+          const modelAnswer = question?.answer || question?.correct_answer;
+          if (!modelAnswer) {
+            console.warn(`⚠️ Q${i + 1}: Missing model answer! This question cannot be evaluated.`);
+            continue; // Skip this question
+          }
+          
           // Get user answer based on type
-          if (questionType === "short_answers" || questionType === "essay") {
+          if (questionType === "short_answers" || questionType === "short answer" || questionType === "essay") {
             userAnswer = data.textAnswers?.[i] || "";
             hasUserAnswer = userAnswer.trim().length > 0;
           } else if (questionType === "structured") {
@@ -108,75 +164,114 @@ export default function ModelPaperResultsPage() {
             }
           }
           
+          console.log(`📝 Q${i + 1}: userAnswer=${hasUserAnswer} (length=${userAnswer.length}), modelAnswer=${!!modelAnswer}`);
+          
           // Only evaluate if user provided an answer
-          if (hasUserAnswer) {
-            setEvaluatingQuestions(prev => new Set([...prev, i]));
+          if (!hasUserAnswer) {
+            console.log(`⏭️ Q${i + 1}: Skipping - no user answer provided`);
+            continue;
+          }
+          
+          setEvaluatingQuestions(prev => new Set([...prev, i]));
+          
+          try {
+            let evaluation;
             
-            try {
-              let evaluation;
+            if (questionType === "structured") {
+              // Evaluate structured answer with parts
+              const parts = data.structuredAnswers?.[i] || {};
               
-              if (questionType === "structured") {
-                // Evaluate structured answer with parts
-                const parts = data.structuredAnswers?.[i] || {};
-                const modelAnswers = question?.answer?.split(/\n(?=\*\*Delivery|<br>|##|---)/i) || [];
-                
-                // Try to extract parts from model answer (assumes format with numbered parts or bullet points)
-                const extractPartFromAnswer = (answer: string, partLabel: string): string => {
-                  const regex = new RegExp(`\\*?\\*?${partLabel}[:.]*\\*?\\*?.*?(?=\\n\\*|$)`, 'is');
-                  const match = answer.match(regex);
-                  return match ? match[0] : answer;
-                };
-                
-                evaluation = await questionApi.evaluateStructuredAnswer(
-                  question?.q || "",
-                  parts["0"] || parts["a"] || "",
-                  extractPartFromAnswer(question?.answer || "", "(a|Part A)"),
-                  parts["1"] || parts["b"] || "",
-                  extractPartFromAnswer(question?.answer || "", "(b|Part B)"),
-                  parts["2"] || parts["c"] || "",
-                  extractPartFromAnswer(question?.answer || "", "(c|Part C)"),
-                  data.recommendedResources?.topic || "General"
-                );
-              } else {
-                // Evaluate regular short answer or essay
-                evaluation = await questionApi.evaluateAnswer(
-                  question?.q || "",
-                  userAnswer,
-                  question?.answer || question?.correct_answer || "",
-                  questionType === "short_answers" ? "short_answer" : questionType,
-                  data.recommendedResources?.topic || "General"
-                );
-              }
+              // Try to extract parts from model answer (assumes format with numbered parts or bullet points)
+              const extractPartFromAnswer = (answer: string, partLabel: string): string => {
+                const regex = new RegExp(`\\*?\\*?${partLabel}[:.]*\\*?\\*?.*?(?=\\n\\*|$)`, 'is');
+                const match = answer.match(regex);
+                return match ? match[0] : answer;
+              };
               
-              setEvaluations(prev => ({
-                ...prev,
-                [i]: evaluation
-              }));
-            } catch (error) {
-              console.error(`Error evaluating question ${i}:`, error);
-              setEvaluations(prev => ({
-                ...prev,
-                [i]: {
-                  score: 0,
-                  feedback: "Error evaluating answer",
-                  strengths: [],
-                  areas_for_improvement: [],
-                  key_points_missed: [],
-                  suggested_improvements: "",
-                  comparison_with_model_answer: "",
-                  overall_assessment: "Could not evaluate at this time",
-                  error: "Evaluation failed"
-                }
-              }));
-            } finally {
-              setEvaluatingQuestions(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(i);
-                return newSet;
+              const partAModel = extractPartFromAnswer(question?.answer || "", "(a|Part A)");
+              const partBModel = extractPartFromAnswer(question?.answer || "", "(b|Part B)");
+              const partCModel = extractPartFromAnswer(question?.answer || "", "(c|Part C)");
+              
+              console.log(`📤 Sending structured evaluation for Q${i + 1}:`, {
+                question: question?.q?.substring(0, 50) + "...",
+                partAUser: (parts["0"] || parts["a"] || "").substring(0, 30) + "...",
+                partBUser: (parts["1"] || parts["b"] || "").substring(0, 30) + "...",
+                partCUser: (parts["2"] || parts["c"] || "").substring(0, 30) + "..."
               });
+              
+              evaluation = await questionApi.evaluateStructuredAnswer(
+                question?.q || "",
+                parts["0"] || parts["a"] || "",
+                partAModel,
+                parts["1"] || parts["b"] || "",
+                partBModel,
+                parts["2"] || parts["c"] || "",
+                partCModel,
+                data.recommendedResources?.topic || "General"
+              );
+            } else {
+              // Evaluate regular short answer or essay
+              const modelAns = question?.answer || question?.correct_answer || "";
+              console.log(`📤 Sending ${questionType} evaluation for Q${i + 1}:`, {
+                question: question?.q?.substring(0, 50) + "...",
+                userAnswerLength: userAnswer.length,
+                modelAnswerLength: modelAns.length,
+                modelAnswerPreview: modelAns.substring(0, 50) + "..."
+              });
+              
+              evaluation = await questionApi.evaluateAnswer(
+                question?.q || "",
+                userAnswer,
+                modelAns,
+                questionType === "short_answers" || questionType === "short answer" ? "short_answer" : questionType,
+                data.recommendedResources?.topic || "General"
+              );
             }
+            
+            console.log(`✅ Q${i + 1} evaluation received:`, evaluation);
+            
+            setEvaluations(prev => ({
+              ...prev,
+              [i]: evaluation
+            }));
+          } catch (error) {
+            console.error(`❌ Error evaluating question ${i + 1}:`, error);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            
+            setEvaluations(prev => ({
+              ...prev,
+              [i]: {
+                score: 0,
+                feedback: `Error evaluating answer: ${errorMessage}`,
+                strengths: [],
+                areas_for_improvement: [],
+                key_points_missed: [],
+                suggested_improvements: "",
+                comparison_with_model_answer: "",
+                overall_assessment: "Could not evaluate at this time",
+                error: "Evaluation failed"
+              }
+            }));
+          } finally {
+            setEvaluatingQuestions(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(i);
+              return newSet;
+            });
           }
         }
+      } else {
+        console.log("⏭️ Skipping evaluation - criteria not met:");
+        if (isMCQ) {
+          console.log("   ❌ Question type is MCQ (no LLM evaluation needed)");
+        }
+        if (!data.questions) {
+          console.log("   ❌ No questions array found in data");
+        }
+        if (!data.textAnswers && !data.structuredAnswers) {
+          console.log("   ❌ No user answers found");
+        }
+        setHasInitializedEvaluation(true);
       }
     };
     
@@ -332,6 +427,14 @@ export default function ModelPaperResultsPage() {
                   {/* Show evaluation for non-MCQ questions */}
                   {type?.toLowerCase() !== "mcq" && evaluations[i] && (
                     <div className="space-y-2">
+                      {/* Check for evaluation errors */}
+                      {(evaluations[i] as any).error && (
+                        <div className="p-3 bg-red-50 rounded border border-red-300">
+                          <p className="text-[12px] font-semibold text-red-900 mb-1">⚠️ Evaluation Error</p>
+                          <p className="text-[12px] text-red-800">{(evaluations[i] as any).feedback}</p>
+                        </div>
+                      )}
+                      
                       {/* Structured Question Evaluation */}
                       {type?.toLowerCase() === "structured" && (evaluations[i] as any).part_a && (
                         <>
@@ -427,7 +530,7 @@ export default function ModelPaperResultsPage() {
                       )}
 
                       {/* Non-Structured Answer Evaluation */}
-                      {type?.toLowerCase() !== "structured" && (evaluations[i] as any).score !== undefined && (
+                      {type?.toLowerCase() !== "structured" && (evaluations[i] as any).score !== undefined && !(evaluations[i] as any).error && (
                         <>
                           {/* Score Badge */}
                           <div className="flex items-center gap-2 mb-2">
@@ -512,13 +615,13 @@ export default function ModelPaperResultsPage() {
                       {answer && (
                         <div className="mb-2 p-2 bg-[#F2F8F5] rounded border border-[#44A673]/20">
                           <p className="text-[12px] font-semibold text-[#055160] mb-1">Answer:</p>
-                          <p className="text-[13px] text-gray-700 whitespace-pre-wrap line-clamp-3">{answer}</p>
+                          <p className="text-[13px] text-gray-700 whitespace-pre-wrap">{answer}</p>
                         </div>
                       )}
                       {explanation && (
                         <div className="p-2 bg-blue-50 rounded border border-blue-200">
                           <p className="text-[12px] font-semibold text-blue-900 mb-1">Why:</p>
-                          <p className="text-[13px] text-blue-800 line-clamp-3">{explanation}</p>
+                          <p className="text-[13px] text-blue-800">{explanation}</p>
                         </div>
                       )}
                     </>
@@ -538,7 +641,7 @@ export default function ModelPaperResultsPage() {
                   {type?.toLowerCase() !== "mcq" && !evaluations[i] && !evaluatingQuestions.has(i) && answer && (
                     <div className="mb-2 p-2 bg-[#F2F8F5] rounded border border-[#44A673]/20">
                       <p className="text-[12px] font-semibold text-[#055160] mb-1">Model Answer:</p>
-                      <p className="text-[13px] text-gray-700 whitespace-pre-wrap line-clamp-3">{answer}</p>
+                      <p className="text-[13px] text-gray-700 whitespace-pre-wrap">{answer}</p>
                     </div>
                   )}
                 </div>
