@@ -8,9 +8,9 @@ const navigation = [
   { name: 'Revision', href: '/revision', icon: BookOpen },
   { name: 'Quizzers', href: '/quizzers', icon: Brain },
   { name: 'Model Paper', href: '/model-paper', icon: FileText },
-  { name: 'Progress', href: '/progress', icon: BarChart3 },
-  { name: "Calendar", href: "/calendar", icon: CalendarDays },
-  { name: 'Generate Questions', href: '/generate', icon: Sparkles },
+  // { name: 'Progress', href: '/progress', icon: BarChart3 },
+  // { name: "Calendar", href: "/calendar", icon: CalendarDays },
+  // { name: 'Generate Questions', href: '/generate', icon: Sparkles },
   { name: 'Upload PDF', href: '/upload', icon: BookOpen },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
