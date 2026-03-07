@@ -141,7 +141,7 @@ async def generate_personalized_questions(
     if not content:
         from pathlib import Path
         import json
-        data_path = Path(__file__).parent.parent / "data" / f"extracted_text_{subject}.json"
+        data_path = Path(__file__).parent.parent.parent / "data" / f"extracted_text_{subject}.json"
         if data_path.exists():
             with open(data_path, 'r', encoding='utf-8') as f:
                 pages = json.load(f)
