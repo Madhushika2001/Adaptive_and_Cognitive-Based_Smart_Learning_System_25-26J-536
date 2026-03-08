@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store/store';
-import { initializeAuth, signOut } from '../store/thunks/authThunks';
+import { initializeAuth } from '../store/thunks/authThunks';
+import { clearAuth } from '../store/slices/authSlice';
 import { supabase } from '../configs/supabase';
 
 interface AuthProviderProps {
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       // User signed out
       if (event === 'SIGNED_OUT') {
-        dispatch(signOut());
+        dispatch(clearAuth());
         return;
       }
 

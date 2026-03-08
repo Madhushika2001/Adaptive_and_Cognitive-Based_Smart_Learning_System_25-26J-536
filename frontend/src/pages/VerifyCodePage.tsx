@@ -1,115 +1,35 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { resetPasswordForEmail } from "../store/thunks/authThunks";
 import image4 from "../assets/reset-password.svg";
-import { FaLock } from "react-icons/fa";
+import { FaEnvelopeOpenText } from "react-icons/fa";
 
 type LocState = { email?: string };
 
 export default function VerifyCodePage() {
-  const nav = useNavigate();
   const loc = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const state = (loc.state as LocState) || {};
   const email = state.email || "your@email.com";
 
-  const OTP_LEN = 4;
-  const [otp, setOtp] = useState<string[]>(Array(OTP_LEN).fill(""));
-  const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
-  const otpValue = useMemo(() => otp.join(""), [otp]);
-
-  useEffect(() => {
-    inputsRef.current[0]?.focus();
-  }, []);
-
-  function setAt(index: number, value: string) {
-    setOtp((prev) => {
-      const next = [...prev];
-      next[index] = value;
-      return next;
-    });
-  }
-
-  function handleChange(index: number, value: string) {
+  async function handleResend() {
     setError(null);
-    const v = value.replace(/\D/g, "");
-    if (!v) {
-      setAt(index, "");
-      return;
+    setResent(false);
+    setResending(true);
+    try {
+      await dispatch(resetPasswordForEmail({ email })).unwrap();
+      setResent(true);
+    } catch (err: any) {
+      setError(err?.message || "Failed to resend email.");
+    } finally {
+      setResending(false);
     }
-
-    const chars = v.split("");
-    for (let i = 0; i < chars.length; i++) {
-      const pos = index + i;
-      if (pos < OTP_LEN) setAt(pos, chars[i]);
-    }
-
-    const nextIndex = Math.min(index + chars.length, OTP_LEN - 1);
-    inputsRef.current[nextIndex]?.focus();
-  }
-
-  function handleKeyDown(
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) {
-    if (e.key === "Backspace") {
-      if (otp[index]) {
-        setAt(index, "");
-      } else if (index > 0) {
-        inputsRef.current[index - 1]?.focus();
-        setAt(index - 1, "");
-      }
-    }
-    if (e.key === "ArrowLeft" && index > 0)
-      inputsRef.current[index - 1]?.focus();
-    if (e.key === "ArrowRight" && index < OTP_LEN - 1)
-      inputsRef.current[index + 1]?.focus();
-  }
-
-  function handlePaste(index: number, e: React.ClipboardEvent<HTMLInputElement>) {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (!text) return;
-
-    const chars = text.slice(0, OTP_LEN - index).split("");
-    for (let i = 0; i < chars.length; i++) {
-      setAt(index + i, chars[i]);
-    }
-    const last = Math.min(index + chars.length - 1, OTP_LEN - 1);
-    inputsRef.current[last]?.focus();
-  }
-
-async function verifyOtp() {
-  setError(null);
-
-  if (otpValue.length !== OTP_LEN || otp.some((d) => d === "")) {
-    setError("Please enter the 4-digit code.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    // TODO: replace with real API call
-    // const res = await fetch("/api/auth/verify-otp", {...})
-
-    await new Promise((r) => setTimeout(r, 800));
-
-    // ✅ Move to Reset Password page
-    nav("/reset-password", { state: { email, otp: otpValue } });
-
-  } catch (err: any) {
-    setError(err?.message || "Invalid code. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-}
-
-
-  async function resendOtp() {
-    setError(null);
-    setOtp(Array(OTP_LEN).fill(""));
-    inputsRef.current[0]?.focus();
   }
 
   return (
@@ -118,7 +38,7 @@ async function verifyOtp() {
         {/* Left */}
         <div className="w-full flex flex-col items-center lg:items-start">
           <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold bg-gradient-to-b from-[#44A673] via-[#2E967E] to-[#15828A] bg-clip-text text-transparent">
-            CongiLearn !
+            CogniLearn !
           </h1>
 
           <div className="mt-8 lg:mt-12 w-full flex justify-center lg:justify-start">
@@ -129,75 +49,60 @@ async function verifyOtp() {
         {/* Right */}
         <div className="w-full flex flex-col items-center lg:items-start">
           <h2 className="text-[28px] sm:text-[32px] font-bold text-[#055160]">
-            Forget Password
+            Check Your Email
           </h2>
 
-          {/* Lock icon */}
+          {/* Email icon */}
           <div className="mt-6">
             <div className="w-16 h-16 rounded-full bg-[#2E967E] flex items-center justify-center text-white">
-              <FaLock size={22} />
+              <FaEnvelopeOpenText size={22} />
             </div>
           </div>
 
           <h3 className="mt-5 text-[#055160] text-[18px] sm:text-[20px] font-semibold">
-            Verification code
+            Password Reset Link Sent
           </h3>
 
-          <p className="text-[#4B5563] text-[12px] sm:text-[14px] mt-2 text-center lg:text-left">
-            The verification code was sent to {email}
+          <p className="text-[#4B5563] text-[13px] sm:text-[15px] mt-3 text-center lg:text-left max-w-md leading-relaxed">
+            We've sent a password reset link to{" "}
+            <span className="font-semibold text-[#055160]">{email}</span>.
+            <br />
+            Please check your inbox and click the link to reset your password.
           </p>
 
-          <div className="w-full max-w-xl mt-5">
-            {/* OTP boxes */}
-            <div className="flex gap-4 justify-center lg:justify-start mt-4">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  ref={(el) => (inputsRef.current[i] = el)}
-                  value={digit}
-                  onChange={(e) => handleChange(i, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(i, e)}
-                  onPaste={(e) => handlePaste(i, e)}
-                  inputMode="numeric"
-                  maxLength={4}
-                  className="w-14 h-12 sm:w-16 sm:h-14 rounded-[8px] bg-white text-center text-lg outline-none border border-[#A3D2C5] focus:ring-2 focus:ring-[#087990]/20"
-                />
-              ))}
-            </div>
+          <p className="text-[#4B5563] text-[12px] sm:text-[13px] mt-4 text-center lg:text-left max-w-md">
+            Didn't receive the email? Check your spam folder or try again.
+          </p>
 
-            {error ? (
-              <div className="text-red-600 text-sm mt-3 text-center lg:text-left">
+          <div className="w-full max-w-xl mt-6 space-y-4">
+            {error && (
+              <div className="text-red-600 text-sm text-center lg:text-left">
                 {error}
               </div>
-            ) : null}
+            )}
 
-            {/* Verify button */}
-            <div className="flex justify-center lg:justify-start mt-6">
+            {resent && !error && (
+              <div className="text-[#2E967E] text-sm text-center lg:text-left font-medium">
+                A new reset link has been sent to your email.
+              </div>
+            )}
+
+            {/* Resend button */}
+            <div className="flex justify-center lg:justify-start">
               <button
-                onClick={verifyOtp}
-                disabled={loading}
+                onClick={handleResend}
+                disabled={resending}
                 className="w-full sm:w-[244px] h-12 sm:h-14 rounded-[8px] bg-[#055160] text-white hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? "Verifying..." : "Verify Code"}
-              </button>
-            </div>
-
-            {/* Resend */}
-            <div className="mt-4 text-center lg:text-left text-[12px] sm:text-[14px] text-[#055160]">
-              Didn’t receive the code ?{" "}
-              <button
-                onClick={resendOtp}
-                className="font-semibold hover:underline"
-              >
-                Resend OTP
+                {resending ? "Sending..." : "Resend Email"}
               </button>
             </div>
 
             {/* Back */}
-            <div className="pt-5 flex items-center gap-2 text-[#055160]">
+            <div className="pt-2 flex items-center gap-2 text-[#055160]">
               <span className="text-xl">←</span>
               <Link to="/signin" className="text-sm hover:underline">
-                Back to sing in
+                Back to sign in
               </Link>
             </div>
           </div>

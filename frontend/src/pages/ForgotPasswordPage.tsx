@@ -1,9 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { resetPasswordForEmail } from "../store/thunks/authThunks";
 import image4 from "../assets/reset-password.svg"; // use your illustration (or replace)
 
 export default function ForgotPasswordPage() {
   const nav = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -15,11 +19,8 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      // TODO: call your real forgot-password API here
-
-      await new Promise((r) => setTimeout(r, 800)); // demo delay
-      //  Go to verify page and pass email
-        nav("/verify-code", { state: { email } });
+      await dispatch(resetPasswordForEmail({ email })).unwrap();
+      nav("/verify-code", { state: { email } });
     } catch (err: any) {
       setError(err?.message || "Something went wrong.");
     } finally {
@@ -33,7 +34,7 @@ export default function ForgotPasswordPage() {
         {/* Left */}
         <div className="w-full flex flex-col items-center lg:items-start">
           <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold bg-gradient-to-b from-[#44A673] via-[#2E967E] to-[#15828A] bg-clip-text text-transparent">
-            CongiLearn !
+            CogniLearn !
           </h1>
 
           <div className="mt-8 lg:mt-12 w-full flex justify-center lg:justify-start">

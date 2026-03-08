@@ -9,14 +9,26 @@ type PaperQuestion = {
   q: string;
   parts?: string[]; // only for Structured
   options?: string[]; // for MCQ
+  answer?: string;
   correct_answer?: string;
   explanation?: string;
+};
+
+type RecommendedResource = {
+  title: string;
+  type: string;
+  url: string;
+  description: string;
 };
 
 type Paper = {
   title: string;
   meta: { topic: string; difficulty: string; type: string; count: number };
   questions: PaperQuestion[];
+  recommended_resources?: {
+    topic: string;
+    resources: RecommendedResource[];
+  };
 };
 
 type ExamState = {
@@ -247,6 +259,7 @@ export default function ModelPaperExamPage() {
       paperTitle: subject?.name ? `${subject.name} - ${subject.code}` : paper.title,
       // pass questions with correct answers for grading
       questions: paper.questions,
+      recommendedResources: paper.recommended_resources,
     };
 
     console.log("📊 Payload being saved:", {
@@ -446,7 +459,7 @@ export default function ModelPaperExamPage() {
         {/* Bottom Buttons */}
         <div className="flex justify-end mt-6 gap-3">
           <button
-            className="px-5 py-2 rounded-xl bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50"
+            className="px-5 py-2 cursor-pointer rounded-xl bg-white border border-gray-200 text-gray-800 hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50"
             onClick={onPrevious}
             disabled={page === 1}
           >
@@ -455,14 +468,14 @@ export default function ModelPaperExamPage() {
 
           {!isLastPage ? (
             <button
-              className="px-6 py-2 rounded-xl bg-[#0B7285] text-white hover:opacity-95 flex items-center gap-2"
+              className="px-6 py-2 rounded-xl cursor-pointer bg-[#0B7285] text-white hover:opacity-95 flex items-center gap-2"
               onClick={onContinue}
             >
               Continue →
             </button>
           ) : (
             <button
-              className="px-6 py-2 rounded-xl bg-[#0B7285] text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-2 cursor-pointer rounded-xl bg-[#0B7285] text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               onClick={onSubmit}
               disabled={isValidating}
             >

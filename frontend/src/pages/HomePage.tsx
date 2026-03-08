@@ -2,13 +2,13 @@ import { BookOpen, FileText, Sparkles, Brain, ArrowRight, Clock, Award, Trending
 import { Link } from 'react-router-dom';
 
 const features = [
-  {
-    title: 'Generate Questions',
-    description: 'Create exam questions from your lecture materials using AI',
-    icon: Sparkles,
-    href: '/generate',
-    gradient: 'from-violet-500 to-purple-600',
-  },
+  // {
+  //   title: 'Generate Questions',
+  //   description: 'Create exam questions from your lecture materials using AI',
+  //   icon: Sparkles,
+  //   href: '/generate',
+  //   gradient: 'from-violet-500 to-purple-600',
+  // },
   {
     title: 'Model Papers',
     description: 'Generate complete examination papers with sections and marking schemes',
@@ -16,20 +16,20 @@ const features = [
     href: '/model-paper',
     gradient: 'from-blue-500 to-indigo-600',
   },
-  {
-    title: 'Upload PDF',
-    description: 'Upload your own PDF lecture notes to generate custom questions',
-    icon: BookOpen,
-    href: '/upload',
-    gradient: 'from-emerald-500 to-teal-600',
-  },
-  {
-    title: 'Personalized Models',
-    description: 'Use models trained on your specific course materials',
-    icon: Brain,
-    href: '/generate',
-    gradient: 'from-orange-500 to-amber-500',
-  },
+  // {
+  //   title: 'Upload PDF',
+  //   description: 'Upload your own PDF lecture notes to generate custom questions',
+  //   icon: BookOpen,
+  //   href: '/upload',
+  //   gradient: 'from-emerald-500 to-teal-600',
+  // },
+  // {
+  //   title: 'Personalized Models',
+  //   description: 'Use models trained on your specific course materials',
+  //   icon: Brain,
+  //   href: '/generate',
+  //   gradient: 'from-orange-500 to-amber-500',
+  // },
 ];
 
 const subjects = [
@@ -72,18 +72,18 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cGF0aCBkPSJNLTEwIDMwaDYwdjJoLTYweiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')] opacity-50" />
         <div className="relative z-10">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
-            Welcome to PaperGen
+            Welcome to CogniLearn!
           </h1>
           <p className="text-white/90 text-lg max-w-2xl mb-6">
-            Generate high-quality exam questions and model papers from your lecture materials using AI-powered generation.
+            Transform your lecture materials into <span className="text-white font-semibold">exam-ready questions</span>, <span className="text-white font-semibold">complete model papers</span>, and <span className="text-white font-semibold">structured marking schemes</span> — powered by <span className="text-white font-semibold">AI trained on your course content</span>.
           </p>
-          <Link 
-            to="/model-paper"
+          <button
+            onClick={() => document.getElementById('quick-actions')?.scrollIntoView({ behavior: 'smooth' })}
             className="inline-flex items-center gap-2 bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
           >
             Get Started
             <ArrowRight className="w-5 h-5" />
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export default function HomePage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 id="quick-actions" className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((feature) => (
             <Link
