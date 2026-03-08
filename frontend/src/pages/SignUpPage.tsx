@@ -65,7 +65,7 @@ export default function SignUpPage() {
           <h1 className="text-4xl lg:text-[64px] font-extrabold leading-tight">
             <span className="block text-[#087990]">Welcome To</span>
             <span className="block mt-16 text-right bg-gradient-to-b from-[#44A673] via-[#2E967E] to-[#15828A] bg-clip-text text-transparent">
-              CongiLearn!
+              CogniLearn!
             </span>
           </h1>
 

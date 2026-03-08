@@ -44,7 +44,16 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    clearAuth(state) {
+      state.user = null;
+      state.profile = null;
+      state.session = null;
+      state.isAuthenticated = false;
+      state.isInitialized = true;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signUp.fulfilled, (state, action) => {
@@ -96,6 +105,14 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.error = null;
       })
+      .addCase(signOut.rejected, (state) => {
+        state.user = null;
+        state.profile = null;
+        state.session = null;
+        state.isAuthenticated = false;
+        state.isInitialized = true;
+        state.error = null;
+      })
       .addCase(initializeAuth.pending, (state) => {
         if (!state.isInitialized) {
           state.isInitialized = false;
@@ -143,5 +160,6 @@ const authSlice = createSlice({
   },
 });
 
+export const { clearAuth } = authSlice.actions;
 export default authSlice.reducer;
 

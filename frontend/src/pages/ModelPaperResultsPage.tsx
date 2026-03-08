@@ -298,7 +298,7 @@ export default function ModelPaperResultsPage() {
     );
   }
 
-  const { totalQuestions, answeredCount, elapsedSeconds, paperTitle, questions, mcqAnswers, type, recommendedResources } = data;
+  const { totalQuestions, answeredCount, elapsedSeconds, paperTitle, questions, mcqAnswers, type, recommendedResources, textAnswers, structuredAnswers } = data;
 
   const threshold = 50; //  change if you want (ex: 60)
 
@@ -373,6 +373,54 @@ export default function ModelPaperResultsPage() {
     return null;
   };
 
+  const getUserAnswerDisplay = (qIndex: number): string | null => {
+    const questionType = type?.toLowerCase();
+    const question = questions?.[qIndex];
+
+    if (!question) return null;
+
+    if (questionType === "mcq") {
+      const selectedIndex = mcqAnswers?.[qIndex];
+      if (
+        selectedIndex === undefined ||
+        !question.options ||
+        !question.options[selectedIndex]
+      ) {
+        return null;
+      }
+      return question.options[selectedIndex];
+    }
+
+    if (
+      questionType === "short answers" ||
+      questionType === "short_answers" ||
+      questionType === "short answer" ||
+      questionType === "essay"
+    ) {
+      return textAnswers?.[qIndex] || null;
+    }
+
+    if (questionType === "structured") {
+      const parts = structuredAnswers?.[qIndex];
+      if (!parts) return null;
+
+      const formatted = Object.entries(parts)
+        .filter(([, value]) => String(value).trim())
+        .map(([key, value], idx) => {
+          const labels = ["(a)", "(b)", "(c)", "(d)", "(e)"];
+          const label = labels[Number(key)] || `(${idx + 1})`;
+          return `${label} ${value}`;
+        })
+        .join("\n");
+
+      return formatted || null;
+    }
+
+    return null;
+  };
+
+  console.log("Results page recommendedResources:", recommendedResources);
+
   return (
     <div className="min-h-screen bg-white px-8 sm:px-10 md:px-12 lg:px-16  xl:mr-16 py-10">
       <h1 className="text-[32px] font-bold text-[#055160]">Results</h1>
@@ -422,7 +470,7 @@ export default function ModelPaperResultsPage() {
             const question = questions?.[i];
             const userAnswerIndex = mcqAnswers?.[i];
             const userAnswer = question?.options?.[userAnswerIndex];
-            
+            const userAnswerDisplay = getUserAnswerDisplay(i);
             return (
               <div
                 key={i}
@@ -433,6 +481,16 @@ export default function ModelPaperResultsPage() {
                     Question {String(i + 1).padStart(2, "0")}
                   </div>
                   <div className="text-xs text-gray-500 mt-1 line-clamp-2">{question?.q}</div>
+                  {userAnswerDisplay && (
+                    <div className="mt-2 p-2 bg-gray-50 rounded border border-gray-200 w-full">
+                      <p className="text-[12px] font-semibold text-gray-700 mb-1">
+                        Your Answer:
+                      </p>
+                      <p className="text-[12px] text-gray-600 whitespace-pre-wrap">
+                        {userAnswerDisplay}
+                      </p>
+                    </div>
+                  )}
                   {type?.toLowerCase() === "mcq" && status === false && userAnswer && (
                     <div className="text-xs text-red-600 mt-1">
                       Your: {userAnswer}
@@ -608,6 +666,17 @@ export default function ModelPaperResultsPage() {
                       <p className="text-[12px] font-semibold text-[#055160] mb-1">Model Answer:</p>
                       <p className="text-[13px] text-gray-700 whitespace-pre-wrap">{answer}</p>
                     </div>
+                    )}
+
+                  {!answer &&
+                    type?.toLowerCase() !== "mcq" &&
+                    !evaluations[i] &&
+                    !evaluatingQuestions.has(i) && (
+                      <div className="mb-2 p-2 bg-red-50 rounded border border-red-200">
+                        <p className="text-[12px] font-semibold text-red-800">
+                          No model answer available for this question.
+                        </p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -622,19 +691,19 @@ export default function ModelPaperResultsPage() {
       </div>
 
       {/* Recommended Resources */}
-      {recommendedResources?.resources && recommendedResources.resources.length > 0 && (
+      {recommendedResources?.resources?.length ? (
         <div className="mt-12">
           <div className="mb-6">
             <h2 className="text-[32px] font-bold text-[#055160] mb-2">Recommended Learning Resources</h2>
             <p className="text-[#4B5563] text-[16px]">
-              Enhance your understanding of <span className="font-semibold">{recommendedResources.topic}</span> with these curated materials:
+              Enhance your understanding of <span className="font-semibold">{recommendedResources.topic || "this topic"}</span> with these curated materials:
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {recommendedResources.resources.map((resource, idx) => (
               <a
-                key={idx}
+                key={`${resource.url}-${idx}`}
                 href={resource.url}
                 target="_blank"
                 rel="noreferrer"
@@ -654,7 +723,23 @@ export default function ModelPaperResultsPage() {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
+
+      <div className="mt-8 flex gap-3">
+        <button
+          onClick={() => navigate("/model-paper")}
+          className="px-5 py-2 rounded-xl cursor-pointer bg-white border border-gray-200 text-gray-800 hover:bg-gray-50"
+        >
+          Back to Model Papers
+        </button>
+
+        <button
+          onClick={() => navigate(`/model-paper/${slug}/paper`)}
+          className="px-5 py-2 rounded-xl cursor-pointer bg-[#0B7285] text-white hover:opacity-95"
+        >
+          Review Paper Again
+        </button>
+      </div>
     </div>
   );
 }

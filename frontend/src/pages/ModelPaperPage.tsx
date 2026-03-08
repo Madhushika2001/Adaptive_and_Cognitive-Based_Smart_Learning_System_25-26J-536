@@ -160,7 +160,7 @@ export default function ModelPaperPage() {
                   <div
                     key={subject.id}
                     onClick={() => setSelectedSubject(subject.id as Subject)}
-                    className={`bg-white rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
+                    className={`bg-white rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 cursor-pointer ${
                       isSelected 
                         ? 'ring-2 ring-[#44A673] shadow-lg scale-[1.02]' 
                         : 'shadow-sm hover:shadow-md border border-gray-100'
@@ -275,7 +275,7 @@ export default function ModelPaperPage() {
               loading={loading}
               size="lg"
               icon={<Sparkles className="w-5 h-5" />}
-              className="!px-8"
+              className="!px-8 cursor-pointer"
               style={{ background: 'linear-gradient(90deg, #44A673 0%, #2E967E 50%, #158289 100%)' }}
             >
               Generate Model Paper

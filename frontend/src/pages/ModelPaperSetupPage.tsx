@@ -8,6 +8,13 @@ import type { Subject } from "../types";
 
 type SubjectInfo = { id: string; name: string; code: string };
 
+type RecommendedResource = {
+  title: string;
+  type: string;
+  url: string;
+  description: string;
+};
+
 type GeneratedPaper = {
   title: string;
   meta: { topic: string; difficulty: string; type: string; count: number };
@@ -17,7 +24,12 @@ type GeneratedPaper = {
     options?: string[];
     correct_answer?: string;
     explanation?: string;
+    answer?: string;
   }[];
+  recommended_resources?: {
+    topic: string;
+    resources: RecommendedResource[];
+  };
 };
 
 const subjects: SubjectInfo[] = [
@@ -255,6 +267,7 @@ export default function ModelPaperSetupPage() {
           {/* Buttons */}
           <div className="flex gap-3 justify-end mt-6">
             <Button
+            className="cursor-pointer"
               onClick={onGenerate}
               loading={loading}
               disabled={loading}
@@ -263,7 +276,7 @@ export default function ModelPaperSetupPage() {
               {loading ? "Generating..." : "Generate Paper"}
             </Button>
 
-            <Button variant="outline" onClick={() => navigate("/model-paper")}>
+            <Button className="cursor-pointer" variant="outline" onClick={() => navigate("/model-paper")}>
               Cancel
             </Button>
           </div>

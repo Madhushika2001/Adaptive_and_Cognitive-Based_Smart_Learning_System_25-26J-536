@@ -1,9 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../store/store";
+import { signOut } from "../store/thunks/authThunks";
 import image4 from "../assets/reset-password-sucessfull.svg"; // replace with your "success" illustration if you have one
 import { FaCheck } from "react-icons/fa";
 
 export default function ResetSuccessPage() {
   const nav = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  async function handleContinue() {
+    await dispatch(signOut());
+    nav("/signin", { replace: true });
+  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-10 py-8 lg:py-[52px] font-sans">
@@ -11,7 +20,7 @@ export default function ResetSuccessPage() {
         {/* Left */}
         <div className="w-full flex flex-col items-center lg:items-start">
           <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-extrabold bg-gradient-to-b from-[#44A673] via-[#2E967E] to-[#15828A] bg-clip-text text-transparent">
-            CongiLearn !
+            CogniLearn !
           </h1>
 
           <div className="mt-8 lg:mt-12 w-full flex flex-col items-center lg:items-start">
@@ -48,7 +57,7 @@ export default function ResetSuccessPage() {
 
           <div className="mt-8 w-full flex flex-col items-center lg:items-start">
             <button
-              onClick={() => nav("/signin", { replace: true })}
+              onClick={handleContinue}
               className="w-full sm:w-[244px] h-12 sm:h-14 rounded-[8px] bg-[#055160] text-white hover:opacity-95"
             >
               Continue

@@ -6,11 +6,11 @@ import { Link, useLocation } from 'react-router-dom';
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
   { name: 'Revision', href: '/revision', icon: BookOpen },
-  { name: 'Quizzers', href: '/quizzers', icon: Brain },
+  // { name: 'Quizzers', href: '/quizzers', icon: Brain },
   { name: 'Model Paper', href: '/model-paper', icon: FileText },
-  { name: 'Progress', href: '/progress', icon: BarChart3 },
-  { name: "Calendar", href: "/calendar", icon: CalendarDays },
-  { name: 'Generate Questions', href: '/generate', icon: Sparkles },
+  // { name: 'Progress', href: '/progress', icon: BarChart3 },
+  // { name: "Calendar", href: "/calendar", icon: CalendarDays },
+  // { name: 'Generate Questions', href: '/generate', icon: Sparkles },
   { name: 'Upload PDF', href: '/upload', icon: BookOpen },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           <img src={logo} alt="Logo" className="h-10 w-10" />
         </div>
         <div>
-          <span className="text-lg font-bold text-black">CongiLearn</span>
+          <span className="text-lg font-bold text-black">CogniLearn</span>
           <p className="text-xs text-black/60">AI Exam Generator</p>
         </div>
         {/* Mobile close button */}

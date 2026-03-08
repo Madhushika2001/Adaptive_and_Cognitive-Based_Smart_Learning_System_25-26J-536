@@ -31,9 +31,9 @@ class QuestionController:
     def _load_stored_content(self, source: str) -> str:
         """
         Loads extracted text JSON and returns combined content.
-        Looks for: backend/data/extracted_text_{source}.json
+        Looks for: data/extracted_text_{source}.json (project root)
         """
-        data_path = self._backend_root() / "data" / f"extracted_text_{source}.json"
+        data_path = self._backend_root().parent / "data" / f"extracted_text_{source}.json"
 
         if not data_path.exists():
             raise HTTPException(
