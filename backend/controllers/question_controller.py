@@ -22,11 +22,11 @@ class QuestionController:
     
     def _backend_root(self) -> Path:
         """
-        Returns backend root directory.
+        Returns project root directory.
 
-        controllers/question_controller.py -> parents[1] -> backend/
+        controllers/question_controller.py -> parents[2] -> project_root/
         """
-        return Path(__file__).resolve().parents[1]
+        return Path(__file__).resolve().parents[2]
 
     def _load_stored_content(self, source: str) -> str:
         """

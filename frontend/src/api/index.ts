@@ -1,12 +1,20 @@
-import axios from 'axios';
-import type { QuestionType, Difficulty, Subject, QuestionResponse, ModelPaper, AnswerEvaluation, StructuredAnswerEvaluation } from '../types';
+import axios from "axios";
+import type {
+  QuestionType,
+  Difficulty,
+  Subject,
+  QuestionResponse,
+  ModelPaper,
+  AnswerEvaluation,
+  StructuredAnswerEvaluation,
+} from "../types";
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = "http://127.0.0.1:8000/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -15,8 +23,8 @@ export const questionApi = {
   generateFromStored: async (
     source: Subject,
     numQuestions: number = 10,
-    questionType: QuestionType = 'mixed',
-    difficulty: Difficulty = 'medium'
+    questionType: QuestionType = "mixed",
+    difficulty: Difficulty = "medium",
   ): Promise<QuestionResponse> => {
     const response = await api.get(`/questions/generate/stored/${source}`, {
       params: {
@@ -32,20 +40,20 @@ export const questionApi = {
   generateFromPdf: async (
     file: File,
     numQuestions: number = 10,
-    questionType: QuestionType = 'mixed',
-    difficulty: Difficulty = 'medium'
+    questionType: QuestionType = "mixed",
+    difficulty: Difficulty = "medium",
   ): Promise<QuestionResponse> => {
     const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await api.post('/questions/generate/pdf', formData, {
+    formData.append("file", file);
+
+    const response = await api.post("/questions/generate/pdf", formData, {
       params: {
         num_questions: numQuestions,
         question_type: questionType,
         difficulty: difficulty,
       },
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -55,10 +63,10 @@ export const questionApi = {
   generateFromText: async (
     content: string,
     numQuestions: number = 10,
-    questionType: QuestionType = 'mixed',
-    difficulty: Difficulty = 'medium'
+    questionType: QuestionType = "mixed",
+    difficulty: Difficulty = "medium",
   ): Promise<QuestionResponse> => {
-    const response = await api.post('/questions/generate/text', {
+    const response = await api.post("/questions/generate/text", {
       content,
       num_questions: numQuestions,
       question_type: questionType,
@@ -76,12 +84,12 @@ export const questionApi = {
       mcqCount?: number;
       shortCount?: number;
       longCount?: number;
-    } = {}
+    } = {},
   ): Promise<ModelPaper> => {
     const response = await api.get(`/questions/model-paper/stored/${source}`, {
       params: {
         total_marks: config.totalMarks || 100,
-        duration: config.duration || '3 hours',
+        duration: config.duration || "3 hours",
         mcq_count: config.mcqCount || 10,
         short_count: config.shortCount || 5,
         long_count: config.longCount || 3,
@@ -94,20 +102,26 @@ export const questionApi = {
   generatePersonalized: async (
     subject: Subject,
     numQuestions: number = 5,
-    questionType: QuestionType = 'mixed'
+    questionType: QuestionType = "mixed",
   ): Promise<QuestionResponse> => {
-    const response = await api.get(`/questions/generate/personalized/${subject}`, {
-      params: {
-        num_questions: numQuestions,
-        question_type: questionType,
+    const response = await api.get(
+      `/questions/generate/personalized/${subject}`,
+      {
+        params: {
+          num_questions: numQuestions,
+          question_type: questionType,
+        },
       },
-    });
+    );
     return response.data;
   },
 
   // Get available personalized models
-  getAvailableModels: async (): Promise<{ available_models: string[]; device: string }> => {
-    const response = await api.get('/questions/personalized/models');
+  getAvailableModels: async (): Promise<{
+    available_models: string[];
+    device: string;
+  }> => {
+    const response = await api.get("/questions/personalized/models");
     return response.data;
   },
 
@@ -119,13 +133,13 @@ export const questionApi = {
       difficulty: string;
       questionType: string;
       count: number;
-    }
+    },
   ): Promise<ModelPaper> => {
     const response = await api.get(`/questions/generate/custom/${subject}`, {
       params: {
         topic: config.topic,
         difficulty: config.difficulty.toLowerCase(),
-        question_type: config.questionType.toLowerCase().replace(' ', '_'),
+        question_type: config.questionType.toLowerCase().replace(" ", "_"),
         num_questions: config.count,
       },
     });
@@ -137,10 +151,10 @@ export const questionApi = {
     question: string,
     userAnswer: string,
     modelAnswer: string,
-    questionType: string = 'short_answer',
-    topic: string = 'General'
+    questionType: string = "short_answer",
+    topic: string = "General",
   ): Promise<AnswerEvaluation> => {
-    const response = await api.post('/questions/evaluate/answer', {
+    const response = await api.post("/questions/evaluate/answer", {
       question,
       user_answer: userAnswer,
       model_answer: modelAnswer,
@@ -159,9 +173,9 @@ export const questionApi = {
     partBModel: string,
     partCUser: string,
     partCModel: string,
-    topic: string = 'General'
+    topic: string = "General",
   ): Promise<StructuredAnswerEvaluation> => {
-    const response = await api.post('/questions/evaluate/structured-answer', {
+    const response = await api.post("/questions/evaluate/structured-answer", {
       question,
       part_a_user: partAUser,
       part_a_model: partAModel,
@@ -178,9 +192,9 @@ export const questionApi = {
   validateSubmission: async (
     questions: any[],
     paperType: string,
-    topic: string = 'General'
+    topic: string = "General",
   ) => {
-    const response = await api.post('/questions/validate-submission', {
+    const response = await api.post("/questions/validate-submission", {
       questions,
       paper_type: paperType,
       topic,
