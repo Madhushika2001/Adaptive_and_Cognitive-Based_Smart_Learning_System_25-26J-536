@@ -7,6 +7,23 @@ export default function ProtectedRoute({
 }: {
   children: React.ReactNode;
 }) {
-  // Temporarily bypass authentication for development
+  const { isAuthenticated, isInitialized } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const location = useLocation();
+
+  // Show a minimal spinner while the localStorage session is being loaded
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
   return <>{children}</>;
 }

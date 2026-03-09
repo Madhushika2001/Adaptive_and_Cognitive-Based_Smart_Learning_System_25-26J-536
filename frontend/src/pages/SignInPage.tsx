@@ -16,7 +16,7 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const from = (loc.state as any)?.from?.pathname || "/model-paper";
+  const from = (loc.state as any)?.from?.pathname || "/";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,7 +31,7 @@ export default function SignInPage() {
 
     try {
       const result = await dispatch(signIn({ email, password }));
-      
+
       if (signIn.fulfilled.match(result)) {
         // Successfully logged in - redirect to model paper page
         nav(from, { replace: true });

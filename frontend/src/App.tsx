@@ -20,6 +20,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ResetSuccessPage from "./pages/ResetSuccessPage";
 import ProgressPage from "./pages/ProgressPage";
 import CalendarPage from "./pages/CalendarPage";
+import AdaptiveRevisionPage from "./pages/AdaptiveRevisionPage";
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
                   />
                   <Route path="/progress" element={<ProgressPage />} />
                   <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/revision" element={<AdaptiveRevisionPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Layout>

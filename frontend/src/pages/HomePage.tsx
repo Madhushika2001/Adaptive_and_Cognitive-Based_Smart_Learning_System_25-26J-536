@@ -1,12 +1,12 @@
-import { BookOpen, FileText, Sparkles, Brain, ArrowRight, Clock, Award, TrendingUp } from 'lucide-react';
+import { BookOpen, FileText, Brain, ArrowRight, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const features = [
   {
-    title: 'Generate Questions',
-    description: 'Create exam questions from your lecture materials using AI',
-    icon: Sparkles,
-    href: '/generate',
+    title: 'Lecture Personalizing',
+    description: 'AI-powered adaptive quiz, personalized summaries, concept maps & flashcards tuned to your level',
+    icon: Brain,
+    href: '/revision',
     gradient: 'from-violet-500 to-purple-600',
   },
   {
@@ -33,26 +33,26 @@ const features = [
 ];
 
 const subjects = [
-  { 
-    id: 'dl', 
+  {
+    id: 'dl',
     code: 'SE4050',
-    name: 'Deep Learning', 
+    name: 'Deep Learning',
     progress: 75,
     weeks: 14,
     gradient: 'from-violet-600 to-indigo-600'
   },
-  { 
-    id: 'da', 
+  {
+    id: 'da',
     code: 'SE4040',
-    name: 'Data Analytics', 
+    name: 'Data Analytics',
     progress: 60,
     weeks: 12,
     gradient: 'from-emerald-500 to-teal-500'
   },
-  { 
-    id: 'ime', 
+  {
+    id: 'ime',
     code: 'SE4030',
-    name: 'Innovation & Entrepreneurship', 
+    name: 'Innovation & Entrepreneurship',
     progress: 45,
     weeks: 10,
     gradient: 'from-orange-500 to-red-500'
@@ -77,7 +77,7 @@ export default function HomePage() {
           <p className="text-white/90 text-lg max-w-2xl mb-6">
             Generate high-quality exam questions and model papers from your lecture materials using AI-powered generation.
           </p>
-          <Link 
+          <Link
             to="/model-paper"
             className="inline-flex items-center gap-2 bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-white/90 transition-colors"
           >
@@ -137,7 +137,7 @@ export default function HomePage() {
                 <p className="text-white/80 text-sm font-medium mb-1">{subject.code}</p>
                 <h3 className="text-xl font-bold">{subject.name}</h3>
               </div>
-              
+
               {/* Content */}
               <div className="p-6">
                 {/* Progress */}
@@ -147,13 +147,13 @@ export default function HomePage() {
                     <span className="font-medium text-gray-900">{subject.progress}%</span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full bg-gradient-to-r ${subject.gradient} rounded-full transition-all`}
                       style={{ width: `${subject.progress}%` }}
                     />
                   </div>
                 </div>
-                
+
                 {/* Stats */}
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span className="flex items-center gap-1">

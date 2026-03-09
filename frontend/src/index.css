@@ -63,3 +63,36 @@ body {
   background: #00C013;
   border-radius: 6px;
 }
+
+/* ── Adaptive Learning — 3D Flashcard Flip ─────────────────────────────────
+   Replaces Tailwind v3 perspective-1000 / transform-style-3d /
+   backface-hidden / rotate-y-180 utilities, which don't exist in v4.
+   ─────────────────────────────────────────────────────────────────────────── */
+.adaptive-card-container {
+  perspective: 1000px;
+}
+
+.adaptive-card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.adaptive-card-container:hover .adaptive-card-inner {
+  transform: rotateY(180deg);
+}
+
+.adaptive-card-front,
+.adaptive-card-back {
+  backface-visibility: hidden;
+}
+
+.adaptive-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Adaptive Learning — thin scrollbar inside flashcard back ─────────────── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+

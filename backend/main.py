@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import get_settings
 
 from routes.questions import router as questions_router
+from routes.adaptive import router as adaptive_router
 
 settings = get_settings()
 
@@ -23,6 +24,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(questions_router)
+app.include_router(adaptive_router)
 
 @app.get("/")
 async def root():

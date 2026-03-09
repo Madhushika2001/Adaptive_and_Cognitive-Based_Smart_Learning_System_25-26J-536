@@ -1,11 +1,11 @@
-import { BookOpen, FileText, Settings, Home, Sparkles, GraduationCap, Brain, HelpCircle, X, CalendarDays} from 'lucide-react';
+import { BookOpen, FileText, Settings, Home, Sparkles, Brain, HelpCircle, X, CalendarDays } from 'lucide-react';
 import { BarChart3 } from "lucide-react";
 import logo from '../assets/image_13.png';
 import { Link, useLocation } from 'react-router-dom';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
-  { name: 'Revision', href: '/revision', icon: BookOpen },
+  { name: 'Lecture Personalizing', href: '/revision', icon: Brain },
   { name: 'Quizzers', href: '/quizzers', icon: Brain },
   { name: 'Model Paper', href: '/model-paper', icon: FileText },
   { name: 'Progress', href: '/progress', icon: BarChart3 },
@@ -54,17 +54,16 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           const isActive = item.href === '/'
             ? location.pathname === '/'
             : location.pathname.startsWith(item.href);
-        
+
           return (
             <Link
               key={item.name}
               to={item.href}
               onClick={onClose} // close drawer after navigation on mobile
-              className={`flex items-center px-4 py-3 rounded-xl transition-all ${
-                isActive
-                  ? 'text-white shadow-lg'
-                  : 'hover:bg-white/10 hover:text-white'
-              }`}
+              className={`flex items-center px-4 py-3 rounded-xl transition-all ${isActive
+                ? 'text-white shadow-lg'
+                : 'hover:bg-white/10 hover:text-white'
+                }`}
               style={isActive ? { background: 'linear-gradient(90deg, #44A673 0%, #2E967E 50%, #158289 100%)' } : { color: '#087990' }}
             >
               <item.icon className={`h-5 w-5 mr-3 ${isActive ? 'text-white' : ''}`} style={!isActive ? { color: '#087990' } : undefined} />
@@ -116,16 +115,14 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       <div className="md:hidden">
         {/* Overlay */}
         <div
-          className={`fixed inset-0 z-40 bg-black/40 transition-opacity ${
-            isOpen ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+          className={`fixed inset-0 z-40 bg-black/40 transition-opacity ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
           onClick={onClose}
         />
         {/* Panel */}
         <aside
-          className={`fixed z-50 inset-y-0 left-0 w-72 transform transition-transform duration-200 ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed z-50 inset-y-0 left-0 w-72 transform transition-transform duration-200 ${isOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           {SidebarContent}
         </aside>
