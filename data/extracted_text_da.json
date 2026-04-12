@@ -1,1202 +1,792 @@
 [
   {
     "page": 1,
-    "content": "Log File, Recovery Models &\nOther Related Technologies\nDinesh Asanka",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 2,
-    "content": "WAL (Write Ahead Logging)\n• Every database will have at least two files, data file & log file.\n• Log file is a sequential file.\n• Every transaction will write to the Log file first.\n• Scheduled operation (CHECKPOINT) will write to the data file.",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Recovery Model\n• Simple Recovery Model\n• The simple recovery model directs SQL Server to truncate or empty the\ntransaction log. The transactional log will keep a transaction until it’s\nconfirmed in the data file, but after that point the space may be reused by\nanother transaction in a round-robin style. Because the transactional log in\nonly a temporary log, there’s no need for transaction-log backups.\n3",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Recovery Model\n• Full Recovery Model\n• The full recovery model offers the most robust recovery plan. Under this\nmodel all transactions are fully logged. The primary benefit of this model is\nthat every committed transaction in the database can be restored right up to\nthe point when falling occurred.\n• The trade-off for the high level transactional integrity is a certain amount of\nperformance;\n• Bulk-logged and Select-into operations will be slower.\n• Transaction log will occupy huge amount of disk space.\n• Backing up and restoring will take longer.\n4",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Recovery Model\n• Bulk-Logged Recovery Model\n• The bulk-logged recovery model is similar to the full recovery model except\nthat following operations are not logged.\n• Bulk Copy (BCP)\n• BULK INSERT\n• SELECT * INTO TABLE\n• INSERT … SELECT * FROM OPENROWSET(bulk…)\n• WriteText and UpdateText statements\n• Create Index\n• Because this recovery model does not log these operations they run very fast.\n5",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Backup Database\n• Full backup\n• A full backup contains all the data in a specific database or set of filegroups or files,\nand also enough log to allow for recovering that data.\n• Differential backup\n• A differential backup is based on the latest full backup of the data. This is known as\nthe base of the differential, or the differential base. A differential base is a full\nbackup of read/write data.\n• A differential backup contains only the data that has changed since the differential\nbase. Typically, differential backups that are taken fairly soon after the base backup\nare smaller and faster to create than the base of a full backup. Therefore, using\ndifferential backups can speed up the process of making frequent backups to\ndecrease the risk of data loss. Usually, a differential base is used by several\nsuccessive differential backups. At restore time, the full backup is restored first,\nfollowed by the most recent differential backup.\n6",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Backup Database\n• Log Backup\n• Under the full recovery model or bulk-logged recovery model, regular\ntransaction log backups (or log backups) are required.\n• Each log backup covers the part of the transaction log that was active when\nthe backup was created, and it includes all log records that were not backed\nup in a previous log backup.\n• An uninterrupted sequence of log backups contains the complete log chain of\nthe database, which is said to be unbroken.\n7",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 8,
-    "content": "SimpleRecovery\n8",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Full Recovery\n9",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 10,
-    "content": "LOG SHIPPING\n10",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Servers\n• Log shipping normally involves three SQL Servers; a primary server, a warm-\nstandby server and a monitor server.\n• The primary server is the main server to which clients normally connect. This server should\nbe a high-quality serve with redundant disk drives.\n• The warm-standby server is the backup server, otherwise known as the secondary server. If\nthe source server fails, it becomes the primary server. This server should be capable of\nmeeting the minimum performance requirements during a short-term crisis.\n• The monitor server polls both the primary server and the warm-standby server by keeping\ntrack of what files have been sent where, generating an alert when the two are out of syns. A\nsingle monitor server can monitor multiple log shipping configurations.\n• Each primary server database can have only one log shipping plan and each plan\ncan ship only one database. However, a plan may ship to multiple destination\nservers.\n11",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Log Shipping Process\n• Log Shipping uses SQL Agent on the participating servers to execute\nthe processes that maintain a warm stand by server.\n• Three main processes drive log shipping.\n• Backup the transaction log on the primary server. A SQL Agent job on the\nprimary server backs up the transaction log at a user-configurable time\ninterval to a file in a backup folder. By default, the filename is timestamped to\nprovide uniqueness: for example, databasename_yyyymmddhms.trn. The\nbackup job by default is named LSBackup_databasename and it executes a\noperating system command to backup the transaction log.\n• Copy the transaction log to the standby by server. A SQL Agent job on the\nstand by server uses UNC or shared drive to access the backup folder on the\nprimary server to copy the transaction log file to a local folder on the standby\nserver. The copy job by default is named LSCopy_servername_databasename\nand it executes an operating system command to copy the transaction log file.\n• Restore the transaction log on stand-by server. A SQL Agent Job on the standby\nserve restores the transaction log on the standby server. To restore the\ntransaction log, the database must be in either Standby or NoRecovery mode.\nThe restore job by default is named LSRestore_Serverame_databasename and\nit executes an operating system command to copy the transaction log file.\n12",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 13,
-    "content": "MIRRORING\n13",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 14,
-    "content": "Database Mirroring\n• Database Mirroring is a primarily software solution for increasing\ndatabase availability. Mirroring is implemented on a per-database\nbasis.\n• Mirroring works only with full recovery model.\n• Database mirroring is available in the Enterprise edition and in the\nStandard edition.\n• The user can mirror only the user databases.\n14",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 15,
-    "content": "Modes of Database Mirroring\n• Synchronous mode:\n(High Safety Mode)\n• Every transaction applied to the principal will also be committed on the\nmirror server.\n• Asynchronous mode:\n(High Performance Mode)\n• The principal server sends log information to the mirror server, without\nwaiting for an acknowledgement from the mirror server.\n15",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 16,
-    "content": "Understanding Database Mirroring Concepts\n• Principal: The principal server is the primary\ndatabase. This acts as a starting point in a database\nmirroring session. Every transaction that is applied to\nthe principal database will be transferred to the\nmirrored database.\n• Mirror : Mirror is the database that will receive the\ncopies from the principal server. There should be\nconsistent connection between the mirrored and the\nprincipal server.\n• Standby Server: In the process of database mirroring,\na standby server is maintained. This is not accessible\nto the users. In case of the principal server failing, the\nusers can easily switch over.\n16",
-    "file": "02-Log File, Recovery Models  Other Related.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nORACLE DATABASE\nINSTANCE\nIndika Alahapperuma\n28/7/2024",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 2,
-    "content": "Oracle Database Instance\n▪ Oracle database instance is a set of\nmemory structures and processes that\nexists in memory.\n▪ The instance manages database files\nand serves users requests.\n▪ Every running Oracle database is\nassociated with at least one Oracle\ndatabase instance.\n▪ A database instance begins when it is\ncreated with the STARTUP command and\nends when it is terminated.",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Database Instance Configurations\n3",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Read/Write and Read-Only Instances\nEvery database instance is either read/write or read-only\nRead/write – can process DML and queries\nRead-only – only process queries\n4",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Initialization Parameter File\n▪ The file contains configuration parameters that required to create and startup an\nOracle instance.\n▪ The instance reads initialization parameters at the instance startup.\n▪ Oracle database provides many initialization parameters to optimize its operations\nin different environments.\n• There are two types of initialization parameter files.\n– Server parameter file (spfile): this is a binary parameter file and it’s the preferred initialization\nparameter file. The file is written to and read only by Oracle database.\n– Text initialization parameter file (pfile): this is a text file that contains a list of initialization\nparameters. The file can be read by Oracle database but cannot be written by database.\n5",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Overview of Database Startup\nDatabase startup sequence\n6",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 7,
-    "content": "How does an Instance Start?\nInstance startup consists of following steps;\n1. Searches for spfile in a platform specific default location and, if not found, searches for pfile.\nName of the spfile is spfileORACLE_SID.ora and name of the pfile is initORACLE_SID.ora.\n2. Read the parameter file to determine values of the initialization parameters.\n3. Allocates the SGA based on the initialization parameter settings.\n4. Starts the Oracle background processes.\n5. Opens the alert.log and trace files and write all explicit parameter settings to the alert.log.\nAt this stage, no database is associated with the instance.\n7",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 8,
-    "content": "How does a Database Mount, Open?\n▪ Database Mount\n1. The instance obtains name of the database controlfiles specified in the CONTROL_FILES\ninitialization parameter and opens the files.\n2. Then, database reads the controlfiles to find the data files and online redo log files that it will\nattempt to access when opening the database.\n3. Mounted database is not ready for normal operations.\n▪ Database Open\nOpening a mounted database makes it available for normal database\noperations. Following actions are performed when a database is opened.\n1. Opens online data files in tablespaces other than undo tablespace.\n2. Acquires an undo tablespace.\n3. Opens the online redo log files.\n8",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Instance Startup",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Using SQL*Plus\n• Can be used the SQL*Plus binary available in the Oracle server if you have\nexecution permission for that binary.\n• Otherwise, use SQL*Plus client\n• Following command is used to connect to DB\nsqlplus <user name>/<password>@<oracle alias>\nusually Oracle alias is Oracle database name\n10",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Using SQL*Plus\n• If you login as ‘SYS’ user, it must be logged-in with ‘sysdba’ system privilege.\n– sqlplus sys as sysdba\n• Instead of user ‘SYS’ you may use following method as well. This is exactly same as\nconnecting to a database as ‘SYS’ user.\n– sqlplus / as sysdba\n11",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Overview of Database Shutdown\nDatabase shutdown sequence\n12",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 13,
-    "content": "Shutdown Modes\nA = ABORT I = IMMEDIATE\nT = TRANSACTIONAL N = NORMAL\n13",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 14,
-    "content": "SHUTDOWN Options\n14",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 15,
-    "content": "SHUTDOWN Options\n15",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 16,
-    "content": "Overview of Checkpoints\n▪ Checkpoint happens from a background process called ‘checkpoint process’(CKPT)\n▪ The CKPT process involves consistent database shutdowns, instance recovery and\ndatabase operations.\n▪ CKPT is responsible for writing to the data file headers and control files\n▪ CKPT occurs in a variety of situations\n▪ Consistent database shutdown\n▪ Online redo log switch\n▪ Execution of ALTER SYSTEM CHECKPOINT statement\n▪ Execution of ALTER DATABASE BEGIN BACKUP statement\n▪ When DBW process triggers\n▪ Tablespace read-only or taking it offline normal\n▪ Shrinking a data file\n▪ Executing ALTER TABLESPACE BEGIN BACKUP statement",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 17,
-    "content": "Purpose of Checkpoints\n▪ • Reduce the time required for recovery in case of an instance or media failure\n▪ • Ensure that the database regularly writes dirty buffers in the buffer cache to disk\n▪ • Ensure that the database writes all committed data to disk during a consistent\nshutdown",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 18,
-    "content": "Instance Recovery\n▪ Instance recovery is applying records in the online redo log to data files to\nreconstruct changes made after the most recent checkpoint.\n▪ Oracle Database performs instance recovery automatically in the following\nsituations: •\nThe database opens for the first time after the failure of a single-instance\ndatabase or all instances of an Oracle RAC database. This form of instance recovery\nis also called crash recovery. Oracle Database recovers the online redo threads of the\nterminated instances together.\nSome but not all instances of an Oracle RAC database fail. Instance recovery\nis performed automatically by a remaining instance in the configuration.\n▪ The SMON background process performs instance recovery, applying online redo\nautomatically. No user intervention is required.",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 19,
-    "content": "Purpose of Instance Recovery\n▪ Instance recovery ensures that the database is in a consistent state after an\ninstance failure.\n▪ When a transaction is committed, log writer process (LGWR) writes both the\nremaining redo entries in memory and the transaction SCN to the online redo log.\nHowever, the database writer (DBW) process writes modified data blocks to the data\nfiles whenever it is most efficient. For this reason, uncommitted changes may\ntemporarily exist in the data files while committed changes do not yet exist in the\ndata files.\n▪ If an instance of an open database fails, either because of a SHUTDOWN ABORT\nstatement or abnormal termination, then the following situations can result:\n▪ Data blocks committed by a transaction are not written to the data files and appear only in the\nonline redo log. These changes must be reapplied to the data files. •\n▪ The data files contains changes that had not been committed when the instance failed. These\nchanges must be rolled back to ensure transactional consistency",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 20,
-    "content": "CKPT in Instance Recovery\n▪ Instance recovery uses checkpoints to determine which changes must be applied to\nthe data files. The checkpoint position guarantees that every committed change\nwith an SCN lower than the checkpoint SCN is saved to the data files.\n▪ During instance recovery, the database must apply the changes that occur between\nthe checkpoint position and the end of the redo thread.",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 21,
-    "content": "Phases of Instance Recovery\n▪ The first phase of instance recovery is called cache recovery or rolling forward and\nreapplies all changes recorded in the online redo log to the data files.\n▪ These files could also contain uncommitted changes that were either saved to the\ndata files before the failure or were recorded in the online redo log and introduced\nduring cache recovery.\n▪ The second phase of instance recovery is called rolling back. Oracle Database\napplies undo blocks to roll back uncommitted changes in data blocks that were\nwritten before the failure or introduced during cache recovery.\n21",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 22,
-    "content": "Rolling Forward and Rolling Back",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 23,
-    "content": "Parameter File\n▪ To create and start Oracle instance\nparameter file is required.\n▪ There are two types of parameter files.\n▪ spfile: binary file and this is the Sample parameter file\npreferred type for Oracle database.\nThis file can be modified using\ndatabase only. No manual\nmodification is allowed.\n▪ init file: text file this is used to start\nOracle instance in the event spfile is\nnot available in the default location.\nThis is modified using the text editor\nused in the OS. Always instance\nrestart is required to make the\nchange effective",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 24,
-    "content": "Modification of Parameter File\n▪ The behaviors of the database can be modified after changing the parameter\nvalues\n▪ The classification of parameters as static or dynamic determines how they can be\nmodified.\n▪ Dynamic parameters can be changed on the fly if database was brought up using\nspfile\n▪ The scope of a parameter change depends on when the change takes effect. When\nan instance has been started with a server parameter file, you can use the ALTER\nSYSTEM SET statement to change values for system-level parameters as follows:\n▪ SCOPE=MEMORY\n▪ SCOPE=SPFILE\n▪ SCOPE=BOTH",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 25,
-    "content": "References\n▪ Oracle Database Concepts, 19c\n▪ Oracle 19c Amin Guide.\n25",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Instance.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration – IT4040\nORACLE DATABASE\nMULTITENANT\nARCHITECTURE\nIndika Alahapperuma\n6/8/2023",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
-  },
-  {
-    "page": 2,
     "content": "Multitenant Architecture\nThe multitenant architecture enables an Oracle database to be a multitenant container\ndatabase (CDB).\nA non-CDB is a traditional Oracle database that cannot contain PDBs. A CDB is a single\nphysical database that contains zero, one, or many user-created pluggable databases.\n2",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 3,
+    "page": 2,
     "content": "Benefits of Multitenant Architecture\nManageability\nDatabase consolidation\nCost reduction for hardware Convenient and efficient manageability\nEasier and more rapid movement of data Easier upgrade of data and code by\nand code unplugging and plugging in PDBs\nEasier management and monitoring of the Easier testing by using PDBs for development\nphysical database before plugging them in to the production CDB\nSeparation of data and code Ability to flash back an individual PDB to a\nprevious SCN\nAbility to set performance limits for memory\nand I/O at the PDB level\nRapid provisioning and cloning using SQL\nManage many databases as one",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 4,
+    "page": 3,
     "content": "Database Consolidation\nNon CDB\nConsolidation of non-CDBs in to a CDB",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 5,
+    "page": 4,
     "content": "Physical Architecture of a CDB in Local Undo Mode\nEach PDB has got separate SYSAUX, SYSTEM and UNDO tablespaces\n5",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 6,
+    "page": 5,
     "content": "Challenges for a Non-CDB Architecture\n• There are significant no. of databases in larger enterprises. Each DB has to be\nadministered separately.\n• Scaling is challenging\n• Server resources utilization is not optimal",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 7,
+    "page": 6,
     "content": "Basic Commands\n▪ SQL> select name, con_id from v$containers;\n▪ SQL> select name, con_id from v$controlfile;\n▪ SQL> select member, con_id from v$logfile;\n▪ SQL> select name, con_id from v$datafile;\n▪ SQL> select pdb_id, pdb_name,status from dba_pdbs;\n7",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
-    "page": 8,
+    "page": 7,
     "content": "Question\nA production deployment need to take place with eight Oracle\ndatabases up and running.\n▪ Discuss solution approaches available to facilitate business requirement.\n8",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
-  },
-  {
-    "page": 9,
-    "content": "References\n▪ Oracle Database Concepts, 19c\n▪ Oracle 19c Admin Guide.\n9",
-    "file": "2024-S2-IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
+    "file": "IT4011-Lecture -02-Oracle Database Multitenant Architecture.pdf"
   },
   {
     "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nCONFIGURING\nDATABASE NETWORK\nENVIRONMENT",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
-  },
-  {
-    "page": 2,
     "content": "Oracle Net Services Architecture\n▪ Oracle Net Services is a suite of networking components that provides\nenterprise-wide connectivity solutions in distributed, heterogeneous\ncomputing environments.\n▪ Oracle Net Services enables a network session from an application to a\ndatabase instance and a database instance to another database\ninstance.\n▪ Oracle Net Services provides location transparency, centralized\nconfiguration and management, and quick installation and configuration",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 3,
+    "page": 2,
     "content": "Oracle Net Listener\n▪ Listener is a server-side process that\nlistens for incoming client connection\nrequests and manages traffic to the\ndatabase.\n▪ The instance contacts a listener and\nestablishes a communication pathway to\nthis instance.\n▪ The database services running are\nregistered with the listener by LREG\nprocess\nA service name is a logical representation of a database, which is the way a database is\npresented to clients. A single database can be presented as multiple services.",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 4,
+    "page": 3,
     "content": "Databases and Listeners\nOne listener can listen for\nmore than one databases\nand one database can be\nlistened by a more than one\nlisteners\n4",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 5,
+    "page": 4,
     "content": "Establishing a Database Connection\nAfter connection is\nestablished, client\ndirectly communicates\nwith server\n5",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 6,
+    "page": 5,
     "content": "Service Name\n▪ A service name is a logical representation of a service\nused for client connections. When a client connects\nto a listener, it requests a connection to a service.\n▪ When a database instance starts, it registers itself with\na listener as providing one or more services by name.\nThus, the listener acts as a mediator between the client\nand instances and routes the connection request to\nthe right place.\n▪ Multiple services can be available in a single database\n6",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 7,
+    "page": 6,
     "content": "Overview of Services in a CDB\nClients must connect to PDBs using services. A connection using a\nservice name starts a new session in a PDB.\n7",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 8,
+    "page": 7,
     "content": "Tools for Configuring & Managing the Oracle Network\n▪ Oracle Net Manager\n▪ Oracle Net Configuration Assistant launched by Oracle Universal Installer\n▪ Command line\n8",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 9,
+    "page": 8,
     "content": "Oracle Net Listener Configuration\nThe default listener configuration file is listener.ora and it is in\n$ORACLE_HOME/network/admin\nAn Oracle database get registers with default listener just after starting it\nlistener.ora file contains following parameters\n▪ Name of the listener\n▪ Protocol addresses that the listener is accepting connection requests on\n▪ Valid nodes that the listener allows to register with the database\n▪ Database services\n▪ Control parameters\n9",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 10,
+    "page": 9,
     "content": "Sample Listener.ora File\nLISTENER=\n(DESCRIPTION=\n(ADDRESS_LIST=\n(ADDRESS=(PROTOCOL=tcp)(HOST=sale-server)(PORT=1521))\n(ADDRESS=(PROTOCOL=ipc)(KEY=extproc))))\nSID_LIST_LISTENER =\n(SID_LIST =\n(SID_DESC =\n(GLOBAL_DBNAME = db01)\n(ORACLE_HOME = /u01/app/oracle/product/11.1.0/db_1)\n(SID_NAME = db01)\n)\n(SID_DESC =\n(GLOBAL_DBNAME = dev12c)\n(ORACLE_HOME = /u01/app/oracle/product/12.1.0/dbhome_1)\n(SID_NAME = dev12c)\n)\n)\n10",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 11,
+    "page": 10,
     "content": "Listener Control Utility\nOracle Net listeners can be controlled with the command-line\nlsnrctl utility (or from EM).\n$lsnrctl\nLSNRCTL for Linux: Version 10.2.0.0.0 on 12-MAY-2005 13:27:51\nCopyright (c) 1991, 2004, Oracle. All rights reserved.\nWelcome to LSNRCTL, type \"help\" for information.\nLSNRCTL> help\nThe following operations are available\nAn asterisk (*) denotes a modifier or extended command:\nstart stop status\nservices version reload\nsave_config trace spawn\nchange_password quit exit\nset* show*\n11",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 12,
+    "page": 11,
     "content": "Listener Control Utility Syntax\nCommands from the listener control utility can be issued from the command line or\nfrom the LSNRCTL prompt.\nUNIX or Linux command-line syntax:\n$ lsnrctl <command name>\n$ lsnrctl start\n$ lsnrctl status\nPrompt syntax:\nLSNRCTL> <command name>\nLSNRCTL> start\nLSNRCTL> status\n12",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 13,
+    "page": 12,
     "content": "Details Required to Establishing a Database Connection\nTo make a client or middle-tier connection, Oracle Net requires the client to know the:\n▪ Host where the listener is running\n▪ Port that the listener is monitoring\n▪ Protocol that the listener is using\n▪ Name of the service that the listener is handling\nNames Resolution\n13",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 14,
+    "page": 13,
     "content": "Connection Establishment Process\nStep 2\nStep 1\nServer\nprocess\nUser PGA\nsession\nUser\nprocess\nIncoming\nconnection\nrequest",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 15,
+    "page": 14,
     "content": "Connection String\n▪ Users initiate a connection request by providing a connect string.\n▪ A connect string includes a username and password, along with a\nconnect identifier.\nExample connection 1\nCONNECT scott/tiger@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)\n(HOST=sales-server1)(PORT=1521))\n(CONNECT_DATA=(SERVICE_NAME=sales.us.acme.com)))\nExample connection 2\nCONNECT scott/tiger@sales\n15",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 16,
+    "page": 15,
     "content": "Naming Methods\nOracle Net supports several methods of resolving\nA naming method is a resolution method\nconnection information:\nused by a client application to resolve a\n▪ Easy connect naming: Uses a TCP/IP connect string\nconnect identifier to a connect descriptor\n▪ Local naming: Uses a local configuration file\nwhen attempting to connect to a\n▪ Directory naming: Uses a centralized\ndatabase service.\nLDAP-compliant directory server\n▪ External naming: Uses a supported non-Oracle naming\nservice\nClient/application server\nOracle Net\nOracle Net configuration files\n16",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 17,
+    "page": 16,
     "content": "Easy Connect\n▪ Is enabled by default\n▪ Requires no client-side configuration\n▪ Supports only TCP/IP (no SSL)\n▪ Offers no support for advanced connection options, such as:\n▪ Connect-time failover\n▪ Source routing\n▪ Load balancing\nsqlplus hr/hr@db.us.oracle.com:1521/dba10g\nNo Oracle Net configuration files\n17",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 18,
+    "page": 17,
     "content": "Local Naming\n▪ Requires a client-side Names Resolution file (tnsnames.ora)\n▪ Supports all Oracle Net protocols\n▪ Supports advanced connection options, such as:\n▪ Connect-time failover\n▪ Source routing\n▪ Load balancing\nsqlplus hr/hr@orcl\nOracle Net\nconfiguration\nfiles(tnsnames.ora)\n18",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 19,
+    "page": 18,
     "content": "Sample tnsnames.ora File\nPDBORCL =\n(DESCRIPTION =\n(ADDRESS_LIST =\n(ADDRESS = (PROTOCOL = TCP)(HOST = ec2-23-21-365-129.compute-\n1.amazonaws.com)(PORT = 1521))\n)\n(CONNECT_DATA =\n(SERVER = DEDICATED)\n(SERVICE_NAME = pdborcl)\n)\n)\n19",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 20,
+    "page": 19,
     "content": "Testing Oracle Net Connectivity\nThe tnsping utility that tests Oracle Net service aliases:\n▪ Ensures connectivity between the client and the Oracle Net Listener\n▪ Does not verify that the requested service is available\n▪ Supports Easy Connect Names Resolution:\ntnsping db.us.oracle.com:1521/dba10g\n▪ Supports local and directory naming:\ntnsping orcl\n20",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
-    "page": 21,
+    "page": 20,
     "content": "Question\n▪ Mention steps involved to establish a client session\nAnswer:\n1. The client initiates a connect request by providing a connect identifier.\n2. The connect identifier is resolved to a connect descriptor by a naming method.\nThis information is returned to the client.\n3. The client makes the connection request to the address provided in the connect\ndescriptor.\n4. A listener receives the request and directs it to the appropriate database server.\n5. After success verification of username and password, the connection is accepted\nby the database server.",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
-  },
-  {
-    "page": 22,
-    "content": "References\n▪ Oracle 19c Admin Guide.\n22",
-    "file": "2024-S2-IT4011-Lecture -03-Configuring Database Network Environment.pdf"
+    "file": "IT4011-Lecture -03-Configuring Database Network Environment.pdf"
   },
   {
     "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nUSER\nADMINISTRATION",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
-  },
-  {
-    "page": 2,
     "content": "Creating & Managing User Accounts\nFor any user to access a database a user account is required. When user account is\navailable user can access the database using appropriate authentication method.\nPassword is the most common authentication method.\n• There are many attributes related to a user account\n- Username, password, default tablespace, temporary tablespace, tablespace quota and profiles\n• It is mandatory to provide values for username and password when new user is created. Providing\nvalues for other attributes is optional\n• After a user account is created, except username all other attributes of a user account can be\naltered\n2",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 3,
+    "page": 2,
     "content": "What is Profile ?\n▪ A profile is a named set of resource limits that restrict a user's database usage and\ninstance resources, as well as password practices.\n▪ Individual users can be allocated with different profiles\n▪ At a time, each user can have only one profile.\n▪ If a profile assigned to a user is dropped, that user is automatically allocated for\ndefault profile\n3",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 4,
+    "page": 3,
     "content": "Create User\n▪ Ex: Create user TEST with password test123\nAssign default tablespace as ‘USERS’ and assingn10MB as the quota on the\ntablespace\nSpecify temporary tablespace to be ‘TEMP’\nSpecify profile as ‘MONITORING_PROFILE’\n▪ SQL > create user test identified by test123\ndefault tablespace USERS\ntemporary tablespace TEMP\nquota 110m on users\nprofile MONITORING_PROFILE;\n4",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 5,
+    "page": 4,
     "content": "Alter User\n▪ Except the username all other attributes of a user can be altered.\n▪ Ex:\nAlter such that quota 100KB on tablespace TOOLS\nAlter user’s profile to default\n5",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 6,
+    "page": 5,
     "content": "Alter User cont.\n▪ SQL> alter user test\nquota 100K on TOOLS\nProfile DEFAULT;\n▪ By default an individual user has privileges only to change their own password.\nSQL> alter user test identified by test321;\n▪ To change other attributes, required SYSTEM privilege should to be granted for each\nuser.\n6",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 7,
+    "page": 6,
     "content": "Managing Privileges\n▪ While grating privileges, the principal of least privilege is followed\n▪ Privileges allow a user to access database objects or execute stored programs that\nare owned by another user.\n▪ Privileges also enable a user to perform system-level operations, such as connecting\nto the database, creating a table, or altering the database.\n▪ Different categories of privileges are;\n▪ Object privileges: Permissions on schema objects such as tables, views, sequences, procedures,\nand packages. To use a schema object owned by another user, you need privileges on that object.\n▪ System privileges: Permissions on database-level operations, such as connecting to the database,\ncreating users, altering the database, or consuming unlimited amounts of tablespace.\n▪ Role privileges: Object and system privileges that a user has by way of a role. Roles are tools for\nadministering groups of privileges.\n7",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 8,
+    "page": 7,
     "content": "Granting Object Privileges\n▪ Object privileges allow grantee to use schema objects own by another user in\nparticular way.\n▪ There are different types of object privileges. Some privileges apply only to certain\ntypes of objects.\n▪ Ex:\n▪ Table object privileges\nSELECT, INSERT, UPDATE,DELETE etc.\n▪ View object privileges\nSELECT, INSERT, UPDATE, REFERNCES etc.\n▪ Sequence object privileges\nSELECT, ALTER\n▪ Stored functions, procedures, packages, and Java object privileges\nDEBUG, EXECUTE\n8",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 9,
+    "page": 8,
     "content": "Granting Object Privileges - Examples\n▪ Object privilege can be granted to another user or ROLE in a DB.\n▪ ROLE is a collection of privileges in a DB.\n▪ Ex: grant SELECT privilege on table CUSTOMER to user test.\nSQL > grant SELECT on SALES.CUSTOMER to TEST;\n▪ Ex: Grant SELECT, UPDATE, DELETE privileges on CUSTOMER to TEST\nSQL > grant SELECT, UPDATE, DELETE on SALES.CUSTOMER to TEST;\n▪ If you grant privileges to the special user PUBLIC, you make them available to all\ncurrent and future database users. For example, to give all database users the\nSELECT privilege on table CUSTOMERS,\nSQL > grant SELECT on SALES.CUSTOMERS to PUBLIC;\n9",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 10,
+    "page": 9,
     "content": "Granting & Revoking Object Privileges\n▪ When privilege is granted WITH GRANT OPTION, grantee can grant those privileges\nto other users and ROLEs\n▪ Ex:\nSQL> grant select on SALES.CUSTOMERS to TEST with grant option;\n▪ Privileges granted can be removed with REVOKE command.\n▪ Ex:\nSQL> revoke SELECT on SLAES.CUSTOMER from TEST;\n▪ The revoking of object privilege cascades\n10",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 11,
+    "page": 10,
     "content": "System Privileges\n▪ In general, system privileges permit the grantee to execute Data Definition Language\n(DDL) statements—such as CREATE, ALTER, and DROP—or Data Manipulation\nLanguage (DML) statements system wide.\n▪ Oracle 12c has more than 170 system privileges, all of which are listed in the data\ndictionary view SYSTEM_PRIVILEGE_MAP.\nEx:\nJob Scheduler: CREATE JOB, CREATE ANY JOB, MANAGE SCHEDULER\nIndexes: CREATE ANY INDEX, ALTER ANY INDEX, DROP ANY INDEX\nProcedure: CREATE PROCEDURE, EXECUTE PROCEDURE\nALTER DATABASE, ALTER SYSTEM\n11",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 12,
+    "page": 11,
     "content": "System Privileges\n▪ Unlike object privileges, revocation of system privileges does not cascade.\n▪ As with object privileges, you can grant system privileges to the special user PUBLIC.\nGranting privileges to PUBLIC allows anyone with a database account to exercise\nthis privilege.\n▪ Take care when system privileges are granting to PUBLIC\n▪ When privilege is granted WITH ADMIN OPTION, grantee can grant those privileges to\nother users and ROLEs\n▪ Grantor, DBA or other privilege user can revoke the privileges granted to grantee.\n▪ Ex:\n▪ SQL> revoke CREATE TABLE from TEST;\n▪ SQL> revoke FLASHBACK any table from public;\n▪ SQL> revoke CREATE INDEX, EXCUTE ANY PROCEDURE from TEST;\n12",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 13,
+    "page": 12,
     "content": "Role Privileges\n▪ A Role consists of collection of SYSTEM and OBJECT privileges. Also, one role can be granted to another role.\n▪ This makes privilege management easier.\n▪ Roles can be password protected.\n▪ To create a role, use the CREATE ROLE statement. INDENTIFIED BY clause is optional that requires users to authenticate\nthemselves before enabling the role.\n▪ At a time more than one role can be enabled per user.\n▪ Ex:\ncreate role APPLICATION\nSQL > create ROLE APPLICATION;\ngrant privileges to that role\nSQL > grant select any table, create any procedure to APPLICATION;\nSQL > grant select on SALES.CUSTOMER to APPLICATION;\n13",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
-    "page": 14,
+    "page": 13,
     "content": "Setting Default Roles\n▪ Roles that are enabled by default when you log on are called default roles. You do\nnot need to specify a password for default roles and do not have to execute a SET\nROLE statement to enable a default role.\n▪ Default role for a user account can be changed with ALTER USER <user name>\nDEFAULT ROLE role_list statement\n14",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
-  },
-  {
-    "page": 15,
-    "content": "References\n▪ Oracle 19c Admin Guide\n15",
-    "file": "2024-S2-IT4011-Lecture -04-User Administration.pdf"
+    "file": "IT4011-Lecture -04-User Administration.pdf"
   },
   {
     "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nMANAGING UNDO\nDATA",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
-  },
-  {
-    "page": 2,
     "content": "Undo Data\n▪ A copy of original, pre-modified data, stored in UNDO tablespace.\n▪ Captured for every transaction that changes data.\n▪ Retain at least until the transaction is ended.\n▪ The amount of undo data that is retained and time for which it is retained depend on\nthe amount of DB activity and DB configuration.\n▪ By default, Oracle database manages undo data automatically\n2",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 3,
+    "page": 2,
     "content": "Uses of Undo Data\n▪ Roll back transactions: if user wants to undo the transaction before commit.\n▪ Read-consistent queries: Once a query starts, any changes to the query’s underlying\ntables are not reflected in the query’s results.\n▪ Flashback query: Flashback query allows a user to see how a table looked at some\npoint in the past. As long as the undo data still exists for the requested point of\ntime.\n▪ Database recovery: uncommitted changes in the data files are roll backed during\ninstance recovery after an instance crash.\n▪ Recover from logical corruptions: using Oracle Flashback features.\n3",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 4,
+    "page": 3,
     "content": "Understanding Undo Segments\n• Like all other segments undo segments are\nmade up of extents which, in turn, consists of\ndata blocks.\n• Undo segments are automatically created by\nthe instance as needed to support\ntransactions.\n• Each transaction is assigned to only one undo\nsegment.\n• An undo segment can serve more than one\ntransaction at a time.",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 5,
+    "page": 4,
     "content": "Storing Undo Information\n▪ Undo information is stored in special tablespace called UNDO tablespace. If not\ndedicated UNDO tablespace is created, undo data are stored in SYSTEM tablespace.\n▪ At a time, a DB has ONLY ONE active undo tablespace, though DB can have more\nthan one UNDO tablepsaces.\n▪ Undo tablespace can be recovered only while the instance in MOUNT state.\n▪ Undo segments are always owned by SYS.\n▪ Undo tablespaces are permanent. They are managed like any other tablespace with\nthe exception of recovery. Because undo is required to recover from failed\ntransactions.\n▪ Undo tablespaces must be sized so that they can contain the original information\nfor all transactions.\n5",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 6,
+    "page": 5,
     "content": "Undo Data Versus Redo Data\nUndo Redo\nRecord of How to undo a change How to do a change\nagain\nUsed for Rollback, read- Rolling forward DB\nconsistency change\nStored in Undo segments Redo log files\nProtects against Inconsistent reads in Data loss\nmultiuser system\n6",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 7,
+    "page": 6,
     "content": "Monitoring Undo\n▪ The areas to monitor include\n- free space in an undo tablespace\n- ‘snapshot too old errors’.\n▪ Since undo information is retained until end of the transaction, for a transaction\nwhich generates large amount of undo data requires same space on UNDO\ntablespace. If not sufficient, user receives an error.\n▪ Another problem may be encountered when a query needs to access undo\ninformation that has been already overwritten.\n▪ This may happen when a query needs “snapshot” of data as of some time in the\npast, and the snapshot requires undo data that no longer exists.\n7",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 8,
+    "page": 7,
     "content": "Administering Undo\n▪ Administrator intervention for undo management include preventing; space errors in\nan undo tablespace and “snapshot too old errors”\n▪ To prevent “snapshot too old” errors:\n- configure an appropriate undo retention interval\n- size the undo tablespace properly\n- consider guaranteeing undo retention\n▪ To prevent space errors in an undo tablespace:\n- Size the undo tablespace properly\n- Ensure that large transactions commit periodically\n8",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 9,
+    "page": 8,
     "content": "Undo Retention\n▪ If there is no ‘Space Pressure ’ Oracle keeps undo data for longer period. The same\ndata is used by Flashback features and long running queries.\n▪ The UNDO_RETENTION initialization parameter specifies (in seconds) the minimum\namount of time that Oracle database attempts to retain old undo information before\noverwriting it.\n▪ But, this does not guarantee that database will never overwrite undo data before\nundo retention period.\n▪ If no space in undo tablespae for new DML transactions, database overwrites old\nundo data without keeping the time duration mention in the UNDO_RETENTION\nparameter.\n▪ To guarantee the retention of old undo data, undo tablespace should be created or\naltered with RETENTION GUARANTEE option.\n9",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 10,
+    "page": 9,
     "content": "Categories of Undo Information\n• There are three categories of undo information.\n1. Uncommitted undo(current undo) information: supports a currently running\ntransaction, and it is required if a user wants to roll back or if the transaction has\nfailed. Uncommitted undo information is never overwritten.\n2. Committed undo information: is no longer need to support a running transaction,\nbut its retention period is less than expected retention period. It is also known as\n“unexpired” undo information. Committed undo information is retained when\npossible by default, without causing an active transaction to fail because of lack\nof space.\n3. Undo data which is available for time period greater than the UNDO_RETENTION,\nis called “expired undo” information. It is no longer needed to support a running\ntransaction. Expired undo information is overwritten when space is required by an\nactive transaction.\n10",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
-    "page": 11,
+    "page": 10,
     "content": "Sizing the Undo Tablespace\n▪ Undo tablespaces must be sized so that they can contain the original information\nfor all transactions.\n▪ It is not advisable to enable automatic extension for datafiles in undo tablespace.\n11",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
-  },
-  {
-    "page": 12,
-    "content": "References\n• Oracle 12c Admin Guide.\n• Oracle 11g Concepts\n12",
-    "file": "2024-S2-IT4011-Lecture -05-Managing Undo Data.pdf"
+    "file": "IT4011-Lecture -05-Managing Undo Data.pdf"
   },
   {
     "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nDATABASE\nSECURITY",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
-  },
-  {
-    "page": 2,
     "content": "Some Initial Guidelines\n➢ In general, database security involves user\nauthentication, encryption, access control, and\nmonitoring.\n➢Don't let anyone do anything from anywhere at\nany time\n➢ Let certain people do certain things from\ncertain places at certain times\n2",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 3,
+    "page": 2,
     "content": "Security – Main facets\n➢ Authentication / Identification\n— Who are you\n➢ Authorisation\n— What you can do/see\n➢ Auditing\n— What you did\n• The what, when, who, where and how\n➢ Security should be database-centric, not application centric\n➢ There is now a focus on the database\n3",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 4,
+    "page": 3,
     "content": "Authentication / Identification\n➢ Strong and Weak Authentication\n— Username\n— IP address\n— Location\n— Client device\n— Passwords\n➢ Easy to ascertain identification on client server systems\n— Known user population\n➢ Not simple on web-based systems\n— Connection usually through a middle-tier application server\n• Proxy authentication\n— Connections often made through 'connection pooling'\n• All connections made under same user\n4",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 5,
+    "page": 4,
     "content": "Authorisation\n➢ Passwords\n— Must be encrypted\n— Stored securely\n— Transmitted securely\n— Managed by software and users\n— Special passwords for administrators\n— Default accounts\n— Single Sign On (SSO)\n— Enterprise users (global accounts)\n➢ Privileges\n— System\n— Object\n— Roles\n➢ Views\n➢ Fine-grained access\n5",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 6,
+    "page": 5,
     "content": "Auditing\n➢ System auditing\n— Logons\n— Logoffs\n— Table usage\n➢ Value-based (Trigger-based) Auditing\n— Monitoring changes to data\n➢ Auditing the DBA\n— Separation of responsibility\n— Protecting the audit trail\n➢ Focused auditing\n— Limiting impact on performance and storage\n➢ Fine-grained auditing\n➢ Archived auditing\nThe only thing worse than being robbed is not knowing you are being robbed\n6",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 7,
+    "page": 6,
     "content": "Protection against DBAs\n➢ Oracle Data Vault\n— A new product from Oracle\n— Designed to protect against inadvertent or malicious DBA activity\n— Has sets of rules, factors and realms\n— Sophisticated security policies\n➢ Oracle Audit Vault\n— New in Oracle11g\n— Secures the auditing activity\n7",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 8,
+    "page": 7,
     "content": "Threats\n➢ Important to identify\n— Threats\n— Weaknesses\n• Only as strong as weakest link\n— Appropriate protection mechanisms\n— People who can threaten\n— Least privileges\n➢ Perform risk analysis and security snapshots\n➢ SQL Injection\n— Good protection mechanisms available\n➢ Think like a hacker\n— The hackers dream\n1. Steal the data\n2. Leave no trace of being there\n3. Leave no evidence of any theft taking place\n• Means the hacker can repeat the theft or go onto even 'better' things\n8",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 9,
+    "page": 8,
     "content": "Who are the Hackers?\n➢ People having unauthorised access – not just hackers\n➢ Too many privileges\n➢ Internal attacks\n— Fed up or malicious employees\n— Employees trying to get the job done and circumventing controls\n➢ External attacks\n— Hackers try to get data and/or privilege escalation\n9",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 10,
+    "page": 9,
     "content": "Hardening the System\n➢ Remove unwanted and old accounts\n— Particularly unused default accounts\n➢ Allow only the required privileges\n— Audit any use of system privileges\n➢ Monitor the grants of system privileges\n➢ Use an Intrusion Detection System (IDS)\n➢ Keep the database patched\n➢ Restrict number of 'super' users\n➢ Protect the listener\n— Can be stopped causing denial of service\n10",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 11,
+    "page": 10,
     "content": "Hardening the System (continued)\n➢ Turn off un-needed daemons\n➢ Remove unwanted users\n➢ Remove unused software\n— Do not install options that are not necessary\n• Keep the attack surface small\n➢ Keep OS logs secure\n➢ Use non-standard ports (not 1521)\n— Close down ports (except perhaps port 80)\n➢ Manage passwords\n➢ Place limits on database resources\n➢ Use strong authentication and single sign-on\n➢ Code against SQL injection\n11",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 12,
+    "page": 11,
     "content": "Oracle Critical Patch Updates (CPUs)\n➢ Normally released every three months\n➢ Contain numerous bug fixes\n— Especially in the security area\n➢ Patch the database as soon as possible\n— Oracle have remote patch download\n• Database has to be shut down to apply patching\n• There are plans to have hot patching available in Oracle11g\n— Plans for better regression testing\n➢ Sometimes there may be a need to apply a fix before the CPU\n➢ Read the literature with the CPU\n➢ Check applicable versions, backports etc.\n12",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 13,
+    "page": 12,
     "content": "Security Information\n➢ Who are you\nIdentification\n➢ Where are you\n➢ What are you using\n➢ What do you want to do\n➢ What will you be affecting Authorisation\n➢ When do you want to do it\n➢ What happened\n➢ Where did it come from\n➢ When did it happen Auditing\n➢ Who did it\n➢ How did it happen\n13",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 14,
+    "page": 13,
     "content": "Auditing Overview\n➢ What to audit\n➢ How to audit\n➢ How to use audit records\n➢ Handling performance issues\n➢ Auditing can also show work patterns, frequency of use etc.\n➢ Auditing allows you to know when you have been robbed\n— Data can be 'stolen' without anyone knowing\n➢ Perform selective auditing\n— Blanket auditing can have a negative performance effect\n— Also produces massive, difficult to handle, audit trails\n➢ Last phase in security cycle – never dispense with it\n14",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 15,
+    "page": 14,
     "content": "Oracle Database Security Products & Solutions\n➢ Oracle offers different solutions to protect and mitigate risks\n— controls to evaluate risks\n— prevent unauthorized data disclosure,\n— detect and report on database activities\n— enforce data access controls in the database with data-driven security\n15",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 16,
+    "page": 15,
     "content": "Oracle Label Security\n➢ Each piece of data (row) is labelled with a security level\n— Access is allowed based on the user's security level\nSecurity Clearance = Sensitive\nApplication Table\nStore ID Revenue Department Sensitivity Label\nAX703 10200.34 Finance\nSensitive\nB789C 18020.34 Engineering Highly Sensitive\nJFS845 15045.23 Legal Confidential\nSF78SD 21004.45 HR\nPublic\n16",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 17,
+    "page": 16,
     "content": "Transparent Data Encryption\n➢ Stops unauthorized attempts from the\noperating system to access database\ndata stored in files\n➢ Oracle Database encryption is the\nprocess of transforming data into an\nunreadable format using a secret key\nand an encryption algorithm.\n➢ Transparent Data Encryption enables\nto encrypt individual table columns or\na tablespace.\n➢ When a user inserts data into an\nencrypted column, the database\nautomatically encrypts the data.\n➢ When users select the column, the\ndata is decrypted.\n17",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 18,
+    "page": 17,
     "content": "Data Redaction\n• Is the process of hiding data prior\nto display by the applications\n• Sensitive data is redacted on-the-\nfly without changing actual data\nstored in the database.\n18",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 19,
+    "page": 18,
     "content": "DBMS_REDACT\n➢ Use DBMS_REDACT package to mask the data on-the-fly\n➢ The Data Redaction policy applies to the querying user, depending on this\nuser's SYS_CONTEXT values\n➢ There are four data redaction function types\n— DBMS_REDACT.NONE\n— DBMS_REDACT.FULL\n— DBMS_REDACT.PARTIAL\n— DBMS_REDACT.RANDOM\n➢ Reference\n— https://docs.oracle.com/database/121/ARPLS/d_redact.htm#ARPLS73807\n19",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 20,
+    "page": 19,
     "content": "DBMS_REDACT Examples\n➢ Create new table and redact Date data column\n— CREATE USER app IDENTIFIED by redact123\nDEFAULT TABLESPACE users;\n— ALTER USER app quota unlimited ON users;\n— GRANT CONNECT,RESOURCE TO app;\n— GRANT EXECUTE ON dbms_redact TO app;\n— CREATE TABLE emp(\npk_emp_id INT GENERATED BY DEFAULT ON\nNULL AS IDENTITY,\nname VARCHAR2 (250),\ndob DATE,\nsalary number\n);\n20",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 21,
+    "page": 20,
     "content": "DBMS_REDACT Examples Cont.\n➢ Insert data\n— INSERT INTO EMP (NAME, DOB, salary) VALUES ('SILVA',\nTO_DATE('1980-01-02', 'YYYY-MM-DD'), 35000);\n➢ Add redaction policy -\nRedact to all users:\n21",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 22,
+    "page": 21,
     "content": "DBMS_REDACT Examples Cont.\n➢ drop redaction policy\n22",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
-  },
-  {
-    "page": 23,
-    "content": "DBMS_REDACT Examples Cont.\n➢ Add redaction policy –\nexclude some users/specific users:\n23",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
-  },
-  {
-    "page": 24,
-    "content": "Oracle database Vault\n➢Implement powerful\nsecurity controls to\nprotect application\ndata by privilege\nusers, reducing the\nrisk of insider and\noutsider threats and\naddressing common\ncompliance\nrequirements.\n24",
-    "file": "2024-S2-IT4011-Lecture -06-Database Security.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nMANAGING DATA\nCONSISTENCY &\nCONCURRENCY",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 2,
-    "content": "Introduction\n▪ In a multiuser database, statements with multiple simultaneous transactions can\nupdate the same data.\n▪ Transactions executing simultaneously must produce consistent results.\n▪ Therefore, multiuser database system must provide data concurrency and data\nconsistency.\n▪ Data concurrency\n▪ Which ensures that users can access data at the same time\n▪ Data consistency\n▪ Which ensures that each user sees a consistent view of data, including visible changes made by\nuser’s own transactions and committed transactions of other users.\n2",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Locking Mechanism\n▪ Designed to provide the maximum possible degree of data concurrency within the DB.\n▪ Transactions that modify data acquire row-level locks rather than block-level or table-\nlevel locks.\n▪ Modifications to objects obtain object-level locks rather than schema level or DB-level.\n▪ Data queries do not require a lock, and query succeeds even if someone has locked the\ndata.\n▪ When multiple transactions need to lock same resource, queue mechanism is\nestablished, and this is served FIFO basis. This queue mechanism is automatic, and no\nadministration is required.\n▪ All locks are released after COMMIT or ROLLBACK command.\n▪ If transaction fails, PMON releases locks held by the transaction.\n3",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Lock Modes\n▪ Oracle Database uses two modes of locking in a multiuser database:\n▪ Exclusive locks (X locks)\n▪ if a transaction holds an exclusive lock on row/table then a request from some other transaction on\nrow/table will be denied\n▪ Shared locks (S locks)\n▪ if a transaction holds a shared lock on row/table then a request from other transactions for an X lock will be\ndenied\n▪ a request from other transactions for a S lock on row/table will be granted",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Locking Behavior of Readers & Writers\n▪ A row is locked only when modified by a writer.\n▪ A writer of a row blocks a concurrent writer of the same row.\n▪ Reader never blocks a writer.\n▪ The only exception is SELECT ……. FOR UPDATE statement.\n▪ A writer never blocks a reader.\n5",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Oracle Database Locks\nLocks play a crucial role in maintaining\ndatabase concurrency and consistency.\nIn general database uses two types of\nlocks: exclusive locks and share locks.\nLocking is performed automatically.\nAutomatic locks are always obtained at\nthe lowest possible level to minimize\npotential conflicts with other\ntransactions.",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Lock Conflicts\n▪ Lock conflicts occur frequently and resolve\nthrough time and enqueue mechanism. In\nsome instances administrator intervention is\nrequired.\n▪ Possible causes of lock conflicts\n▪ Uncommitted changes\n▪ Long-running transactions\n▪ Unnecessarily high locking levels",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Deadlocks\n▪ Deadlock arise when two or more sessions wait for data locked by each other.\nBecause each is waiting for other, neither can complete their transaction to resolve\nthe lock conflict.\n▪ Database automatically detects deadlocks and resolve them by rollingback one\nstatement involved in the deadlock.\n8",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Deadlocks – Example\nSession 1 time Session2\nupdate emp set 11:00 update emp set mgr=7782 where\nsal=sal*1.5 where empno=7499;\nempno=7369;\nupdate emp set 11:15 update emp set mgr=7782 where\nsal=sal*1.5 where empno=7369;\nempno=7499;\nORA-00060: deadlock 11:16 Control returns to user\ndetected while waiting\nfor resource\n9",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 10,
-    "content": "References\n▪ Oracle 19c Admin Guide.\n▪ Oracle 19c Concepts\n10",
-    "file": "2024-S2-IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nBACKUP & RECOVERY\nCONCEPTS",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 2,
-    "content": "DBA’s Job & Categories of Failures\nDBA Job Categories of Failures\n• The DBA goal is to ensure DB is open 1. Statement\nand available for users as and when\nthey want to use it. 2. User process\n• Minimize data loss. 3. Network\n• Backup and recovery is a very\n4. User error\nimportant aspect of database high\navailability. 5. Instance\n6. Media\n❖ There are SIX categories of failures\n❖ Understanding of categories of failures help to maximize availability and quickly\nrecover from the failed situation.",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Statement Failures\n▪ Statement failures occur when a single database operation fails, such as a single INSERT\nstatement or creation of a table.\n▪ Attempts to access tables without the appropriate privileges - Provide the appropriate\nprivileges or create views on the tables and grant privileges on the view.\n▪ Running out of space - Add space to the tablespace, increase the user’s quota on the\ntablespace, or enable resumable space allocation.\n▪ Logic errors in applications - Work with developers to correct program errors or provide\nadditional logic in the application to recover gracefully from unavoidable errors\n3",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 4,
-    "content": "User Process Failures\n▪ Abnormal termination of a user session is termed as a user process failure.\n▪ If PMON finds a disconnected session, it rolls back the uncommitted transaction and releases\nlocks held by that session.\n▪ Causes of user process failures are\n- A user closes their SQL*Plus window without logging out.\n- The workstation reboots suddenly before the application can be closed.\n- The application program causes an exception and closes before the application can\nbe terminated normally.\n- A user process times out and Oracle disconnects the session.\n4",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Network Failures\n▪ When network component between the client and the database server fails, and the session\nis disconnected from the database.\n▪ In real situations, database server and your workstation are in different locations. Always\nnetwork connection is required to establish the connection between server and clients.\n▪ Following scenarios can be considered as network failures.\n- Listener failure\n- Network connection or NIC failure\n5",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 6,
-    "content": "User Error Failures\n▪ Though operations are succeeded from statement point of view users can still inadvertently\ndelete or modify data in tables or drop tables or indexes. This is known as user error failure.\n▪ Also this can lead to problems of both availability issue and data corruption. Hence,\nsometomes user errors can be a serious failure.\n6",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Instance Failures\n▪ An instance failure occurs when the instance shuts down without synchronizing all the\ndatabase files to the same system change number (SCN) appearing the control files, requiring\na recovery operation the next time the instance is started. Many of the reasons for instance\nfailure are out of our control.\n▪ Here are few causes of instance failures\n- A power outage\n- A server hardware failure\n- Failure of an Oracle background process\n- Emergency shutdown procedures (intentional power outage or SHUTDOWN ABORT )\n7",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Instance Recovery\n▪ Instance recovery is an automatic process.\n▪ Once, DBA starts instance as usual, the instance mounts the control file and then attempt to\nopen the data files.\n▪ There are number of background processes used in instance recovery.\n▪ Checkpoint (CKPT), LogWriter(LGWR), Archiver(ARCn)\n▪ Instance recovery involves two distinct operations\n▪ Rolling forward: data files are restored to their state before the instance failed\n▪ Rolling back: changes made but not committed are returned to their original state\n8",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Media Failures\n▪ A media failure is any type of failure that results in the loss of one or more database files:\ndatafiles, control files, or redo log files.\n▪ Sometimes media failure can be the most serious category of failure out of all failure\nscenarios.\n▪ The database file can be lost or corrupted for a number of reasons:\n- Failure of a disk drive\n- Failure of a disk controller\n- Inadvertent deletion or corruption of a database file\n9",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Configuring for Recoverability\n▪ To configure a database for maximum recoverability following measures must be taken\n▪ Schedule regular backup\n▪ Multiplex control files\n▪ Multiplex redo log groups\n▪ Retained archived copies of redo logs\n10",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Control Files\n▪ Protect against database failure by multiplexing control files. It is suggested that your\ndatabase has:\n▪ At least two copies (Oracle recommends three ) of the control file\n▪ Each copy on a separate disk\n▪ At least one copy on a separate disk controller\n11",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Redo Log Files\n▪ Multiplex redo log groups to protect against media failure and loss of data. It\nis suggested that redo log groups have:\n▪ At least two members (files) per group\n▪ Each member on a separate disk drive\n▪ Each member on a separate disk controller\nMember Member Member\nDisk 1\n1 2 1\nDisk 2 Member Member Member\n2 1 2\nGroup 1 Group 2 Group 3\n12",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 13,
-    "content": "Archive Log Files\n▪ Online redo log groups are written in circular way, filling one group and moving to the next.\nAfter all groups have been written to, the instance begins overwriting information in the first\nlog group.\n▪ To configure for maximum availability, a copy of online redo log group should be made before\nit to be overwritten. These copies are known as archived logs.\n13",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 14,
-    "content": "Archiver Process(ARCn)\n▪ Archiver (ARCn):\n▪ Is an optional\nSGA\nbackground process\n▪ Automatically archives\nRedo log\nonline redo log files when buffer\nARCHIVELOG mode is\nset for the database\n▪ Preserves the record of all\nchanges made to the database\nLogWriter\n(LGWR)\nArchive\nlog files\nArchiver\nOnline (ARCn)\nredo log\n14",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 15,
-    "content": "Summary\n▪ Identify the types of failure that may occur in an Oracle database\n▪ Describe ways to tune instance recovery\n▪ Identify the importance of checkpoints, redo log files, and archive log files\n▪ Configure database as recoverable\n15",
-    "file": "2024-S2-IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nORACLE DATABASE\nHIGH AVAILABILITY\nAND DISASTER\nRECOVERY",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 2,
-    "content": "High Availability(HA) and Disaster Recovery(DR)\n▪ HA : Ensuring continuous operational uptime with minimal service interruption.\n▪ DR : Strategies and processes to restore operations after a catastrophic failure.\n▪ Critical for business continuity, data integrity, and customer trust.",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 3,
-    "content": "High Availability Concepts\n• Computing environments configured to provide nearly\nfull-time availability are known as high availability\nsystems\n• Note that high availability isn’t called perfect availability\nor always available.\n• Such systems typically have redundant hardware and\nsoftware that makes the system available despite failures.\n• Well-designed high availability systems avoid having\nsingle points-of-failure",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 4,
-    "content": "High Availability Concepts\n• When failures occur, the failover process moves\nprocessing performed by the failed component to the\nbackup component\n• The more transparent that failover is to users, the higher\nthe availability of the system.\n• Hardware, software, environment and human resources\nare basic redundancy factors",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Disaster Recovery Concepts\n• Disaster recovery (DR) involves a set of policies,\ntools and procedures to enable the recovery or\ncontinuation of vital technology infrastructure and\nsystems following a disruptive event.\n• These disruptive events can be natural disasters\n(e.g., earthquakes, floods, hurricanes), human-made\nincidents (e.g., cyberattacks, data breaches, human\nerrors), or any other catastrophic occurrences that\ncan result in the loss of critical data and systems.\n• The primary goal of disaster recovery is to minimize\ndowntime and data loss, allowing an organization to\nreturn to normal operations as quickly as possible\nafter the disaster or disruption.",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Disaster Recovery Terminology\nDisaster recovery should indicate the key metrics of recovery point objective (RPO) and\nrecovery time objective (RTO)",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Disaster Recovery Options\nIn many cases,\norganizations use an\noutsourced DR site instead\nof maintaining their own\ndata center",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Significance of HA & DR for Businesses\nImportance of HA Benefits of HA and DR\n• Minimizes Downtime • Risk Mitigation\n• Business Continuity • Competitive Advantage\n• Customer Satisfaction • Reputation Management\n• Scalability and Growth\nImportance of DR\n• Data Protection\n• Compliance and Regulations\n• Cost Savings",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Oracle Database HA Features\n▪ Oracle Real Application Clusters (RAC)\nProvides fault tolerance, load\nbalancing, and high availability.\n▪ Backup and Restore\nManual process, taking time to\nbring up during a failure",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Disaster Recovery Planning\n▪ Key Considerations for DR Planning\nRPO (Recovery Point Objective)\nand RTO (Recovery Time Objective).\n▪ Testing and Validating DR Plans\n.\nRegular drills and updates to DR\nprocedures",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Oracle Database DR Strategies\n▪ Data Guard: Synchronous/asynchronous\nreplication for DR.\n▪ Oracle Active Data Guard\n.\nEnhances Data Guard with real-\ntime query, reporting, and backups on the\nstandby database\n▪ Backup and Restore\nManual process, taking time to\nbring up during a failure",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Challenges in Implementing HA and DR\n▪ Technical Challenges\nComplex configurations, network latency, and data synchronization.\n▪ Operational Challenges\nResource allocation, cost, and ongoing management.\n▪ Financial Challenges\nAdditional cost for hardware, software and administration",
-    "file": "2024-S2-IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nVECTOR SEARCH\nIN ORACLE\nDATABASE",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 2,
-    "content": "Introduction to Vector Search\n• It is designed for AI workload and allows to\nquery databases on semantics\n• Traditional keyword-based search looks for\nexact or partial matching of keywords.\n• vector search utilizes mathematical\nrepresentations (vectors) to understand the\nsemantic meaning of words and relationships\nbetween data points",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Vector Data Type\n• VECTOR data type introduced from 23ai\n• It represents a vector as a series of numbers\nstored as integers or floating-point numbers\n• Eg\nCREATE TABLE docs (doc_id INT, doc_text CLOB,\ndoc_vector VECTOR);",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Vector Embedding\n• It is a way of representing any kind of data\nsuch as text, images, videos, users, or music as\npoints in a multidimensional space where the\nlocations of those points in space, and\nproximity to others, are semantically\nmeaningful.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Vector Embedding Cont.\nWords enclosed as 2 – dimensional vectors",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Vector Embedding Cont.\n• Different pre-trained models can be used to\ngenerate vector embedding depending on the\ntype of data outside the Oracle DB.\n• If those models are compatible with Open\nNeural Network Exchange (ONNX), those\nmodels can be imported into Oracle DB\ndirectly.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Vector Embedding Cont.\nVector Embedding Model",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Similarity Search\n• Searching semantic similarity in a data set is\nnow equivalent to searching nearest\nneighbours in a vector space instead of using\ntraditional keyword searches using query\npredicates.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Similarity Search Cont.\nThe distance between wolf and dog in the vector space is shorter than\nthe distance between dog and kitten",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Applications of Vector Search\n• Image and Video Search: Finding similar images\nor videos based on content.\n• Natural Language Processing: Enhancing search\nengines with context-aware results.\n• Recommendation Systems: Suggesting products\nor content based on user behavior and\npreferences.\n• Anomaly Detection: Identifying outliers in\nfinancial transactions or security data.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Challenges in Vector Search\n• Computational complexity: Handling high-\ndimensional data.\n• Data quality: Impact of noise and errors in\nvectorization.\n• Scalability: Managing large volumes of\nvectors.\n• Real-time updates: Keeping vector indices up\nto date.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Future Trends in Vector Search\n• Growing integration of AI in databases.\n• Evolution of hybrid databases combining\ntraditional and vector search.\n• Enhanced indexing and retrieval methods for\nbetter accuracy and speed.\n• Expanding applications across industries.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage systems – IT4011\nDatabase Administration – IT4040\nVECTOR SEARCH\nIN ORACLE\nDATABASE",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 2,
-    "content": "Introduction to Vector Search\n• It is designed for AI workload and allows to\nquery databases on semantics\n• Traditional keyword-based search looks for\nexact or partial matching of keywords.\n• vector search utilizes mathematical\nrepresentations (vectors) to understand the\nsemantic meaning of words and relationships\nbetween data points",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Vector Data Type\n• VECTOR data type introduced from 23ai\n• It represents a vector as a series of numbers\nstored as integers or floating-point numbers\n• Eg\nCREATE TABLE docs (doc_id INT, doc_text CLOB,\ndoc_vector VECTOR);",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Vector Embedding\n• It is a way of representing any kind of data\nsuch as text, images, videos, users, or music as\npoints in a multidimensional space where the\nlocations of those points in space, and\nproximity to others, are semantically\nmeaningful.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Vector Embedding Cont.\nWords enclosed as 2 – dimensional vectors",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Vector Embedding Cont.\n• Different pre-trained models can be used to\ngenerate vector embedding depending on the\ntype of data outside the Oracle DB.\n• If those models are compatible with Open\nNeural Network Exchange (ONNX), those\nmodels can be imported into Oracle DB\ndirectly.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Vector Embedding Cont.\nVector Embedding Model",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Similarity Search\n• Searching semantic similarity in a data set is\nnow equivalent to searching nearest\nneighbours in a vector space instead of using\ntraditional keyword searches using query\npredicates.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Similarity Search Cont.\nThe distance between wolf and dog in the vector space is shorter than\nthe distance between dog and kitten",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Applications of Vector Search\n• Image and Video Search: Finding similar images\nor videos based on content.\n• Natural Language Processing: Enhancing search\nengines with context-aware results.\n• Recommendation Systems: Suggesting products\nor content based on user behavior and\npreferences.\n• Anomaly Detection: Identifying outliers in\nfinancial transactions or security data.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Challenges in Vector Search\n• Computational complexity: Handling high-\ndimensional data.\n• Data quality: Impact of noise and errors in\nvectorization.\n• Scalability: Managing large volumes of\nvectors.\n• Real-time updates: Keeping vector indices up\nto date.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Future Trends in Vector Search\n• Growing integration of AI in databases.\n• Evolution of hybrid databases combining\ntraditional and vector search.\n• Enhanced indexing and retrieval methods for\nbetter accuracy and speed.\n• Expanding applications across industries.",
-    "file": "2024-S2-IT4011-Lecture -10-Vector Search_1.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Database Administration & Storage\nsystems – IT4011\nDatabase Administration – IT4040\nORACLE DATABASE\nARCHITECTURE\nIndika Alahapperuma\n21/7/2024",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 2,
-    "content": "Oracle DB Server Architecture\n• Oracle DB server consists of an\nOracle instance and an Oracle\ndatabase\n• Combination of the SGA (System\nGlobal Area) and Oracle processes\nis called Oracle instance\n• Oracle database is referred as\nstorage structure of the database",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Multitenant Architecture\nMultitenant architecture enables\nan Oracle database to be a\nContainer DB(CDB).\n• CDB\nA CDB contains one or more user-\ncreated PDBs and application\ncontainers.\n• PDB\nA PDB is a portable collection of\nschemas, schema objects, and\nnonschema objects that appears to\nan application as a separate\ndatabase.\n• Application Container\nAn application container is an\noptional, user-created container\nwithin a CDB that stores data and\nmetadata for one or more\napplications.",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 4,
-    "content": "Database Instance Structure\nOracle Database Processes\nA process is a mechanism in an operating\nsystem that can run a series of steps.\nSome operating systems use the terms\njob, task, or thread.\nInstance Memory Structures\nOracle Database creates and uses\nmemory structures for program code,\ndata shared among users, and private\ndata areas for each connected user.",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Process Structure\n• There are three kind of processes in a\ndatabase server;\n• client process, server process and background\nprocess\n• A client process is started at the time a\ndatabase user requests a connection to the\nOracle server. Client process can run on a host\nother than the database host, but server\nprocess cannot.\n• Server process connects to the Oracle instance\nand is started when a user establishes a\nsession. The server process can read and write\ninto SAG, but client process can’t.\n• Background processes are started when\ninstance is started\n5",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Overview of Server Process\n▪ There are two types of server processes available in Oracle database instance to\nservice client requests;\n▪ Dedicated server process, which services only one user process\n▪ Shared server process, which can service multiple user processes\n▪ Database is always enabled to allow dedicated server process, but database need to\nbe configured and enabled for shared server.\n6",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Dedicated Server Architecture\n7",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Shared Server configuration and Processes\n8",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Shared Server Architecture\n▪ Potential benefits of shared server are;\n▪ reduces the number of processes on the operating system\n▪ reduces instance PGA memory\n▪ increases application scalability and the number of clients that can simultaneously connect to the\ndatabase\n▪ may be faster than dedicated server when the rate of client connections and disconnections is high\n▪ Disadvantages of shared server process are;\n▪ including slower response time in some cases\n▪ does not support full database features\n▪ increased complexity for setup and tuning\n▪ As a general guideline, only use shared server when you have more concurrent\nconnections to the database than the operating system can handle.\n9",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 10,
-    "content": "Application Architecture\n▪ The application architecture is the computing environment in which a database\napplication connects to an Oracle database.\n▪ Client/Server architecture, the client application initiates a request for an operation to be performed\non the database server.\n▪ Multitier architecture, one or more application servers perform parts of the operation.\nAn application server contains a large part of the\napplication logic, provides access to the data for\nthe client, and performs some query processing.\nLoad on the database decreases.\nThe application server can serve as an\ninterface between clients and multiple\ndatabases\nProvide an additional level of security.\n10",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Physical Database Structure\nDatabase consists of following three main types of\nfiles\n➢ Control files: Contains the data about database itself and\nvery critical\nData Online redo\n➢ Data files: Contains user or application data of the Control\ndatabase files files log files\n➢ Online redo log files: Allows for the instance recovery of\nthe database\nOther files required for successful\nParameter\noperation of the database\nBackup Archive log\nfile\n➢ Parameter file files files\n➢ Alert log files\n➢ Password file\n➢ Backup files Password Alert and trace\n➢ Archive log files file log files\n➢ Trace files\n11",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Parameter File\n▪ To create and start Oracle instance\nparameter file is required.\n▪ There are two types of parameter files.\nSample parameter file\n▪ spfile: binary file and this is the\npreferred type for Oracle database.\nThis file can be modified using\ndatabase only. No manual\nmodification is allowed.\n▪ init file: text file this is used to start\nOracle instance in the event spfile is\nnot available in the default location.\nThis is modified using text editor\nused in the OS.",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 13,
-    "content": "Alert Log\n▪ Every database has an alert log, which is\nan XML file containing a chronological\nlog of database messages and errors.\n▪ Database errors, warnings and some\nadministrative operations appear in the\nPortion of an alert.log\nalert.log",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 14,
-    "content": "Logical & Physical Storage Structures\nOracle Database allocates logical space for all data in\nthe database.\nThe logical units of database space allocation are\ndata blocks, extents, segments, and tablespaces.\nAt physical level, the data is stored in data files on\ndisk. The data in the data files is stored in operating\nsystem blocks.\n14",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 15,
-    "content": "Database Blocks, Extents and Segments\n▪ Oracle allocates logical database space for all data in\na database\n▪ At the finest level of granularity, Oracle stores data in\ndatabase blocks\n▪ The data is stored in OS level as bytes\n▪ At the time of database creation, database block size\nis fixed\n▪ The next level of logical database space is an extent.\nAn extent is a specific number of contiguous data\nblocks allocated for storing a specific type of\ninformation\n▪ A segment is a set of extents. Each segment is\nallocated for specific data structure and resides in\nsame tablespace\n▪ Eg: Table data is stored in table segment and index Segment Extents Data Disk\ndata is stored in index’s segment blocks blocks\n15",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 16,
-    "content": "Tablespaces\n• Oracle database stores data in logical structure called ‘Tablespace’\n• Tablespace consists of data files which reside on the file system of the database\nserver. This is a physical file\n• A tablespace consists of one or more data files\n• One data file belongs only to one tablespace\n• SYSTEM, SYSAUX and UNDO tablespaces are mandatory tablespace for a database\n• DBA can create other tablespaces to store user/application data\n16",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 17,
-    "content": "Tablespaces and datafiles\n17",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 18,
-    "content": "The Relationships Among Segments, Extents, and Data Blocks\n18",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 19,
-    "content": "Segments, Extents & Data Blocks Within a Tablespace\n19",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 20,
-    "content": "Database Block Size\n▪ Every database has a database block\n▪ DB_BLOCK_SIZE initialization parameter sets database block size\n▪ Block size of all tablespaces defaults to database block size\n▪ If required different block size tablespaces can be created",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 21,
-    "content": "References\n▪ Oracle Database Concepts, 23ai\n21",
-    "file": "2024-S2-IT4040-Lecture -01-Oracle Database Architecture.pdf"
-  },
-  {
-    "page": 1,
-    "content": "Types of Databases\nDinesh Asanka",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 2,
-    "content": "How to Choose a Database\n• What is the “good” database",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 3,
-    "content": "Complex Data\nGraphs &\nSequence Data Network Other Kinds of Data\nMining\nTime Series Symbolic Biological Nodes / Social Data Multimedia\nSpatial Data Web Data\nData Sequences Sequences Links Network Streams Data",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 4,
-    "content": "What are Transactions?\nA transaction is an atomic unit of work\nA transaction leaves data in a consistent state\nA transaction is isolated from other concurrent\ntransactions\nA transaction is durable",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 5,
-    "content": "Atomicity – Failure Rollback\n• Some runtime errors during a batch may result in unacceptable partial\nsuccess:\nPart of the batch succeeds and part fails, leaving behind the results from the part\n•\nof the batch that succeeded\n• Simple error handling within a batch cannot repair partial success\n--Batch without transaction management\nBEGIN TRY\nINSERT INTO Sales.Orders ... --Insert succeeds\nINSERT INTO Sales.OrderDetails ... --Insert fails\nEND TRY\nBEGIN CATCH\n--Inserted rows still exist in Sales.Orders Table\nSELECT ERROR_NUMBER()\n...\nEND CATCH;",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 6,
-    "content": "Transactions Extend Batches\n• Transaction commands identify blocks of code that must\nsucceed or fail together and provide points where the database\nengine can roll back, or undo, operations:\nBEGIN TRY\nBEGIN TRANSACTION\nINSERT INTO Sales.Orders ... --Insert succeeds\nINSERT INTO Sales.OrderDetails ... --Insert fails\nCOMMIT TRANSACTION -- If no errors, transaction\n-- completes\nEND TRY\nBEGIN CATCH\n--Inserted rows still exist in Sales.Orders Table\nSELECT ERROR_NUMBER()\nROLLBACK TRANSACTION --Any transaction work undone\nEND CATCH;",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 7,
-    "content": "Isolation - Concurrency Control\n• Pessimistic\n• Two Phase Locking Mechanism\n• Acquiring a lock before using the data\n• Holding the locks until you are done until,\n• COMMIT\n• ROLLBACK\n• Dead Lock will occur.\n• Optimistic\n• Transaction are updated in a separate location.\n• Updated to the data when entire is completed.\n• If there are conflicts, transaction will ABORT.",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 8,
-    "content": "Durability - Transaction Recovery\nTransaction Recovery Action Required\n1\nNone\n2 Roll forward\n3 Roll back\n4 Roll forward\n5 Roll back\nCheckpoint System Failure",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 9,
-    "content": "Considerations for using Transactions\nKeep transactions as short as possible\nDo not require user input\nDo not browse data\nAccess the least amount of data possible\nDo not open the transaction before it is required\nTry to access resources in the same order\nAccessing resources in the same order within transactions can\nhelp avoid deadlocks\nThis is not always possible\nConsiderations for nested transactions\nAllowed by syntax but true nesting not supported\nUse @@trancount to determine nesting level\nWhen a nested transaction rolls back, it rolls back the outer\ntransaction as well",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 10,
-    "content": "CAP Theory\n• Proposed by Eric Brewer and subsequently proved by Gilbert & Lynch.\n(MIT & NUS).\n• In distributed system you can satisfy at most 2 out of 3 guarantees,\n• Consistency: All nodes see same data at any time or reads return latest\nwritten value by any client/\n• Availability: The system allows operations all the time and operation return\nquickly.\n• Partial Tolerance: The system continuous to work in spite of network\npartitions..",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 11,
-    "content": "Why Availability is Important\n• Availability = Read/Write complete reliably and quickly.\n• Research has shown that a 500ms increase in latency for operations\nat Amazon.com or Google can cause 20% drop in revenue.\n• At amazon.com each added millisecond of latency implies a $6M\nyearly loss.",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 12,
-    "content": "Why Consistency is Important\n• Consistency = all nodes see same data at any time, or reads return\nlatest value by any client.\n• When you access your bank or investment account via multiple\nclients you want the update done from one client to be visible to\nother clients.\n• When thousands of customer are looking to book flight, all updates\nfrom any client should be accessible to other clients.",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 13,
-    "content": "Why Partition Tolerance is Important?\n• Partitions can happen across datacenters when the Internet gets\ndisconnected.\n• Partitions can also occur within datacenter.\n• Desire system still continue to functioning normally under these\nscenarios.",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 14,
-    "content": "Eventual Consistency\n• If all writes stop (to a key), then all its values (replicas) will converge\neventually.\n• If writes continue, then system always tries to keep converging.\n• Moving “wave” of updated values lagging behind the latest values sent by\nclients, but always trying to catchup.\n• May still return stale values to clients (if many back-to-back writes)\n• However, works well when there a few periods of low writes – system\nconverges quickly.",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 15,
-    "content": "Databases in CAP theory",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 16,
-    "content": "RDBMS -> NOSQL ->NewSQL",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 17,
-    "content": "Different Databases\nDocument Search Relational Time Series\nDatabases Databases Databases Databases\n• Optimized • Optimized • Database • Optimized\nfor storing for full-text optimized for for\ndocuments searches. the tabular collecting,\nstorage of storing,\nrelated data retrieving &\nin rows & processing of\ncolumns time series\ndata",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 18,
-    "content": "NoSQL Databases (Not Only SQL)\nDifferent Types of NoSQL Databases",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 19,
-    "content": "Pros and Cons in MongoDB\n• Related data stores together\n• One-to-One mapping between the app and the DB\n• Schema Modifications are not difficult\n• No complex transactions\n• No Joins , so multiple joins are not possible",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 20,
-    "content": "JSON File Structure",
-    "file": "DA_01_Database Types.pdf"
-  },
-  {
-    "page": 21,
-    "content": "SQL to Mongo Mapping Chart\nSQL Statement Mongo Query Language Statement\nCREATE TABLE USERS (a Number, b Number) implicit\nINSERT INTO USERS VALUES(1,1) db.users.insert({a:1,b:1})\nSELECT a,b FROM users db.users.find({}, {a:1,b:1})\nSELECT * FROM users db.users.find()\nSELECT * FROM users WHERE age=33 db.users.find({age:33})\nSELECT a,b FROM users WHERE age=33 db.users.find({age:33}, {a:1,b:1})\nSELECT * FROM users WHERE age=33 ORDER BY name db.users.find({age:33}).sort({name:1})\nSELECT * FROM users WHERE age>33 db.users.find({'age':{$gt:33}})})\nSELECT * FROM users WHERE age<33 db.users.find({'age':{$lt:33}})})\nSource: www.mongodb.org",
-    "file": "DA_01_Database Types.pdf"
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
     "page": 22,
-    "content": "SQL to Mongo Mapping Chart\nSQL Statement Mongo Query Language Statement\nSELECT * FROM users WHERE name LIKE \"%Joe%\" db.users.find({name:/Joe/})\nSELECT * FROM users WHERE age>33 AND age<=40 db.users.find({'age':{$gt:33,$lte:40}})})\nSELECT * FROM users ORDER BY name DESC db.users.find().sort({name:-1})\nSELECT DISTINCT last_name FROM users db.users.distinct('last_name')\nSELECT COUNT(*) FROM users db.users.count()\nUPDATE users SET a=1 WHERE b='q' db.users.update({b:'q'}, {$set:{a:1}}, false, true)\nDELETE FROM users WHERE z=\"abc\" db.users.remove({z:'abc'});\nSource: www.mongodb.org",
-    "file": "DA_01_Database Types.pdf"
+    "content": "DBMS_REDACT Examples Cont.\n➢ Add redaction policy –\nexclude some users/specific users:\n23",
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
     "page": 23,
-    "content": "Processor Time",
-    "file": "DA_01_Database Types.pdf"
+    "content": "Oracle database Vault\n➢Implement powerful\nsecurity controls to\nprotect application\ndata by privilege\nusers, reducing the\nrisk of insider and\noutsider threats and\naddressing common\ncompliance\nrequirements.\n24",
+    "file": "IT4011-Lecture -06-Database Security.pdf"
   },
   {
-    "page": 24,
-    "content": "Other Features\n• Replica Sets\n• Sharding\n• Stored Java Scripts\n• C# Support",
-    "file": "DA_01_Database Types.pdf"
+    "page": 1,
+    "content": "Introduction\n▪ In a multiuser database, statements with multiple simultaneous transactions can\nupdate the same data.\n▪ Transactions executing simultaneously must produce consistent results.\n▪ Therefore, multiuser database system must provide data concurrency and data\nconsistency.\n▪ Data concurrency\n▪ Which ensures that users can access data at the same time\n▪ Data consistency\n▪ Which ensures that each user sees a consistent view of data, including visible changes made by\nuser’s own transactions and committed transactions of other users.\n2",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 25,
-    "content": "Graph Databases\n• Network Applications\n• Nodes and edges\n• Edge like a join\n• Node like a row\n• Node can have property or value\n• Neo4j is a popular graph db",
-    "file": "DA_01_Database Types.pdf"
+    "page": 2,
+    "content": "Locking Mechanism\n▪ Designed to provide the maximum possible degree of data concurrency within the DB.\n▪ Transactions that modify data acquire row-level locks rather than block-level or table-\nlevel locks.\n▪ Modifications to objects obtain object-level locks rather than schema level or DB-level.\n▪ Data queries do not require a lock, and query succeeds even if someone has locked the\ndata.\n▪ When multiple transactions need to lock same resource, queue mechanism is\nestablished, and this is served FIFO basis. This queue mechanism is automatic, and no\nadministration is required.\n▪ All locks are released after COMMIT or ROLLBACK command.\n▪ If transaction fails, PMON releases locks held by the transaction.\n3",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 27,
-    "content": "Why Time Series Databases?\n• Time Series data consist of continuous numeric values that are obtained over equal time interval such as\nseconds, minutes, hours or days.\n• Large volume and high precision of data generated from devices.\n• Storage Optimization and compression.\n• Real Time Queries on Large Datasets.\n• Retention Policies depending on data.",
-    "file": "DA_01_Database Types.pdf"
+    "page": 3,
+    "content": "Lock Modes\n▪ Oracle Database uses two modes of locking in a multiuser database:\n▪ Exclusive locks (X locks)\n▪ if a transaction holds an exclusive lock on row/table then a request from some other transaction on\nrow/table will be denied\n▪ Shared locks (S locks)\n▪ if a transaction holds a shared lock on row/table then a request from other transactions for an X lock will be\ndenied\n▪ a request from other transactions for a S lock on row/table will be granted",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 29,
-    "content": "Google Spanner\n• ACID Properties\n• SQL Query Language\n• Semi-Relational Data Model\n• Running Google Ad’s data",
-    "file": "DA_01_Database Types.pdf"
+    "page": 4,
+    "content": "Locking Behavior of Readers & Writers\n▪ A row is locked only when modified by a writer.\n▪ A writer of a row blocks a concurrent writer of the same row.\n▪ Reader never blocks a writer.\n▪ The only exception is SELECT ……. FOR UPDATE statement.\n▪ A writer never blocks a reader.\n5",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 30,
-    "content": "Spanner Architecture",
-    "file": "DA_01_Database Types.pdf"
+    "page": 5,
+    "content": "Oracle Database Locks\nLocks play a crucial role in maintaining\ndatabase concurrency and consistency.\nIn general database uses two types of\nlocks: exclusive locks and share locks.\nLocking is performed automatically.\nAutomatic locks are always obtained at\nthe lowest possible level to minimize\npotential conflicts with other\ntransactions.",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 31,
-    "content": "Top Priorities - 2022",
-    "file": "DA_01_Database Types.pdf"
+    "page": 6,
+    "content": "Lock Conflicts\n▪ Lock conflicts occur frequently and resolve\nthrough time and enqueue mechanism. In\nsome instances administrator intervention is\nrequired.\n▪ Possible causes of lock conflicts\n▪ Uncommitted changes\n▪ Long-running transactions\n▪ Unnecessarily high locking levels",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 32,
-    "content": "Cloud Market Share",
-    "file": "DA_01_Database Types.pdf"
+    "page": 7,
+    "content": "Deadlocks\n▪ Deadlock arise when two or more sessions wait for data locked by each other.\nBecause each is waiting for other, neither can complete their transaction to resolve\nthe lock conflict.\n▪ Database automatically detects deadlocks and resolve them by rollingback one\nstatement involved in the deadlock.\n8",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 33,
-    "content": "Four New Features in Today’s Cloud\n• Massive Scale\n• On-demand Access\n• Pay-as-you-go\n• No upfront commitment\n• Data Intensive Nature\n• What MBs has now become TBs, PBs and XBs.\n• Daily Logs, Forensics, Web Data\n• New Cloud Programming Paradigms\n• MapReduce/Hadoop\n• NoSQL\n• Cassandra\nCombination of one or more of these gives rise to novel and\nunsolved distributed computing problems in cloud computing\n33",
-    "file": "DA_01_Database Types.pdf"
+    "page": 8,
+    "content": "Deadlocks – Example\nSession 1 time Session2\nupdate emp set 11:00 update emp set mgr=7782 where\nsal=sal*1.5 where empno=7499;\nempno=7369;\nupdate emp set 11:15 update emp set mgr=7782 where\nsal=sal*1.5 where empno=7369;\nempno=7499;\nORA-00060: deadlock 11:16 Control returns to user\ndetected while waiting\nfor resource\n9",
+    "file": "IT4011-Lecture -07-Managing Data Consistency  Concurrency.pdf"
   },
   {
-    "page": 34,
-    "content": "34",
-    "file": "DA_01_Database Types.pdf"
+    "page": 1,
+    "content": "DBA’s Job & Categories of Failures\nDBA Job Categories of Failures\n• The DBA goal is to ensure DB is open 1. Statement\nand available for users as and when\nthey want to use it. 2. User process\n• Minimize data loss. 3. Network\n• Backup and recovery is a very\n4. User error\nimportant aspect of database high\navailability. 5. Instance\n6. Media\n❖ There are SIX categories of failures\n❖ Understanding of categories of failures help to maximize availability and quickly\nrecover from the failed situation.",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
   },
   {
-    "page": 36,
-    "content": "Serverless\n• Serverless computing enables developers to build applications faster\nby eliminating the need for them to manage infrastructure.\n• The cloud service provider automatically provisions, scales, and\nmanages the infrastructure required to run the code.\n• The serverless name comes from the fact that the tasks associated\nwith infrastructure provisioning and management are invisible to the\ndeveloper.\n36",
-    "file": "DA_01_Database Types.pdf"
+    "page": 2,
+    "content": "Statement Failures\n▪ Statement failures occur when a single database operation fails, such as a single INSERT\nstatement or creation of a table.\n▪ Attempts to access tables without the appropriate privileges - Provide the appropriate\nprivileges or create views on the tables and grant privileges on the view.\n▪ Running out of space - Add space to the tablespace, increase the user’s quota on the\ntablespace, or enable resumable space allocation.\n▪ Logic errors in applications - Work with developers to correct program errors or provide\nadditional logic in the application to recover gracefully from unavoidable errors\n3",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
   },
   {
-    "page": 37,
-    "content": "Top benefits of serverless computing\n37",
-    "file": "DA_01_Database Types.pdf"
+    "page": 3,
+    "content": "User Process Failures\n▪ Abnormal termination of a user session is termed as a user process failure.\n▪ If PMON finds a disconnected session, it rolls back the uncommitted transaction and releases\nlocks held by that session.\n▪ Causes of user process failures are\n- A user closes their SQL*Plus window without logging out.\n- The workstation reboots suddenly before the application can be closed.\n- The application program causes an exception and closes before the application can\nbe terminated normally.\n- A user process times out and Oracle disconnects the session.\n4",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
   },
   {
-    "page": 38,
-    "content": "3. Data Intensive Computing\n• Computation Intensive\n• High Performance Computing\n• Runs in Super-computers\n• Data Intensive\n• Typically store data at datacenters\n• Use compute nodes nearby\n• Compute nodes run computation services\n• In data incentive computing the focus shift from computation to data\n• CPU utilization no longer the most important resource metric\n38",
-    "file": "DA_01_Database Types.pdf"
+    "page": 4,
+    "content": "Network Failures\n▪ When network component between the client and the database server fails, and the session\nis disconnected from the database.\n▪ In real situations, database server and your workstation are in different locations. Always\nnetwork connection is required to establish the connection between server and clients.\n▪ Following scenarios can be considered as network failures.\n- Listener failure\n- Network connection or NIC failure\n5",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 5,
+    "content": "User Error Failures\n▪ Though operations are succeeded from statement point of view users can still inadvertently\ndelete or modify data in tables or drop tables or indexes. This is known as user error failure.\n▪ Also this can lead to problems of both availability issue and data corruption. Hence,\nsometomes user errors can be a serious failure.\n6",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 6,
+    "content": "Instance Failures\n▪ An instance failure occurs when the instance shuts down without synchronizing all the\ndatabase files to the same system change number (SCN) appearing the control files, requiring\na recovery operation the next time the instance is started. Many of the reasons for instance\nfailure are out of our control.\n▪ Here are few causes of instance failures\n- A power outage\n- A server hardware failure\n- Failure of an Oracle background process\n- Emergency shutdown procedures (intentional power outage or SHUTDOWN ABORT )\n7",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 7,
+    "content": "Instance Recovery\n▪ Instance recovery is an automatic process.\n▪ Once, DBA starts instance as usual, the instance mounts the control file and then attempt to\nopen the data files.\n▪ There are number of background processes used in instance recovery.\n▪ Checkpoint (CKPT), LogWriter(LGWR), Archiver(ARCn)\n▪ Instance recovery involves two distinct operations\n▪ Rolling forward: data files are restored to their state before the instance failed\n▪ Rolling back: changes made but not committed are returned to their original state\n8",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 8,
+    "content": "Media Failures\n▪ A media failure is any type of failure that results in the loss of one or more database files:\ndatafiles, control files, or redo log files.\n▪ Sometimes media failure can be the most serious category of failure out of all failure\nscenarios.\n▪ The database file can be lost or corrupted for a number of reasons:\n- Failure of a disk drive\n- Failure of a disk controller\n- Inadvertent deletion or corruption of a database file\n9",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 9,
+    "content": "Configuring for Recoverability\n▪ To configure a database for maximum recoverability following measures must be taken\n▪ Schedule regular backup\n▪ Multiplex control files\n▪ Multiplex redo log groups\n▪ Retained archived copies of redo logs\n10",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 10,
+    "content": "Control Files\n▪ Protect against database failure by multiplexing control files. It is suggested that your\ndatabase has:\n▪ At least two copies (Oracle recommends three ) of the control file\n▪ Each copy on a separate disk\n▪ At least one copy on a separate disk controller\n11",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 11,
+    "content": "Redo Log Files\n▪ Multiplex redo log groups to protect against media failure and loss of data. It\nis suggested that redo log groups have:\n▪ At least two members (files) per group\n▪ Each member on a separate disk drive\n▪ Each member on a separate disk controller\nMember Member Member\nDisk 1\n1 2 1\nDisk 2 Member Member Member\n2 1 2\nGroup 1 Group 2 Group 3\n12",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 12,
+    "content": "Archive Log Files\n▪ Online redo log groups are written in circular way, filling one group and moving to the next.\nAfter all groups have been written to, the instance begins overwriting information in the first\nlog group.\n▪ To configure for maximum availability, a copy of online redo log group should be made before\nit to be overwritten. These copies are known as archived logs.\n13",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 13,
+    "content": "Archiver Process(ARCn)\n▪ Archiver (ARCn):\n▪ Is an optional\nSGA\nbackground process\n▪ Automatically archives\nRedo log\nonline redo log files when buffer\nARCHIVELOG mode is\nset for the database\n▪ Preserves the record of all\nchanges made to the database\nLogWriter\n(LGWR)\nArchive\nlog files\nArchiver\nOnline (ARCn)\nredo log\n14",
+    "file": "IT4011-Lecture -08-Backup  Recovery Concepts.pdf"
+  },
+  {
+    "page": 1,
+    "content": "High Availability(HA) and Disaster Recovery(DR)\n▪ HA : Ensuring continuous operational uptime with minimal service interruption.\n▪ DR : Strategies and processes to restore operations after a catastrophic failure.\n▪ Critical for business continuity, data integrity, and customer trust.",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 2,
+    "content": "High Availability Concepts\n• Computing environments configured to provide nearly\nfull-time availability are known as high availability\nsystems\n• Note that high availability isn’t called perfect availability\nor always available.\n• Such systems typically have redundant hardware and\nsoftware that makes the system available despite failures.\n• Well-designed high availability systems avoid having\nsingle points-of-failure",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 3,
+    "content": "High Availability Concepts\n• When failures occur, the failover process moves\nprocessing performed by the failed component to the\nbackup component\n• The more transparent that failover is to users, the higher\nthe availability of the system.\n• Hardware, software, environment and human resources\nare basic redundancy factors",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 4,
+    "content": "Disaster Recovery Concepts\n• Disaster recovery (DR) involves a set of policies,\ntools and procedures to enable the recovery or\ncontinuation of vital technology infrastructure and\nsystems following a disruptive event.\n• These disruptive events can be natural disasters\n(e.g., earthquakes, floods, hurricanes), human-made\nincidents (e.g., cyberattacks, data breaches, human\nerrors), or any other catastrophic occurrences that\ncan result in the loss of critical data and systems.\n• The primary goal of disaster recovery is to minimize\ndowntime and data loss, allowing an organization to\nreturn to normal operations as quickly as possible\nafter the disaster or disruption.",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 5,
+    "content": "Disaster Recovery Terminology\nDisaster recovery should indicate the key metrics of recovery point objective (RPO) and\nrecovery time objective (RTO)",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 6,
+    "content": "Disaster Recovery Options\nIn many cases,\norganizations use an\noutsourced DR site instead\nof maintaining their own\ndata center",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 7,
+    "content": "Significance of HA & DR for Businesses\nImportance of HA Benefits of HA and DR\n• Minimizes Downtime • Risk Mitigation\n• Business Continuity • Competitive Advantage\n• Customer Satisfaction • Reputation Management\n• Scalability and Growth\nImportance of DR\n• Data Protection\n• Compliance and Regulations\n• Cost Savings",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 8,
+    "content": "Oracle Database HA Features\n▪ Oracle Real Application Clusters (RAC)\nProvides fault tolerance, load\nbalancing, and high availability.\n▪ Backup and Restore\nManual process, taking time to\nbring up during a failure",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 9,
+    "content": "Disaster Recovery Planning\n▪ Key Considerations for DR Planning\nRPO (Recovery Point Objective)\nand RTO (Recovery Time Objective).\n▪ Testing and Validating DR Plans\n.\nRegular drills and updates to DR\nprocedures",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 10,
+    "content": "Oracle Database DR Strategies\n▪ Data Guard: Synchronous/asynchronous\nreplication for DR.\n▪ Oracle Active Data Guard\n.\nEnhances Data Guard with real-\ntime query, reporting, and backups on the\nstandby database\n▪ Backup and Restore\nManual process, taking time to\nbring up during a failure",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 11,
+    "content": "Challenges in Implementing HA and DR\n▪ Technical Challenges\nComplex configurations, network latency, and data synchronization.\n▪ Operational Challenges\nResource allocation, cost, and ongoing management.\n▪ Financial Challenges\nAdditional cost for hardware, software and administration",
+    "file": "IT4011-Lecture -09-High availability and Disaster Recovery_Updated.pdf"
+  },
+  {
+    "page": 1,
+    "content": "Introduction to Vector Search\n• It is designed for AI workload and allows to\nquery databases on semantics\n• Traditional keyword-based search looks for\nexact or partial matching of keywords.\n• vector search utilizes mathematical\nrepresentations (vectors) to understand the\nsemantic meaning of words and relationships\nbetween data points",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 2,
+    "content": "Vector Data Type\n• VECTOR data type introduced from 23ai\n• It represents a vector as a series of numbers\nstored as integers or floating-point numbers\n• Eg\nCREATE TABLE docs (doc_id INT, doc_text CLOB,\ndoc_vector VECTOR);",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 3,
+    "content": "Vector Embedding\n• It is a way of representing any kind of data\nsuch as text, images, videos, users, or music as\npoints in a multidimensional space where the\nlocations of those points in space, and\nproximity to others, are semantically\nmeaningful.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 4,
+    "content": "Vector Embedding Cont.\nWords enclosed as 2 – dimensional vectors",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 5,
+    "content": "Vector Embedding Cont.\n• Different pre-trained models can be used to\ngenerate vector embedding depending on the\ntype of data outside the Oracle DB.\n• If those models are compatible with Open\nNeural Network Exchange (ONNX), those\nmodels can be imported into Oracle DB\ndirectly.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 6,
+    "content": "Vector Embedding Cont.\nVector Embedding Model",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 7,
+    "content": "Similarity Search\n• Searching semantic similarity in a data set is\nnow equivalent to searching nearest\nneighbours in a vector space instead of using\ntraditional keyword searches using query\npredicates.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 8,
+    "content": "Similarity Search Cont.\nThe distance between wolf and dog in the vector space is shorter than\nthe distance between dog and kitten",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 9,
+    "content": "Applications of Vector Search\n• Image and Video Search: Finding similar images\nor videos based on content.\n• Natural Language Processing: Enhancing search\nengines with context-aware results.\n• Recommendation Systems: Suggesting products\nor content based on user behavior and\npreferences.\n• Anomaly Detection: Identifying outliers in\nfinancial transactions or security data.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 10,
+    "content": "Challenges in Vector Search\n• Computational complexity: Handling high-\ndimensional data.\n• Data quality: Impact of noise and errors in\nvectorization.\n• Scalability: Managing large volumes of\nvectors.\n• Real-time updates: Keeping vector indices up\nto date.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 11,
+    "content": "Future Trends in Vector Search\n• Growing integration of AI in databases.\n• Evolution of hybrid databases combining\ntraditional and vector search.\n• Enhanced indexing and retrieval methods for\nbetter accuracy and speed.\n• Expanding applications across industries.",
+    "file": "IT4011-Lecture -10-Vector Search.pdf"
+  },
+  {
+    "page": 1,
+    "content": "Oracle Database Instance\n▪ Oracle database instance is a set of\nmemory structures and processes that\nexists in memory.\n▪ The instance manages database files\nand serves users requests.\n▪ Every running Oracle database is\nassociated with at least one Oracle\ndatabase instance.\n▪ A database instance begins when it is\ncreated with the STARTUP command and\nends when it is terminated.",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 2,
+    "content": "Database Instance Configurations\n3",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 3,
+    "content": "Read/Write and Read-Only Instances\nEvery database instance is either read/write or read-only\nRead/write – can process DML and queries\nRead-only – only process queries\n4",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 4,
+    "content": "Initialization Parameter File\n▪ The file contains configuration parameters that required to create and startup an\nOracle instance.\n▪ The instance reads initialization parameters at the instance startup.\n▪ Oracle database provides many initialization parameters to optimize its operations\nin different environments.\n• There are two types of initialization parameter files.\n– Server parameter file (spfile): this is a binary parameter file and it’s the preferred initialization\nparameter file. The file is written to and read only by Oracle database.\n– Text initialization parameter file (pfile): this is a text file that contains a list of initialization\nparameters. The file can be read by Oracle database but cannot be written by database.\n5",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 5,
+    "content": "Overview of Database Startup\nDatabase startup sequence\n6",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 6,
+    "content": "How does an Instance Start?\nInstance startup consists of following steps;\n1. Searches for spfile in a platform specific default location and, if not found, searches for pfile.\nName of the spfile is spfileORACLE_SID.ora and name of the pfile is initORACLE_SID.ora.\n2. Read the parameter file to determine values of the initialization parameters.\n3. Allocates the SGA based on the initialization parameter settings.\n4. Starts the Oracle background processes.\n5. Opens the alert.log and trace files and write all explicit parameter settings to the alert.log.\nAt this stage, no database is associated with the instance.\n7",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 7,
+    "content": "How does a Database Mount, Open?\n▪ Database Mount\n1. The instance obtains name of the database controlfiles specified in the CONTROL_FILES\ninitialization parameter and opens the files.\n2. Then, database reads the controlfiles to find the data files and online redo log files that it will\nattempt to access when opening the database.\n3. Mounted database is not ready for normal operations.\n▪ Database Open\nOpening a mounted database makes it available for normal database\noperations. Following actions are performed when a database is opened.\n1. Opens online data files in tablespaces other than undo tablespace.\n2. Acquires an undo tablespace.\n3. Opens the online redo log files.\n8",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 8,
+    "content": "Instance Startup",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 9,
+    "content": "Using SQL*Plus\n• Can be used the SQL*Plus binary available in the Oracle server if you have\nexecution permission for that binary.\n• Otherwise, use SQL*Plus client\n• Following command is used to connect to DB\nsqlplus <user name>/<password>@<oracle alias>\nusually Oracle alias is Oracle database name\n10",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 10,
+    "content": "Using SQL*Plus\n• If you login as ‘SYS’ user, it must be logged-in with ‘sysdba’ system privilege.\n– sqlplus sys as sysdba\n• Instead of user ‘SYS’ you may use following method as well. This is exactly same as\nconnecting to a database as ‘SYS’ user.\n– sqlplus / as sysdba\n11",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 11,
+    "content": "Overview of Database Shutdown\nDatabase shutdown sequence\n12",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 12,
+    "content": "Shutdown Modes\nA = ABORT I = IMMEDIATE\nT = TRANSACTIONAL N = NORMAL\n13",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 13,
+    "content": "SHUTDOWN Options\n14",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 14,
+    "content": "SHUTDOWN Options\n15",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 15,
+    "content": "Overview of Checkpoints\n▪ Checkpoint happens from a background process called ‘checkpoint process’(CKPT)\n▪ The CKPT process involves consistent database shutdowns, instance recovery and\ndatabase operations.\n▪ CKPT is responsible for writing to the data file headers and control files\n▪ CKPT occurs in a variety of situations\n▪ Consistent database shutdown\n▪ Online redo log switch\n▪ Execution of ALTER SYSTEM CHECKPOINT statement\n▪ Execution of ALTER DATABASE BEGIN BACKUP statement\n▪ When DBW process triggers\n▪ Tablespace read-only or taking it offline normal\n▪ Shrinking a data file\n▪ Executing ALTER TABLESPACE BEGIN BACKUP statement",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 16,
+    "content": "Purpose of Checkpoints\n▪ • Reduce the time required for recovery in case of an instance or media failure\n▪ • Ensure that the database regularly writes dirty buffers in the buffer cache to disk\n▪ • Ensure that the database writes all committed data to disk during a consistent\nshutdown",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 17,
+    "content": "Instance Recovery\n▪ Instance recovery is applying records in the online redo log to data files to\nreconstruct changes made after the most recent checkpoint.\n▪ Oracle Database performs instance recovery automatically in the following\nsituations: •\nThe database opens for the first time after the failure of a single-instance\ndatabase or all instances of an Oracle RAC database. This form of instance recovery\nis also called crash recovery. Oracle Database recovers the online redo threads of the\nterminated instances together.\nSome but not all instances of an Oracle RAC database fail. Instance recovery\nis performed automatically by a remaining instance in the configuration.\n▪ The SMON background process performs instance recovery, applying online redo\nautomatically. No user intervention is required.",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 18,
+    "content": "Purpose of Instance Recovery\n▪ Instance recovery ensures that the database is in a consistent state after an\ninstance failure.\n▪ When a transaction is committed, log writer process (LGWR) writes both the\nremaining redo entries in memory and the transaction SCN to the online redo log.\nHowever, the database writer (DBW) process writes modified data blocks to the data\nfiles whenever it is most efficient. For this reason, uncommitted changes may\ntemporarily exist in the data files while committed changes do not yet exist in the\ndata files.\n▪ If an instance of an open database fails, either because of a SHUTDOWN ABORT\nstatement or abnormal termination, then the following situations can result:\n▪ Data blocks committed by a transaction are not written to the data files and appear only in the\nonline redo log. These changes must be reapplied to the data files. •\n▪ The data files contains changes that had not been committed when the instance failed. These\nchanges must be rolled back to ensure transactional consistency",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 19,
+    "content": "CKPT in Instance Recovery\n▪ Instance recovery uses checkpoints to determine which changes must be applied to\nthe data files. The checkpoint position guarantees that every committed change\nwith an SCN lower than the checkpoint SCN is saved to the data files.\n▪ During instance recovery, the database must apply the changes that occur between\nthe checkpoint position and the end of the redo thread.",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 20,
+    "content": "Phases of Instance Recovery\n▪ The first phase of instance recovery is called cache recovery or rolling forward and\nreapplies all changes recorded in the online redo log to the data files.\n▪ These files could also contain uncommitted changes that were either saved to the\ndata files before the failure or were recorded in the online redo log and introduced\nduring cache recovery.\n▪ The second phase of instance recovery is called rolling back. Oracle Database\napplies undo blocks to roll back uncommitted changes in data blocks that were\nwritten before the failure or introduced during cache recovery.\n21",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 21,
+    "content": "Rolling Forward and Rolling Back",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 22,
+    "content": "Parameter File\n▪ To create and start Oracle instance\nparameter file is required.\n▪ There are two types of parameter files.\n▪ spfile: binary file and this is the Sample parameter file\npreferred type for Oracle database.\nThis file can be modified using\ndatabase only. No manual\nmodification is allowed.\n▪ init file: text file this is used to start\nOracle instance in the event spfile is\nnot available in the default location.\nThis is modified using the text editor\nused in the OS. Always instance\nrestart is required to make the\nchange effective",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 23,
+    "content": "Modification of Parameter File\n▪ The behaviors of the database can be modified after changing the parameter\nvalues\n▪ The classification of parameters as static or dynamic determines how they can be\nmodified.\n▪ Dynamic parameters can be changed on the fly if database was brought up using\nspfile\n▪ The scope of a parameter change depends on when the change takes effect. When\nan instance has been started with a server parameter file, you can use the ALTER\nSYSTEM SET statement to change values for system-level parameters as follows:\n▪ SCOPE=MEMORY\n▪ SCOPE=SPFILE\n▪ SCOPE=BOTH",
+    "file": "IT4011-part02-Lecture -02-Oracle Database Instance.pdf"
+  },
+  {
+    "page": 1,
+    "content": "Oracle DB Server Architecture\n• Oracle DB server consists of an\nOracle instance and an Oracle\ndatabase\n• Combination of the SGA (System\nGlobal Area) and Oracle processes\nis called Oracle instance\n• Oracle database is referred as\nstorage structure of the database",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 2,
+    "content": "Multitenant Architecture\nMultitenant architecture enables\nan Oracle database to be a\nContainer DB(CDB).\n• CDB\nA CDB contains one or more user-\ncreated PDBs and application\ncontainers.\n• PDB\nA PDB is a portable collection of\nschemas, schema objects, and\nnonschema objects that appears to\nan application as a separate\ndatabase.\n• Application Container\nAn application container is an\noptional, user-created container\nwithin a CDB that stores data and\nmetadata for one or more\napplications.",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 3,
+    "content": "Database Instance Structure\nOracle Database Processes\nA process is a mechanism in an operating\nsystem that can run a series of steps.\nSome operating systems use the terms\njob, task, or thread.\nInstance Memory Structures\nOracle Database creates and uses\nmemory structures for program code,\ndata shared among users, and private\ndata areas for each connected user.",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 4,
+    "content": "Process Structure\n• There are three kind of processes in a\ndatabase server;\n• client process, server process and background\nprocess\n• A client process is started at the time a\ndatabase user requests a connection to the\nOracle server. Client process can run on a host\nother than the database host, but server\nprocess cannot.\n• Server process connects to the Oracle instance\nand is started when a user establishes a\nsession. The server process can read and write\ninto SAG, but client process can’t.\n• Background processes are started when\ninstance is started\n5",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 5,
+    "content": "Overview of Server Process\n▪ There are two types of server processes available in Oracle database instance to\nservice client requests;\n▪ Dedicated server process, which services only one user process\n▪ Shared server process, which can service multiple user processes\n▪ Database is always enabled to allow dedicated server process, but database need to\nbe configured and enabled for shared server.\n6",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 6,
+    "content": "Dedicated Server Architecture\n7",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 7,
+    "content": "Shared Server configuration and Processes\n8",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 8,
+    "content": "Shared Server Architecture\n▪ Potential benefits of shared server are;\n▪ reduces the number of processes on the operating system\n▪ reduces instance PGA memory\n▪ increases application scalability and the number of clients that can simultaneously connect to the\ndatabase\n▪ may be faster than dedicated server when the rate of client connections and disconnections is high\n▪ Disadvantages of shared server process are;\n▪ including slower response time in some cases\n▪ does not support full database features\n▪ increased complexity for setup and tuning\n▪ As a general guideline, only use shared server when you have more concurrent\nconnections to the database than the operating system can handle.\n9",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 9,
+    "content": "Application Architecture\n▪ The application architecture is the computing environment in which a database\napplication connects to an Oracle database.\n▪ Client/Server architecture, the client application initiates a request for an operation to be performed\non the database server.\n▪ Multitier architecture, one or more application servers perform parts of the operation.\nAn application server contains a large part of the\napplication logic, provides access to the data for\nthe client, and performs some query processing.\nLoad on the database decreases.\nThe application server can serve as an\ninterface between clients and multiple\ndatabases\nProvide an additional level of security.\n10",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 10,
+    "content": "Physical Database Structure\nDatabase consists of following three main types of\nfiles\n➢ Control files: Contains the data about database itself and\nvery critical\nData Online redo\n➢ Data files: Contains user or application data of the Control\ndatabase files files log files\n➢ Online redo log files: Allows for the instance recovery of\nthe database\nOther files required for successful\nParameter\noperation of the database\nBackup Archive log\nfile\n➢ Parameter file files files\n➢ Alert log files\n➢ Password file\n➢ Backup files Password Alert and trace\n➢ Archive log files file log files\n➢ Trace files\n11",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 11,
+    "content": "Parameter File\n▪ To create and start Oracle instance\nparameter file is required.\n▪ There are two types of parameter files.\nSample parameter file\n▪ spfile: binary file and this is the\npreferred type for Oracle database.\nThis file can be modified using\ndatabase only. No manual\nmodification is allowed.\n▪ init file: text file this is used to start\nOracle instance in the event spfile is\nnot available in the default location.\nThis is modified using text editor\nused in the OS.",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 12,
+    "content": "Alert Log\n▪ Every database has an alert log, which is\nan XML file containing a chronological\nlog of database messages and errors.\n▪ Database errors, warnings and some\nadministrative operations appear in the\nPortion of an alert.log\nalert.log",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 13,
+    "content": "Logical & Physical Storage Structures\nOracle Database allocates logical space for all data in\nthe database.\nThe logical units of database space allocation are\ndata blocks, extents, segments, and tablespaces.\nAt physical level, the data is stored in data files on\ndisk. The data in the data files is stored in operating\nsystem blocks.\n14",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 14,
+    "content": "Database Blocks, Extents and Segments\n▪ Oracle allocates logical database space for all data in\na database\n▪ At the finest level of granularity, Oracle stores data in\ndatabase blocks\n▪ The data is stored in OS level as bytes\n▪ At the time of database creation, database block size\nis fixed\n▪ The next level of logical database space is an extent.\nAn extent is a specific number of contiguous data\nblocks allocated for storing a specific type of\ninformation\n▪ A segment is a set of extents. Each segment is\nallocated for specific data structure and resides in\nsame tablespace\n▪ Eg: Table data is stored in table segment and index Segment Extents Data Disk\ndata is stored in index’s segment blocks blocks\n15",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 15,
+    "content": "Tablespaces\n• Oracle database stores data in logical structure called ‘Tablespace’\n• Tablespace consists of data files which reside on the file system of the database\nserver. This is a physical file\n• A tablespace consists of one or more data files\n• One data file belongs only to one tablespace\n• SYSTEM, SYSAUX and UNDO tablespaces are mandatory tablespace for a database\n• DBA can create other tablespaces to store user/application data\n16",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 16,
+    "content": "Tablespaces and datafiles\n17",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 17,
+    "content": "The Relationships Among Segments, Extents, and Data Blocks\n18",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 18,
+    "content": "Segments, Extents & Data Blocks Within a Tablespace\n19",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
+  },
+  {
+    "page": 19,
+    "content": "Database Block Size\n▪ Every database has a database block\n▪ DB_BLOCK_SIZE initialization parameter sets database block size\n▪ Block size of all tablespaces defaults to database block size\n▪ If required different block size tablespaces can be created",
+    "file": "IT4040-Lecture -01-Oracle Database Architecture.pdf"
   }
 ]
