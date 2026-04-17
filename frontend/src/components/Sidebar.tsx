@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Settings, Home, Sparkles, Brain, HelpCircle, X, CalendarDays } from 'lucide-react';
+import { BookOpen, FileText, Settings, Home, Sparkles, Brain, HelpCircle, X, CalendarDays, Library } from 'lucide-react';
 import { BarChart3 } from "lucide-react";
 import logo from '../assets/image_13.png';
 import { Link, useLocation } from 'react-router-dom';
@@ -10,6 +10,7 @@ const navigation = [
   { name: 'Model Paper', href: '/model-paper', icon: FileText },
   { name: 'Progress', href: '/progress', icon: BarChart3 },
   { name: "Calendar", href: "/calendar", icon: CalendarDays },
+  { name: 'My Study Plans', href: '/study-plans', icon: Library },
   { name: 'Generate Questions', href: '/generate', icon: Sparkles },
   { name: 'Upload PDF', href: '/upload', icon: BookOpen },
   { name: 'Settings', href: '/settings', icon: Settings },

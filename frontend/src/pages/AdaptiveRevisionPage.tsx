@@ -47,8 +47,8 @@ export default function AdaptiveRevisionPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F2F8F5] flex flex-col items-center justify-center p-4 sm:p-6 gap-8">
-            <div className="w-full max-w-5xl">
+        <div className="min-h-screen bg-[#F2F8F5] flex flex-col items-center justify-center p-2 sm:p-4 gap-4">
+            <div className={`w-full transition-all duration-500 ${view === 'results' ? 'max-w-full xl:max-w-[1800px]' : 'max-w-5xl'}`}>
                 {view === 'selector' && (
                     <div className="flex flex-col items-center gap-6">
                         <div className="text-center mb-6">

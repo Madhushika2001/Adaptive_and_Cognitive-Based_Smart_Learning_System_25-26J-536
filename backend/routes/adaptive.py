@@ -19,6 +19,7 @@ from services.mindmap_service import generate_mindmap
 from services.flashcard_service import generate_flashcards
 from services.feedback_service import generate_feedback
 from services.voice_service import transcribe_audio
+from services.study_plan_service import generate_study_plan
 from database import (
     lecture_collection,
     user_results_collection,
@@ -27,6 +28,7 @@ from database import (
     mindmap_collection,
     flashcard_collection,
     feedback_collection,
+    study_plan_collection,
 )
 
 router = APIRouter(prefix="/api/adaptive", tags=["Adaptive Learning"])
@@ -485,3 +487,26 @@ async def get_feedback(module: str, lecture: str, topic: str, quiz_results: list
             
     return feedback
 
+
+@router.get("/generate-study-plan/{module}/{lecture}/{topic}")
+async def get_study_plan(module: str, lecture: str, topic: str, user_level: str = "Intermediate"):
+    if study_plan_collection is not None:
+        cached = study_plan_collection.find_one({
+            "module": module, "lecture": lecture,
+            "topic": topic, "user_level": user_level,
+        })
+        if cached:
+            return cached["study_plan"]
+
+    content = _get_topic_content(module, lecture, topic)
+    if not content:
+        return {"error": "Content not found"}
+
+    study_plan = await generate_study_plan(module, lecture, topic, user_level, content)
+    
+    if "error" not in study_plan and study_plan_collection is not None:
+        study_plan_collection.insert_one({
+            "module": module, "lecture": lecture,
+            "topic": topic, "user_level": user_level, "study_plan": study_plan,
+        })
+    return study_plan

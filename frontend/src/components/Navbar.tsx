@@ -2,6 +2,8 @@ import { Search, Bell, MessageCircle, ChevronDown, Menu, LogOut } from "lucide-r
 import profileImage from "../assets/profile.svg";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 type NavbarProps = {
   onMenuClick?: () => void;
@@ -11,6 +13,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const nav = useNavigate();
+  
+  const profile = useSelector((state: RootState) => state.auth.profile);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const displayName = profile?.name || user?.email?.split('@')[0] || 'Student Account';
 
   function logout() {
     localStorage.removeItem("auth_token");
@@ -86,7 +92,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           </div>
           {/* Hide name on very small screens */}
           <span className="hidden sm:inline text-sm font-medium text-gray-700">
-            W.W.W.Perera
+            {displayName}
           </span>
           <ChevronDown className={`h-4 w-4 text-gray-500 transition ${open ? "rotate-180" : ""}`} />
           </button>

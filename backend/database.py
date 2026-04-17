@@ -17,6 +17,7 @@ summary_collection = None
 mindmap_collection = None
 flashcard_collection = None
 feedback_collection = None
+study_plan_collection = None
 
 if not uri or "<cluster>" in uri:
     print("⚠️ MONGODB_URI is not configured or is using a placeholder. Adaptive features will be disabled.")
@@ -34,6 +35,7 @@ else:
         mindmap_collection      = db["generated_mindmaps"]
         flashcard_collection    = db["generated_flashcards"]
         feedback_collection     = db["generated_feedback"]
+        study_plan_collection   = db["generated_study_plans"]
         
         print("✅ MongoDB connected — adaptive learning collections ready.")
     except Exception as e:

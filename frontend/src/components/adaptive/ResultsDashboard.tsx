@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { predictLevel, generateSummary, generateMindmap, generateFlashcards, generateFeedback } from '../../api/adaptiveApi';
-import { ReactFlow, Controls, Background } from '@xyflow/react';
+import { predictLevel, generateSummary, generateMindmap, generateFlashcards, generateFeedback, generateStudyPlan } from '../../api/adaptiveApi';
+import { ReactFlow, Controls, Background, Handle, Position } from '@xyflow/react';
+import { StudyPlan } from './StudyPlan';
+import { FlashcardViewer } from './FlashcardViewer';
 import '@xyflow/react/dist/style.css';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store/store';
 import { Brain, Star, FileText, Share2, RefreshCw } from 'lucide-react';
 import * as dagre from 'dagre';
 
@@ -32,6 +36,24 @@ interface MindmapElements {
     nodes: object[];
     edges: object[];
 }
+
+const CustomMindmapNode = ({ data }: any) => {
+    return (
+        <div style={data.style} className="shadow-lg border-2 relative px-4 py-2 rounded-xl flex items-center justify-center font-bold text-center transition-transform hover:scale-105 group">
+            <Handle type="target" position={Position.Left} className="w-2 h-2 !bg-white border-2 !border-current opacity-0 group-hover:opacity-100" />
+            <div className="flex items-center gap-2">
+                <Brain className="w-5 h-5 opacity-70" />
+                <span>{data.label}</span>
+            </div>
+            <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-white border-2 !border-current opacity-0 group-hover:opacity-100" />
+        </div>
+    );
+};
+
+const nodeTypes = {
+    custom: CustomMindmapNode
+};
+
 
 interface ResultsDashboardProps {
     stats: Stats;
@@ -101,17 +123,20 @@ const THEMES = {
 };
 
 const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDashboardProps) => {
+    const user = useSelector((state: RootState) => state.auth.user);
     const [levelData, setLevelData] = useState<LevelData | null>(null);
     const [summary, setSummary] = useState<string | null>(null);
     const [mindmapElements, setMindmapElements] = useState<MindmapElements | null>(null);
     const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
     const [feedback, setFeedback] = useState<string | null>(null);
+    const [studyPlan, setStudyPlan] = useState<any | null>(null);
 
     const [isLevelLoading, setIsLevelLoading] = useState(true);
     const [isSummaryLoading, setIsSummaryLoading] = useState(false);
     const [isMindmapLoading, setIsMindmapLoading] = useState(false);
     const [isFlashcardsLoading, setIsFlashcardsLoading] = useState(false);
     const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
+    const [isStudyPlanLoading, setIsStudyPlanLoading] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -146,37 +171,38 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                     if (mmRes.nodes && mmRes.edges) {
                         const dagreGraph = new (dagre as any).graphlib.Graph();
                         dagreGraph.setDefaultEdgeLabel(() => ({}));
-                        dagreGraph.setGraph({ rankdir: 'LR', nodesep: 60, ranksep: 120 });
+                        dagreGraph.setGraph({ rankdir: 'LR', nodesep: 80, ranksep: 160 });
 
-                        mmRes.nodes.forEach((n: any) => dagreGraph.setNode(String(n.id), { width: 220, height: 75 }));
+                        mmRes.nodes.forEach((n: any) => dagreGraph.setNode(String(n.id), { width: 280, height: 80 }));
                         mmRes.edges.forEach((e: any) => dagreGraph.setEdge(String(e.source), String(e.target)));
                         (dagre as any).layout(dagreGraph);
 
                         const flowNodes = mmRes.nodes.map((n: any) => {
                             const nodeIdStr = String(n.id);
                             const nodeWithPosition = dagreGraph.node(nodeIdStr);
-                            const xPos = nodeWithPosition ? nodeWithPosition.x - 110 : 0;
-                            const yPos = nodeWithPosition ? nodeWithPosition.y - 37.5 : 0;
+                            const xPos = nodeWithPosition ? nodeWithPosition.x - 140 : 0;
+                            const yPos = nodeWithPosition ? nodeWithPosition.y - 40 : 0;
 
                             const theme = THEMES[levelString as keyof typeof THEMES] || THEMES.Intermediate;
                             let nodeStyle: React.CSSProperties = {
                                 background: theme.nodeBg,
                                 border: `2px solid ${theme.nodeBorder}`,
-                                borderRadius: '12px',
-                                padding: '10px',
+                                borderRadius: '16px',
+                                padding: '14px 20px',
                                 color: theme.nodeText,
-                                fontWeight: 'bold',
-                                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
+                                fontWeight: '800',
+                                fontSize: '15px',
+                                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)'
                             };
 
-                            return { id: nodeIdStr, targetPosition: 'left', sourcePosition: 'right', position: { x: xPos, y: yPos }, data: { label: n.label }, type: 'default', style: nodeStyle };
+                            return { id: nodeIdStr, position: { x: xPos, y: yPos }, data: { label: n.label, style: nodeStyle }, type: 'custom' };
                         });
 
                         const flowEdges = mmRes.edges.map((e: any, i: number) => {
                             const theme = THEMES[levelString as keyof typeof THEMES] || THEMES.Intermediate;
-                            let edgeStyle = { stroke: theme.nodeBorder, strokeWidth: 2 };
+                            let edgeStyle = { stroke: theme.nodeBorder, strokeWidth: 3 };
                             let isAnimated = levelString !== 'Advanced';
-                            return { id: `e${i}`, source: String(e.source), target: String(e.target), animated: isAnimated, type: 'bezier', style: edgeStyle };
+                            return { id: `e${i}`, source: String(e.source), target: String(e.target), animated: isAnimated, type: 'smoothstep', style: edgeStyle };
                         });
                         setMindmapElements({ nodes: flowNodes, edges: flowEdges });
                     }
@@ -196,6 +222,35 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                     if ((e as Error).name !== 'CanceledError') console.error('Flashcards error', e);
                 } finally {
                     if (!signal.aborted) setIsFlashcardsLoading(false);
+                }
+
+                if (signal.aborted) return;
+                setIsStudyPlanLoading(true);
+                try {
+                    const spRes = await generateStudyPlan(selection.module, selection.lecture, selection.topic, levelString, signal);
+                    if (signal.aborted) return;
+
+                    if (spRes && spRes.plan) {
+                        const storageKey = user?.id ? `user_study_plans_${user.id}` : 'user_study_plans';
+                        const savedPlansStr = localStorage.getItem(storageKey);
+                        let savedPlans = savedPlansStr ? JSON.parse(savedPlansStr) : {};
+                        const planId = user?.id ? `${user.id}-${selection.module}-${selection.topic}` : `${selection.module}-${selection.topic}`;
+                        savedPlans[planId] = {
+                            id: planId,
+                            module: selection.module,
+                            topic: selection.topic,
+                            level: levelString,
+                            data: spRes,
+                            timestamp: Date.now()
+                        };
+                        localStorage.setItem(storageKey, JSON.stringify(savedPlans));
+                    }
+
+                    setStudyPlan(spRes);
+                } catch (e: unknown) {
+                    if ((e as Error).name !== 'CanceledError') console.error('Study plan error', e);
+                } finally {
+                    if (!signal.aborted) setIsStudyPlanLoading(false);
                 }
 
                 if (signal.aborted) return;
@@ -237,7 +292,7 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
     const theme = THEMES[levelData?.predicted_level as keyof typeof THEMES] || THEMES.Intermediate;
 
     return (
-        <div className={`backdrop-blur-xl p-8 sm:p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border w-full max-w-[1400px] relative overflow-hidden flex flex-col gap-8 ${theme.bg} ${theme.borderFaint}`}>
+        <div className={`backdrop-blur-xl p-4 sm:p-6 md:p-8 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border w-full max-w-full relative overflow-hidden flex flex-col gap-6 lg:gap-8 ${theme.bg} ${theme.borderFaint}`}>
             {/* Decorative background glow synced with theme */}
             <div className={`absolute -top-32 -right-32 w-64 h-64 rounded-full blur-3xl pointer-events-none ${theme.glow}`}></div>
             <div className={`absolute -bottom-32 -left-32 w-64 h-64 rounded-full blur-3xl pointer-events-none ${theme.glow}`}></div>
@@ -309,7 +364,12 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                         </div>
                     ) : summary ? (
                         <div
-                            className={`prose max-w-none text-slate-700 ${theme.prose}`}
+                            className={`prose prose-lg max-w-none text-slate-700 whitespace-pre-wrap ${theme.prose} 
+                            prose-p:leading-relaxed prose-headings:border-b-2 prose-headings:pb-2 prose-headings:mt-8 
+                            prose-strong:bg-white prose-strong:px-1.5 prose-strong:py-0.5 prose-strong:rounded-md prose-strong:shadow-sm prose-strong:border 
+                            prose-ul:space-y-4 prose-ul:mt-6
+                            prose-li:bg-white prose-li:p-5 prose-li:rounded-2xl prose-li:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] prose-li:border prose-li:relative prose-li:pl-6
+                            `}
                             dangerouslySetInnerHTML={{ __html: summary }}
                         />
                     ) : (
@@ -343,6 +403,9 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+
+
                     {/* Mindmap */}
                     <div className={`border shadow-sm rounded-3xl overflow-hidden flex flex-col h-[500px] bg-white ${theme.border}`}>
                         <div className={`backdrop-blur p-5 border-b flex items-center gap-3 ${theme.bg} ${theme.border}`}>
@@ -364,6 +427,7 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                                 <ReactFlow
                                     nodes={mindmapElements.nodes as any}
                                     edges={mindmapElements.edges as any}
+                                    nodeTypes={nodeTypes}
                                     fitView
                                     minZoom={0.05}
                                     maxZoom={4}
@@ -380,46 +444,34 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                     </div>
 
                     {/* Flashcards */}
-                    <div className={`flex flex-col backdrop-blur-sm p-6 rounded-3xl border shadow-inner h-[500px] ${theme.bg} ${theme.border}`}>
-                        <div className="flex items-center gap-3 mb-6 pb-2">
-                            <div className={`p-2 rounded-xl shrink-0 shadow-sm text-white ${theme.primary}`}>
-                                <Brain className="w-6 h-6" />
-                            </div>
-                            <h3 className={`text-xl font-bold tracking-tight ${theme.text}`}>Study Flashcards</h3>
-                        </div>
-
-                        <div className="grid gap-4 overflow-y-auto pr-3 custom-scrollbar flex-1 pb-4">
+                    <div className={`flex flex-col backdrop-blur-sm p-4 sm:p-6 rounded-3xl border shadow-inner h-[500px] ${theme.bg} ${theme.border}`}>
+                        <div className="flex-1 pb-4">
                             {isFlashcardsLoading && !flashcards && (
-                                <div className="h-[150px] w-full bg-white rounded-2xl animate-pulse border border-slate-100 shadow-sm flex items-center justify-center">
+                                <div className="h-full w-full bg-white rounded-2xl animate-pulse border border-slate-100 shadow-sm flex items-center justify-center">
                                     <span className={`font-bold tracking-wide uppercase text-sm ${theme.textMuted}`}>Generating Flashcards...</span>
                                 </div>
                             )}
-                            {flashcards?.map((card, idx) => {
-                                let frontStyles = `bg-white ${theme.border} ${theme.text} shadow-sm hover:shadow-md transition-shadow`;
-                                let backStyles = `bg-gradient-to-br ${theme.gradient} text-white shadow-lg ${theme.shadow}`;
-
-                                return (
-                                    <div key={idx} className="adaptive-card-container h-[160px] w-full cursor-pointer group">
-                                        <div className="adaptive-card-inner relative w-full h-full transition-transform duration-500 group-hover:-translate-y-1">
-                                            <div className={`adaptive-card-front absolute w-full h-full border rounded-2xl flex items-center justify-center p-4 text-center ${frontStyles}`}>
-                                                <h4 className="text-base font-bold leading-tight">{card.front}</h4>
-                                            </div>
-                                            <div className={`adaptive-card-back absolute w-full h-full border rounded-2xl flex flex-col items-center justify-center p-4 ${backStyles}`}>
-                                                <div className="w-full h-full overflow-y-auto custom-scrollbar flex items-center justify-center">
-                                                    <p className="font-medium whitespace-pre-wrap text-sm leading-snug w-full drop-shadow-sm text-center">
-                                                        {card.back}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {flashcards && (
+                                <FlashcardViewer flashcards={flashcards} theme={theme} />
+                            )}
                         </div>
                     </div>
                 </div>
 
-                <div className={`flex justify-end gap-4 pt-8 border-t mt-2 ${theme.border}`}>
+                {/* Study Plan */}
+                <div className={`backdrop-blur-sm rounded-3xl w-full relative ${theme.bg}`}>
+                    {isStudyPlanLoading ? (
+                        <div className={`p-8 rounded-3xl min-h-[150px] shadow-sm flex flex-col items-center justify-center border ${theme.bg} ${theme.border}`}>
+                            <Brain className={`w-8 h-8 animate-pulse mb-4 ${theme.accent}`} />
+                            <span className={`font-bold tracking-wide uppercase ${theme.textMuted}`}>Crafting Personalized Study Plan...</span>
+                        </div>
+                    ) : studyPlan ? (
+                        <StudyPlan plan={studyPlan.plan || []} overview={studyPlan.overview || ''} theme={theme}
+                            planId={user?.id ? `${user.id}-${selection.module}-${selection.topic}` : `${selection.module}-${selection.topic}`} />
+                    ) : null}
+                </div>
+
+                <div className={`flex justify-end gap-4 pt-8 border-t mt-8 ${theme.border}`}>
                     <button
                         onClick={onTryAgain}
                         className={`bg-white border px-8 py-3.5 rounded-2xl font-bold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 ${theme.text} ${theme.border} hover:${theme.bg}`}

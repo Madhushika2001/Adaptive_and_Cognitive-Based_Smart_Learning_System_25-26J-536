@@ -48,8 +48,8 @@ async def generate_summary(module: str, lecture: str, topic: str, user_level: st
     Lecture Content:
     {truncated_text}
     
-    CRITICAL RESTRICTION 1: Output ONLY the raw HTML paragraph text. Do not add conversational filler.
-    CRITICAL RESTRICTION 2: The "Lecture Content" above is your primary blueprint. You MUST include all major concepts mentioned there.
+    CRITICAL RESTRICTION 1: Output ONLY beautifully formatted HTML. You MUST use <h3>, <h4>, <p>, <ul>, and <li> tags to structure the document. STRICTLY highlight important vocabulary and core concepts by wrapping them in visually distinct colored tags, like this: <span style="background-color: #fef08a; padding: 2px 8px; border-radius: 6px; font-weight: 800; color: #0f172a; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Concept Name</span>. 
+    Rotate between 4 beautiful pastel background colors for your highlights: Pastel Yellow (#fef08a), Pastel Green (#bbf7d0), Pastel Blue (#bfdbfe), and Pastel Purple (#e9d5ff) to logically color-code different concepts. Do not wrap in ```html markdown blocks.
     KNOWLEDGE EXPANSION: You ARE ENCOURAGED to draw from your own extensive internal knowledge to provide deeper academic definitions, historical context, and technical explanations for the terms found in the lecture. Do not hallucinate unrelated topics, but make the explanation much more profound and comprehensive than the brief lecture notes.
     """
 
@@ -64,6 +64,10 @@ async def generate_summary(module: str, lecture: str, topic: str, user_level: st
         print(f"   [Gemini] Summary generated. Length: {len(content)}")
         
         return {"summary": content}
+
+    except Exception as e:
+        print(f"\n[!!!] GEMINI SUMMARY ERROR: {e}")
+        return {"summary": get_dynamic_summary_fallback(lecture_content)}
 
     except Exception as e:
         print(f"\n[!!!] GEMINI SUMMARY ERROR: {e}")

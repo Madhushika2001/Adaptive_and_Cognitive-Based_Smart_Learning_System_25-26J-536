@@ -106,3 +106,17 @@ export const generateFeedback = async (
     );
     return response.data;
 };
+
+export const generateStudyPlan = async (
+    module: string,
+    lecture: string,
+    topic: string,
+    userLevel: string,
+    signal?: AbortSignal
+) => {
+    const response = await axios.get(
+        `${API_BASE_URL}/generate-study-plan/${encodeURIComponent(module)}/${encodeURIComponent(lecture)}/${encodeURIComponent(topic)}?user_level=${encodeURIComponent(userLevel)}`,
+        { signal }
+    );
+    return response.data;
+};
