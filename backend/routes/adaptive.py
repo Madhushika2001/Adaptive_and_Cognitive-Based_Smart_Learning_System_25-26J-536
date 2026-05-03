@@ -313,13 +313,19 @@ async def generate_mcq(module: str, lecture: str, topic: str, user_level: str = 
 
 @router.get("/generate-summary/{module}/{lecture}/{topic}")
 async def get_summary(module: str, lecture: str, topic: str, user_level: str = "Intermediate"):
+    # Use cache to load the saved summary instantly without regenerating
     if summary_collection is not None:
         cached = summary_collection.find_one({
             "module": module, "lecture": lecture,
             "topic": topic, "user_level": user_level,
         })
         if cached:
-            return cached["summary"]
+            # Auto-cleanup: If the cached summary contains old HTML formatting, delete it to force a fresh Markdown generation
+            if "<p>" in cached["summary"] or "<b>" in cached["summary"]:
+                print("DEBUG: Found old HTML summary in cache. Deleting ALL duplicates to regenerate Markdown.")
+                summary_collection.delete_many({"module": module, "lecture": lecture, "topic": topic, "user_level": user_level})
+            else:
+                return cached["summary"]
 
     content = _get_topic_content(module, lecture, topic)
     if not content:
@@ -328,10 +334,16 @@ async def get_summary(module: str, lecture: str, topic: str, user_level: str = "
     summary = await generate_summary(module, lecture, topic, user_level, content)
     
     if "error" not in summary and summary_collection is not None:
-        summary_collection.insert_one({
-            "module": module, "lecture": lecture,
-            "topic": topic, "user_level": user_level, "summary": summary,
-        })
+        summary_collection.update_one(
+            {
+                "module": module, "lecture": lecture,
+                "topic": topic, "user_level": user_level
+            },
+            {
+                "$set": {"summary": summary}
+            },
+            upsert=True
+        )
     return summary
 
 
@@ -415,6 +427,12 @@ async def submit_audio(
     file_size = os.path.getsize(temp_file_path)
     print(f"DEBUG: Saved temp audio file: {temp_file_path} ({file_size} bytes)")
 
+    # --- VALIDATION: Check if audio file is virtually empty ---
+    if file_size < 1000:
+        print("DEBUG: Audio file too small, aborting processing.")
+        os.remove(temp_file_path)
+        return {"transcription": "", "is_correct": False, "error": True, "message": "Audio file is empty or too short"}
+
     # 1. Clean up expected_answer for a better hint prompt (keywords only)
     clean_prompt = "".join([c if c.isalnum() or c.isspace() else " " for c in expected_answer])
     keywords = " ".join(set(clean_prompt.split()))
@@ -434,9 +452,9 @@ async def submit_audio(
     e_lower = expected_answer.lower().strip()
     target_key = correct_option_key.lower().strip()
 
-    translator = str.maketrans("", "", string.punctuation)
-    t_clean = t_lower.translate(translator)
-    e_clean = e_lower.translate(translator)
+    import re
+    t_clean = re.sub(r'[^\w\s]', ' ', t_lower)
+    e_clean = re.sub(r'[^\w\s]', ' ', e_lower)
 
     # 1. Strict substring match
     if e_clean and e_clean in t_clean:
@@ -452,9 +470,14 @@ async def submit_audio(
     # 3. Fuzzy matching for slight transcription errors
     if not is_correct and e_clean:
         # Check partial ratio (is the answer *contained* as a fuzzy piece?)
-        similarity = fuzz.partial_ratio(e_clean, t_clean)
-        print(f"DEBUG: Fuzzy similarity score: {similarity}")
-        if similarity > 85:
+        partial_sim = fuzz.partial_ratio(e_clean, t_clean)
+        # Check token set ratio (handles missing/extra words in the middle much better)
+        token_sim = fuzz.token_set_ratio(e_clean, t_clean)
+        
+        best_sim = max(partial_sim, token_sim)
+        print(f"DEBUG: Fuzzy similarity score: partial={partial_sim}, token={token_sim}, best={best_sim}")
+        
+        if best_sim >= 80:  # Lowered slightly to be more forgiving
             is_correct = True
 
     print(f"DEBUG: Final is_correct={is_correct}")

@@ -225,13 +225,25 @@ const TopicSelector = ({ onTopicSelected }: TopicSelectorProps) => {
                                             ))}
                                         </div>
 
-                                        <button
-                                            onClick={handleStart}
-                                            disabled={!selectedTopic}
-                                            className="w-full mt-10 flex items-center justify-center gap-3 bg-gradient-to-r from-[#44A673] to-[#158289] hover:from-[#3d9567] hover:to-[#116e74] text-white font-black py-5 px-6 rounded-2xl shadow-[0_15px_30px_rgba(21,130,137,0.25)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_15px_35px_rgba(21,130,137,0.35)] hover:-translate-y-1 active:translate-y-0 text-xl tracking-tight"
-                                        >
-                                            Generate Master Revision <ChevronRight className="w-6 h-6" />
-                                        </button>
+                                        <div className="relative group w-full mt-10">
+                                            <button
+                                                onClick={handleStart}
+                                                disabled={!selectedTopic}
+                                                className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-[#44A673] to-[#158289] hover:from-[#3d9567] hover:to-[#116e74] text-white font-black py-5 px-6 rounded-2xl shadow-[0_15px_30px_rgba(21,130,137,0.25)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_15px_35px_rgba(21,130,137,0.35)] hover:-translate-y-1 active:translate-y-0 text-xl tracking-tight"
+                                            >
+                                                Generate Master Revision <ChevronRight className="w-6 h-6" />
+                                            </button>
+                                            
+                                            {/* Tooltip */}
+                                            {!selectedTopic && (
+                                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 flex flex-col items-center">
+                                                    <div className="bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded-xl shadow-lg whitespace-nowrap">
+                                                        Please select a Topic first
+                                                    </div>
+                                                    <div className="w-3 h-3 bg-slate-800 rotate-45 -mt-1.5"></div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </div>

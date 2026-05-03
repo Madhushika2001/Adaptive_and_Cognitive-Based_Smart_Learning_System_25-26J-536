@@ -34,8 +34,9 @@ export const generateSummary = async (
     userLevel: string,
     signal?: AbortSignal
 ) => {
+    const cacheBuster = new Date().getTime();
     const response = await axios.get(
-        `${API_BASE_URL}/generate-summary/${encodeURIComponent(module)}/${encodeURIComponent(lecture)}/${encodeURIComponent(topic)}?user_level=${encodeURIComponent(userLevel)}`,
+        `${API_BASE_URL}/generate-summary/${encodeURIComponent(module)}/${encodeURIComponent(lecture)}/${encodeURIComponent(topic)}?user_level=${encodeURIComponent(userLevel)}&_t=${cacheBuster}`,
         { signal }
     );
     return response.data;

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import { Brain, Star, FileText, Share2, RefreshCw } from 'lucide-react';
 import * as dagre from 'dagre';
+import ReactMarkdown from 'react-markdown';
 
 interface Selection {
     module: string;
@@ -363,15 +364,20 @@ const ResultsDashboard = ({ stats, selection, onRetry, onTryAgain }: ResultsDash
                             <div className={`h-4 rounded-full w-5/6 ${theme.secondary}`}></div>
                         </div>
                     ) : summary ? (
-                        <div
-                            className={`prose prose-lg max-w-none text-slate-700 whitespace-pre-wrap ${theme.prose} 
-                            prose-p:leading-relaxed prose-headings:border-b-2 prose-headings:pb-2 prose-headings:mt-8 
-                            prose-strong:bg-white prose-strong:px-1.5 prose-strong:py-0.5 prose-strong:rounded-md prose-strong:shadow-sm prose-strong:border 
-                            prose-ul:space-y-4 prose-ul:mt-6
-                            prose-li:bg-white prose-li:p-5 prose-li:rounded-2xl prose-li:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] prose-li:border prose-li:relative prose-li:pl-6
-                            `}
-                            dangerouslySetInnerHTML={{ __html: summary }}
-                        />
+                        <div className={`prose max-w-none text-slate-800 text-lg md:text-xl leading-relaxed ${theme.prose}`}>
+                            <ReactMarkdown
+                                components={{
+                                    p: ({node, ...props}) => <p className="text-lg md:text-xl leading-relaxed mb-6" {...props} />,
+                                    h2: ({node, ...props}) => <h2 className="text-3xl md:text-4xl font-extrabold border-b-2 pb-3 mt-10 mb-6 text-slate-900" {...props} />,
+                                    h3: ({node, ...props}) => <h3 className="text-2xl md:text-3xl font-bold mt-8 mb-4 text-slate-800" {...props} />,
+                                    ul: ({node, ...props}) => <ul className="space-y-4 my-6 list-disc list-inside" {...props} />,
+                                    li: ({node, ...props}) => <li className="bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-[0_4px_15px_-5px_rgba(0,0,0,0.05)] border relative text-lg md:text-xl leading-relaxed mb-4" {...props} />,
+                                    strong: ({node, ...props}) => <strong className="bg-yellow-100 px-2 py-1 rounded-lg shadow-sm border border-yellow-300 font-extrabold text-slate-900" {...props} />
+                                }}
+                            >
+                                {summary}
+                            </ReactMarkdown>
+                        </div>
                     ) : (
                         <p className={`font-medium bg-white px-4 py-2 rounded-lg inline-block border ${theme.textMuted} ${theme.border}`}>Failed to load summary.</p>
                     )}

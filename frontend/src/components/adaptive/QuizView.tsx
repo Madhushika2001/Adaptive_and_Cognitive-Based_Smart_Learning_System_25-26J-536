@@ -179,9 +179,18 @@ const QuizView = ({ selection, onComplete }: QuizViewProps) => {
 
         for (const [k, v] of Object.entries(question.options)) {
             const kLower = k.toLowerCase();
-            const vClean = v.toLowerCase().replace(/[^\w\s]/gi, '');
-            // Check for key (A, B, C), for "option A", or for the full option text
-            if (words.includes(kLower) || tClean.includes(`option ${kLower}`) || (vClean && tClean.includes(vClean))) {
+            const vClean = v.toLowerCase().replace(/[^\w\s]/gi, ' ');
+            
+            // Calculate word overlap for fuzzy matching
+            const vWords = vClean.split(/\s+/).filter(w => w.length > 1);
+            let matchCount = 0;
+            for (const w of vWords) {
+                if (tClean.includes(w)) matchCount++;
+            }
+            const matchRatio = vWords.length > 0 ? matchCount / vWords.length : 0;
+
+            // Check for key (A, B, C), for "option A", full text, or > 60% word overlap
+            if (words.includes(kLower) || tClean.includes(`option ${kLower}`) || (vClean && tClean.includes(vClean)) || matchRatio >= 0.6) {
                 spokenOptionKey = k;
                 break;
             }

@@ -18,10 +18,13 @@ interface VoiceRecorderProps {
 const VoiceRecorder = ({ expectedAnswer, correctOptionKey, onResult }: VoiceRecorderProps) => {
     const [isRecording, setIsRecording] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [validationError, setValidationError] = useState<string | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
+    const recordingStartTimeRef = useRef<number>(0);
 
     const startRecording = async () => {
+        setValidationError(null);
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -40,6 +43,7 @@ const VoiceRecorder = ({ expectedAnswer, correctOptionKey, onResult }: VoiceReco
 
             mediaRecorderRef.current.onstop = handleStop;
             // Record in 100ms chunks to be more robust
+            recordingStartTimeRef.current = Date.now();
             mediaRecorderRef.current.start(100);
             setIsRecording(true);
         } catch (err) {
@@ -50,6 +54,18 @@ const VoiceRecorder = ({ expectedAnswer, correctOptionKey, onResult }: VoiceReco
 
     const stopRecording = () => {
         if (mediaRecorderRef.current && isRecording) {
+            const duration = Date.now() - recordingStartTimeRef.current;
+            
+            if (duration < 2000) {
+                // Cancel recording
+                mediaRecorderRef.current.onstop = null; // Prevent handleStop from firing
+                mediaRecorderRef.current.stop();
+                setIsRecording(false);
+                mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+                setValidationError("Recording too short! Please speak for at least 2 seconds.");
+                return;
+            }
+
             mediaRecorderRef.current.stop();
             setIsRecording(false);
             mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
@@ -73,12 +89,26 @@ const VoiceRecorder = ({ expectedAnswer, correctOptionKey, onResult }: VoiceReco
         }
     };
 
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+        return (
+            <div className="flex flex-col items-center mt-6 p-8 bg-gradient-to-br from-red-50/50 to-orange-50/50 rounded-3xl border border-red-100/50 shadow-inner">
+                <p className="text-red-600 font-bold">Your browser does not support audio recording.</p>
+                <p className="text-sm text-red-500 mt-2">Please try using a modern browser like Chrome or Edge.</p>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col items-center mt-6 p-8 bg-gradient-to-br from-indigo-50/50 to-blue-50/50 rounded-3xl border border-indigo-100/50 shadow-inner relative overflow-hidden group">
             {/* Subtle glow */}
             <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]"></div>
 
             <div className="relative z-10 flex flex-col items-center">
+                {validationError && (
+                    <div className="mb-4 bg-red-100/90 text-red-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm border border-red-200 animate-in fade-in slide-in-from-bottom-2 text-center">
+                        ⚠️ {validationError}
+                    </div>
+                )}
                 <p className="text-sm text-indigo-900/60 mb-5 font-bold tracking-widest uppercase">Select to speak</p>
 
                 {!isRecording && !isProcessing && (

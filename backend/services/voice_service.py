@@ -29,7 +29,10 @@ def calculate_energy(wav_path):
             frames = wf.readframes(params.nframes)
             audio_data = np.frombuffer(frames, dtype=np.int16)
             if len(audio_data) == 0: return 0
-            energy = np.sqrt(np.mean(audio_data**2))
+            
+            # Cast to float32 to prevent int16 overflow during squaring
+            audio_float = audio_data.astype(np.float32)
+            energy = np.sqrt(np.mean(audio_float**2))
             return energy
     except:
         return 0
@@ -38,11 +41,11 @@ def transcribe_audio(file_path: str, prompt: str = "") -> str:
     print(f"DEBUG: Transcribing {file_path}")
     wav_path = file_path.replace(".webm", ".wav")
     try:
-        # 1. Convert to WAV (16kHz mono) with volume boost
+        # 1. Convert to WAV (16kHz mono) with volume boost and noise reduction
         print(f"DEBUG: Converting {file_path} to {wav_path}")
         result = subprocess.run([
             'ffmpeg', '-y', '-i', file_path, 
-            '-vn', '-af', 'volume=5.0', # Heavy boost to hear quiet mics
+            '-vn', '-af', 'afftdn=nf=-25,highpass=f=200,lowpass=f=3000,volume=1.5', # Noise reduction + voice bandpass + boost
             '-ar', '16000', '-ac', '1', wav_path
         ], capture_output=True)
         
@@ -62,12 +65,15 @@ def transcribe_audio(file_path: str, prompt: str = "") -> str:
         
         # 2. Transcribe
         # Using small.en for better accuracy, temperature 0 for stability
+        enhanced_prompt = f"The student is answering a highly technical university quiz question about IT, cloud computing, programming, and databases. Context: {prompt}"
         transcribe_result = model.transcribe(
             wav_path, 
             fp16=False, 
             language="en",
             temperature=0,
-            initial_prompt="A student answering a quiz question about technology.",
+            beam_size=5,
+            best_of=5,
+            initial_prompt=enhanced_prompt,
             condition_on_previous_text=False
         )
         
